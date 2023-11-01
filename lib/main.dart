@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './pages/language_selection.dart';
+import './pages/landing_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'JosefinSans'),
-      home: const LanguageSelection(),
+      home: const Landing(),
     );
   }
 }

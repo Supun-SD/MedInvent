@@ -8,72 +8,75 @@ class LoginPage extends StatelessWidget{
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Welcome back to MedInvent',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-              ),
-            ),
-            const Text(
-              'You have to sign in to continue',
-              style: TextStyle(
-                fontSize: 13,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(100, 50, 100, 20),
-              child: Image.asset('assets/images/login.jpg',),
-            ),
-            const SizedBox(height: 20),
-            _buildInputField(
-              const Icon(Icons.person, color: Colors.grey),
-              'Email/Phone No',
-              false,
-            ),
-            const SizedBox(height: 15),
-            _buildInputField(
-              const Icon(Icons.lock, color: Colors.grey),
-              'Password',
-              true,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(right: 60.0, top: 10),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                    'Forgot Password?'
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Welcome back to MedInvent',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
-              child: TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: const Color(0xFF2980B9),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+              const SizedBox(height: 10,),
+              const Text(
+                'You have to sign in to continue',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(100, 50, 100, 20),
+                child: Image.asset('assets/images/login.jpg',),
+              ),
+              const SizedBox(height: 20),
+              _buildInputField(
+                const Icon(Icons.person, color: Colors.grey),
+                'Email/Phone No',
+                false,
+              ),
+              const SizedBox(height: 15),
+              _buildInputField(
+                const Icon(Icons.lock, color: Colors.grey),
+                'Password',
+                true,
+              ),
+              const Padding(
+                padding: EdgeInsets.only(right: 60.0, top: 10),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                      'Forgot Password?'
                   ),
-                  minimumSize: const Size(0, 50.0),
-                ),
-                child: const Text(
-                  'Sign In',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
               ),
-            )
-            ,
-            const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: const Color(0xFF2980B9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    minimumSize: const Size(0, 50.0),
+                  ),
+                  child: const Text(
+                    'Sign In',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+              )
+              ,
+              const SizedBox(height: 30),
 
-            const Text('New to MedInvent? Register here'),
-          ],
+              const Text('New to MedInvent? Register here'),
+            ],
+          ),
         ),
       ),
     );
