@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './language_selection.dart';
-import './welcome.dart';
+import 'language_selection.dart';
+import 'welcome.dart';
+
 
 class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
