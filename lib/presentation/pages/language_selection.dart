@@ -21,7 +21,7 @@ class LanguageSelection extends StatelessWidget {
               const Text(
                 'Select a language to continue',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                 ),
               ),
               const SizedBox(
