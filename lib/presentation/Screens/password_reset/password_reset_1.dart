@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:first_app/presentation/Screens/password_reset/password_reset_2.dart';
+import 'package:first_app/presentation/components/custom_button.dart';
+import 'package:first_app/presentation/components//input_field.dart';
 
 class PasswordReset1 extends StatelessWidget {
   const PasswordReset1({super.key});
@@ -6,8 +9,46 @@ class PasswordReset1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Text("hello"),
-    );
+        backgroundColor: Colors.white,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text(
+                  'Reset your password',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(100, 50, 100, 50),
+                  child: Image.asset('assets/images/pwreset.jpg'),
+                ),
+                const InputField(
+                    prefixIcon: Icon(Icons.person),
+                    hint: 'Email/Phone No.',
+                    isPassword: false),
+                const SizedBox(
+                  height: 20,
+                ),
+                const InputField(
+                    prefixIcon: Icon(Icons.tag),
+                    hint: 'NIC',
+                    isPassword: false),
+                const SizedBox(height: 100),
+                CustomButton(
+                    text: 'Reset Password',
+                    onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PasswordReset2()),
+                          )
+                        }),
+              ],
+            ),
+          ),
+        ));
   }
 }

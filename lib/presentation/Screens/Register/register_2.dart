@@ -1,3 +1,4 @@
+import 'package:first_app/presentation/Screens/Register/register_3.dart';
 import 'package:first_app/presentation/components/custom_button.dart';
 import 'package:first_app/presentation/components//input_field.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class Register2State extends State<Register2> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(30.0),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 3),
                   child: DropdownButton<String>(
                     isExpanded: true,
                     value: selectedGender,
@@ -63,7 +64,13 @@ class Register2State extends State<Register2> {
               ),
 
               const SizedBox(height: 100,),
-              CustomButton(text: 'Next', onPressed: () => {}),
+              CustomButton(text: 'Next', onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const Register3()),
+                )
+              }),
             ],
           ),
         ),
