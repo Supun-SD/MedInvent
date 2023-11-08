@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-
   final String text;
+  final VoidCallback onPressed;
 
-  const CustomButton({super.key, required this.text});
+  const CustomButton({Key? key, required this.text, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class CustomButton extends StatelessWidget {
           color: const Color(0xFF2980B9),
         ),
         child: TextButton(
-          onPressed: () {},
+          onPressed: onPressed,
           child: Text(
             text,
             style: const TextStyle(
@@ -31,4 +32,3 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
-

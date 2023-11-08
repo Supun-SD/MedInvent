@@ -1,6 +1,8 @@
-import 'package:first_app/presentation/widgets/input_field.dart';
-import 'package:first_app/presentation/pages/register1.dart';
 import 'package:flutter/material.dart';
+import 'package:first_app/presentation/Screens/password_reset/password_reset_1.dart';
+import 'package:first_app/presentation/components/input_field.dart';
+import 'package:first_app/presentation/Screens/Register/register_1.dart';
+
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -48,13 +50,21 @@ class LoginPage extends StatelessWidget {
                 hint: 'Password',
                 isPassword: true,
               ),
-              const Padding(
-                padding: EdgeInsets.only(right: 60.0, top: 10),
+              Padding(
+                padding: const EdgeInsets.only(right: 60.0, top: 10),
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PasswordReset1()),
+                      );
+                    },
+                    child: const Text(
+                      'Forgot Password ?',
+                    ),
                   ),
                 ),
               ),
@@ -90,7 +100,8 @@ class LoginPage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Register1()),
+                        MaterialPageRoute(
+                            builder: (context) => const Register1()),
                       );
                     },
                     child: const Text(
