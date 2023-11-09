@@ -4,12 +4,14 @@ class InputField extends StatelessWidget {
   final Icon? prefixIcon;
   final String hint;
   final bool isPassword;
+  final TextInputType keyboardType;
 
   const InputField({
     Key? key,
     this.prefixIcon,
     required this.hint,
     required this.isPassword,
+    required this.keyboardType,
   }) : super(key: key);
 
   @override
@@ -17,6 +19,7 @@ class InputField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: TextField(
+        keyboardType: keyboardType,
         obscureText: isPassword,
         decoration: InputDecoration(
           border: OutlineInputBorder(

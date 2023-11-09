@@ -19,26 +19,56 @@ class Register3 extends StatelessWidget {
                 'Enter your residential address',
                 style: TextStyle(fontSize: 18),
               ),
-              const SizedBox(height: 90,),
-              const InputField(hint: 'Line 1', isPassword: false),
-              const SizedBox(height: 20,),
-              const InputField(hint: 'Line 2', isPassword: false),
-              const SizedBox(height: 20,),
-              const InputField(hint: 'City', isPassword: false),
-              const SizedBox(height: 20,),
-              const InputField(hint: 'District', isPassword: false),
-              const SizedBox(height: 20,),
-              const InputField(hint: 'Postal Code', isPassword: false),
-              const SizedBox(height: 20,),
-
-              const SizedBox(height: 50,),
-              CustomButton(text: 'Next', onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Register4()),
-                )
-              }),
+              const SizedBox(
+                height: 90,
+              ),
+              const InputField(
+                  keyboardType: TextInputType.text,
+                  hint: 'Line 1',
+                  isPassword: false),
+              const SizedBox(
+                height: 20,
+              ),
+              const InputField(
+                  keyboardType: TextInputType.text,
+                  hint: 'Line 2',
+                  isPassword: false),
+              const SizedBox(
+                height: 20,
+              ),
+              const InputField(
+                  keyboardType: TextInputType.text,
+                  hint: 'City',
+                  isPassword: false),
+              const SizedBox(
+                height: 20,
+              ),
+              const InputField(
+                  keyboardType: TextInputType.text,
+                  hint: 'District',
+                  isPassword: false),
+              const SizedBox(
+                height: 20,
+              ),
+              const InputField(
+                  keyboardType: TextInputType.number,
+                  hint: 'Postal Code',
+                  isPassword: false),
+              const SizedBox(
+                height: 20,
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              CustomButton(
+                  text: 'Next',
+                  onPressed: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Register4()),
+                        )
+                      }),
             ],
           ),
         ),
@@ -46,4 +76,3 @@ class Register3 extends StatelessWidget {
     );
   }
 }
-

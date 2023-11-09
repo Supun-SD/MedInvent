@@ -30,11 +30,11 @@ class Register2State extends State<Register2> {
                 style: TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 90,),
-              const InputField(hint: 'First Name', isPassword: false),
+              const InputField(keyboardType:TextInputType.text,hint: 'First Name', isPassword: false),
               const SizedBox(height: 20,),
-              const InputField(hint: 'Last Name', isPassword: false),
+              const InputField(keyboardType:TextInputType.text,hint: 'Last Name', isPassword: false),
               const SizedBox(height: 20,),
-              const InputField(hint: 'NIC', isPassword: false),
+              const InputField(keyboardType:TextInputType.text,hint: 'NIC', isPassword: false),
               const SizedBox(height: 20,),
 
               Padding(

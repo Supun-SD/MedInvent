@@ -31,6 +31,7 @@ class Register1 extends StatelessWidget {
                 height: 85,
               ),
               const InputField(
+                  keyboardType:TextInputType.emailAddress,
                   prefixIcon: Icon(Icons.email_outlined),
                   hint: 'Email',
                   isPassword: false),
@@ -38,6 +39,7 @@ class Register1 extends StatelessWidget {
                 height: 20,
               ),
               const InputField(
+                  keyboardType:TextInputType.number,
                   prefixIcon: Icon(Icons.phone),
                   hint: 'Mobile No.',
                   isPassword: false),
@@ -45,6 +47,7 @@ class Register1 extends StatelessWidget {
                 height: 20,
               ),
               const InputField(
+                  keyboardType:TextInputType.text,
                   prefixIcon: Icon(Icons.lock_open),
                   hint: 'Password',
                   isPassword: true),
@@ -52,6 +55,7 @@ class Register1 extends StatelessWidget {
                 height: 20,
               ),
               const InputField(
+                  keyboardType:TextInputType.text,
                   prefixIcon: Icon(Icons.lock_open),
                   hint: 'Confirm Password',
                   isPassword: true),

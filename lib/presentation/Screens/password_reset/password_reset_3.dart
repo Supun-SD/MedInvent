@@ -24,14 +24,21 @@ class PasswordReset3 extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(100, 50, 100, 50),
                   child: Image.asset('assets/images/pwreset.jpg'),
                 ),
-                const InputField(prefixIcon: Icon(Icons.key),hint: 'New Password', isPassword: true),
-                const SizedBox(height: 20,),
-                const InputField(prefixIcon:Icon(Icons.key),hint: 'Confirm new password', isPassword: true),
-                const SizedBox(height:50),
-
-                CustomButton(text: 'Reset Password', onPressed: () => {
-
-                }),
+                const InputField(
+                    keyboardType: TextInputType.text,
+                    prefixIcon: Icon(Icons.key),
+                    hint: 'New Password',
+                    isPassword: true),
+                const SizedBox(
+                  height: 20,
+                ),
+                const InputField(
+                    keyboardType: TextInputType.text,
+                    prefixIcon: Icon(Icons.key),
+                    hint: 'Confirm new password',
+                    isPassword: true),
+                const SizedBox(height: 50),
+                CustomButton(text: 'Reset Password', onPressed: () => {}),
               ],
             ),
           ),

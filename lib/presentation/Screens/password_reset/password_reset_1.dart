@@ -26,6 +26,7 @@ class PasswordReset1 extends StatelessWidget {
                   child: Image.asset('assets/images/pwreset.jpg'),
                 ),
                 const InputField(
+                    keyboardType: TextInputType.text,
                     prefixIcon: Icon(Icons.person),
                     hint: 'Email/Phone No.',
                     isPassword: false),
@@ -33,6 +34,7 @@ class PasswordReset1 extends StatelessWidget {
                   height: 20,
                 ),
                 const InputField(
+                    keyboardType: TextInputType.text,
                     prefixIcon: Icon(Icons.tag),
                     hint: 'NIC',
                     isPassword: false),
