@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:first_app/presentation/Screens/password_reset/password_reset_2.dart';
-import 'package:first_app/presentation/components/custom_button.dart';
-import 'package:first_app/presentation/components//input_field.dart';
+import 'package:medinvent/presentation/Screens/password_reset/password_reset_2.dart';
+import 'package:medinvent/presentation/components/custom_button.dart';
+import 'package:medinvent/presentation/components//input_field.dart';
 
 class PasswordReset1 extends StatelessWidget {
   const PasswordReset1({super.key});

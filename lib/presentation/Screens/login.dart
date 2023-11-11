@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:first_app/presentation/Screens/password_reset/password_reset_1.dart';
-import 'package:first_app/presentation/components/input_field.dart';
-import 'package:first_app/presentation/Screens/Register/register_1.dart';
+import 'package:medinvent/presentation/Screens/password_reset/password_reset_1.dart';
+import 'package:medinvent/presentation/components/input_field.dart';
+import 'package:medinvent/presentation/Screens/Register/register_1.dart';
 
 
 class LoginPage extends StatelessWidget {

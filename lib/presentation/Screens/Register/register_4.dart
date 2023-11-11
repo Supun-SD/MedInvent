@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:first_app/presentation/components/custom_button.dart';
-import 'package:first_app/presentation/components//input_field.dart';
+import 'package:medinvent/presentation/components/custom_button.dart';
+import 'package:medinvent/presentation/components//input_field.dart';
 
 class Register4 extends StatelessWidget {
   const Register4({super.key});
