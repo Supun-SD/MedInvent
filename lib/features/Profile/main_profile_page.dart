@@ -35,11 +35,12 @@ class GradientBcakground extends StatelessWidget{
                 ],
         ),
       ),
+
       child: Align(
           alignment: Alignment.bottomCenter,
           child:SingleChildScrollView(
             child:Container(
-              margin: const EdgeInsets.only(top: 110.0),
+            margin: const EdgeInsets.only(top: 0.0),
             height:680,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
@@ -48,15 +49,17 @@ class GradientBcakground extends StatelessWidget{
                 topRight: Radius.circular(50),
               ),
                 color: Colors.white,
+
             ),
+
+
             child:Column(
               children: [
                   Container(
-                // width: 100, // Adjust the width as needed
                   height: 448,
                   width: 358,
                   alignment: Alignment.center,
-                  margin: const EdgeInsets.only(top: 38.0), // Adjust the height as needed
+                  margin: const EdgeInsets.only(top: 50.0), // Adjust the height as needed
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
@@ -67,9 +70,9 @@ class GradientBcakground extends StatelessWidget{
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black, // Shadow color
-                        blurRadius: 5.0,   // Spread of the shadow
-                        offset: Offset(0, 1), // Shadow offset (horizontal, vertical)
+                        color: Colors.black26, // Shadow color
+                        blurRadius: 40.0,   // Spread of the shadow
+                        offset: Offset(0, 3), // Shadow offset (horizontal, vertical)
                       ),
                     ],
                   ),
@@ -83,7 +86,7 @@ class GradientBcakground extends StatelessWidget{
                          number:'335',
                       ),
                       Container(
-                        color: Colors.grey,
+                        color: Colors.black12,
                         width:290.0,
                         height: 1,
                         // Your content for the first container
@@ -98,7 +101,7 @@ class GradientBcakground extends StatelessWidget{
                         },
                       ),
                       Container(
-                        color: Colors.grey,
+                        color: Colors.black12,
                         width:290.0,
                         height: 1,
                         // Your content for the first container
@@ -113,7 +116,7 @@ class GradientBcakground extends StatelessWidget{
                         },
                       ),
                       Container(
-                        color: Colors.grey,
+                        color: Colors.black12,
                         width:290.0,
                         height: 1,
                         // Your content for the first container
@@ -128,7 +131,7 @@ class GradientBcakground extends StatelessWidget{
                         },
                       ),
                       Container(
-                        color: Colors.grey,
+                        color: Colors.black12,
                         width:290.0,
                         height: 1,
                         // Your content for the first container
@@ -143,7 +146,7 @@ class GradientBcakground extends StatelessWidget{
                         },
                       ),
                       Container(
-                        color: Colors.grey,
+                        color: Colors.black12,
                         width:290.0,
                         height: 1,
                         // Your content for the first container
@@ -157,12 +160,7 @@ class GradientBcakground extends StatelessWidget{
 
                         },
                       ),
-                      Container(
-                        color: Colors.grey,
-                        width:290.0,
-                        height: 1,
-                        // Your content for the first container
-                      ),
+
                     ],
                   ) ,
                 ),
@@ -181,9 +179,9 @@ class GradientBcakground extends StatelessWidget{
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black, // Shadow color
-                        blurRadius: 5.0,   // Spread of the shadow
-                        offset: Offset(0, 1), // Shadow offset (horizontal, vertical)
+                          color: Colors.black26, // Shadow color
+                          blurRadius: 40.0,   // Spread of the shadow
+                          offset: Offset(0, 3), // Shadow offset (horizontal, vertical)
                       ),
                     ],
                   ),
@@ -303,7 +301,7 @@ class MyProfiletab extends StatelessWidget{
               padding: const EdgeInsets.all(10.0),
               child: ClipOval(
                 child: Image.asset(
-                  'assets/images/pic.png', // Replace with your image asset path
+                  'assets/images/pic.png',
                   width: 54.0,
                   height: 54.0,
                   fit: BoxFit.cover,

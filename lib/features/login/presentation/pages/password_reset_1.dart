@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/Screens/password_reset/password_reset_2.dart';
+import 'package:MedInvent/features/login/presentation/pages/password_reset_2.dart';
 import 'package:MedInvent/presentation/components/custom_button.dart';
 import 'package:MedInvent/presentation/components//input_field.dart';
 

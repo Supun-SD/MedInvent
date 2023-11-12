@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/Screens/password_reset/password_reset_1.dart';
+import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dart';
 import 'package:MedInvent/presentation/components/input_field.dart';
-import 'package:MedInvent/presentation/Screens/Register/register_1.dart';
-import 'package:MedInvent/presentation/Screens/home.dart';
-
+import 'package:MedInvent/features/Register/register_1.dart';
+import 'package:MedInvent/features/home/presentation/home.dart';
+import 'package:MedInvent/features/home/presentation/home.dart';
+import 'package:MedInvent/presentation/components/custom_button.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -71,26 +72,42 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF2980B9),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    minimumSize: const Size(0, 50.0),
-                  ),
-                  child: const Text(
-                    'Sign In',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  ),
-                ),
-              ),
+
+              const SizedBox(height: 100,),
+
+              CustomButton(text: 'Sign In', onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomePage()),
+                )
+              }),
+
+              //const SizedBox(height: 20),
+
+
+              // Container(
+              //   width: double.infinity,
+              //   padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              //   child: TextButton(
+              //     onPressed: () {},
+              //     style: TextButton.styleFrom(
+              //       foregroundColor: Colors.white,
+              //       backgroundColor: const Color(0xFF2980B9),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(30.0),
+              //       ),
+              //       minimumSize: const Size(0, 50.0),
+              //     ),
+              //     child: const Text(
+              //       'Sign In',
+              //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              //     ),
+              //   ),
+
+
+
+
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

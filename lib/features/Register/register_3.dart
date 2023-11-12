@@ -1,4 +1,4 @@
-import 'package:MedInvent/presentation/Screens/Register/register_4.dart';
+import 'package:MedInvent/features/Register/register_4.dart';
 import 'package:MedInvent/presentation/components/custom_button.dart';
 import 'package:MedInvent/presentation/components//input_field.dart';
 import 'package:flutter/material.dart';

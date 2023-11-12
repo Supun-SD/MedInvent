@@ -1,4 +1,4 @@
-import 'package:MedInvent/data/models/user_model.dart';
+import 'package:MedInvent/features/home/data/models/user_model.dart';
 
 abstract class UserDataSource {
   Future<List<UserModel>> getUsers();
