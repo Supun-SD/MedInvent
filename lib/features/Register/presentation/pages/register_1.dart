@@ -2,7 +2,7 @@ import 'package:MedInvent/presentation/components/custom_button.dart';
 import 'package:MedInvent/presentation/components/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
-import 'package:MedInvent/features/Register/register_2.dart';
+import 'package:MedInvent/features/Register/presentation/pages/register_2.dart';
 
 class Register1 extends StatelessWidget {
   const Register1({super.key});

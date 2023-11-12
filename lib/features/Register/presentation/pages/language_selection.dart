@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../login/presentation/pages/login.dart';
+import 'package:MedInvent/features/login/presentation/pages/login.dart';
 
 class LanguageSelection extends StatelessWidget {
   const LanguageSelection({Key? key}) : super(key: key);
