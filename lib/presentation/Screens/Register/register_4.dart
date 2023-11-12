@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:medinvent/presentation/components/custom_button.dart';
-import 'package:medinvent/presentation/components//input_field.dart';
+import 'package:MedInvent/presentation/components/custom_button.dart';
+import 'package:MedInvent/presentation/components//input_field.dart';
+import 'package:MedInvent/presentation/Screens/login.dart';
 
 class Register4 extends StatelessWidget {
   const Register4({super.key});
@@ -27,7 +28,11 @@ class Register4 extends StatelessWidget {
               const SizedBox(height: 20,),
 
               const SizedBox(height: 100,),
-              CustomButton(text: 'Register', onPressed: () => {}),
+              CustomButton(text: 'Register', onPressed: () => {Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const LoginPage()),
+              )}),
             ],
           ),
         ),
