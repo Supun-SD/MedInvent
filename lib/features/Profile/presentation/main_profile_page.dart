@@ -35,12 +35,11 @@ class GradientBcakground extends StatelessWidget{
                 ],
         ),
       ),
-
       child: Align(
           alignment: Alignment.bottomCenter,
           child:SingleChildScrollView(
             child:Container(
-            margin: const EdgeInsets.only(top: 0.0),
+            margin: const EdgeInsets.only(top: 100.0),
             height:680,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
@@ -71,7 +70,7 @@ class GradientBcakground extends StatelessWidget{
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26, // Shadow color
-                        blurRadius: 40.0,   // Spread of the shadow
+                        blurRadius: 30.0,   // Spread of the shadow
                         offset: Offset(0, 3), // Shadow offset (horizontal, vertical)
                       ),
                     ],
@@ -236,7 +235,7 @@ class Mybutton extends StatelessWidget{
                    padding: const EdgeInsets.all(10.0),
                  child :Container(
                    height: 62,
-                   margin: const EdgeInsets.only( right: 15.0),
+                   margin: const EdgeInsets.only( right: 15,top: 5),
                    width: 200,
                    child: Column(
                        crossAxisAlignment: CrossAxisAlignment.start,
