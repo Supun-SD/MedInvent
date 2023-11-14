@@ -42,7 +42,7 @@ class PasswordReset2 extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PasswordReset3()),
+                        builder: (context) => PasswordReset3()),
                   )
                 }),
               ],
