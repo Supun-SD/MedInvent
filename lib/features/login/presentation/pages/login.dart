@@ -67,9 +67,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(100, 50, 100, 20),
+                padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: Image.asset(
-                  'assets/images/login.jpg',
+                  'assets/images/login.png',
                 ),
               ),
               const SizedBox(height: 20),
@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PasswordReset1()),
+                            builder: (context) => const PasswordReset1()),
                       );
                     },
                     child: const Text(
