@@ -3,11 +3,43 @@ import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dar
 import 'package:MedInvent/presentation/components/input_field.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_1.dart';
 import 'package:MedInvent/features/home/presentation/home.dart';
-import 'package:MedInvent/features/home/presentation/home.dart';
 import 'package:MedInvent/presentation/components/custom_button.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final String username = "admin";
+  final String password = "admin";
+
+  final TextEditingController _emailTEC = TextEditingController();
+  final TextEditingController _passwordTEC = TextEditingController();
+
+  Future<void> _invalidCredentials() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Invalid Credentials'),
+          content: const Text(
+              'Please enter a valid email or mobile number and password.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,21 +67,21 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(100, 50, 100, 20),
+                padding: const EdgeInsets.symmetric(horizontal: 100),
                 child: Image.asset(
-                  'assets/images/login.jpg',
+                  'assets/images/login.png',
                 ),
               ),
               const SizedBox(height: 20),
               const InputField(
-                keyboardType: TextInputType.text,
+                keyboardType:TextInputType.text,
                 prefixIcon: Icon(Icons.person, color: Colors.grey),
                 hint: 'Email/Phone No',
                 isPassword: false,
               ),
               const SizedBox(height: 15),
               const InputField(
-                keyboardType: TextInputType.text,
+                keyboardType:TextInputType.text,
                 prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 hint: 'Password',
                 isPassword: true,
@@ -73,21 +105,18 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(
-                height: 100,
-              ),
+              const SizedBox(height: 100,),
 
-              CustomButton(
-                  text: 'Sign In',
-                  onPressed: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        )
-                      }),
+              CustomButton(text: 'Sign In', onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomePage()),
+                )
+              }),
 
               //const SizedBox(height: 20),
+
 
               // Container(
               //   width: double.infinity,
@@ -107,6 +136,9 @@ class LoginPage extends StatelessWidget {
               //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               //     ),
               //   ),
+
+
+
 
               const SizedBox(height: 30),
               Row(
