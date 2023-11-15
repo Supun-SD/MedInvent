@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Savebutton extends StatelessWidget{
-  const Savebutton({
+class SaveButton extends StatelessWidget {
+  const SaveButton({
     super.key,
     required this.onTap,
     required this.save,
@@ -17,7 +17,7 @@ class Savebutton extends StatelessWidget{
         padding: const EdgeInsets.all(12.0),
         width: 185,
         alignment: Alignment.center,
-        margin: const EdgeInsets.only(top: 18.0),
+        margin: const EdgeInsets.only(top: 50.0, bottom: 50),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
@@ -38,5 +38,4 @@ class Savebutton extends StatelessWidget{
       ),
     );
   }
-
 }

@@ -42,14 +42,14 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               const InputField(
-                keyboardType:TextInputType.text,
+                keyboardType: TextInputType.text,
                 prefixIcon: Icon(Icons.person, color: Colors.grey),
                 hint: 'Email/Phone No',
                 isPassword: false,
               ),
               const SizedBox(height: 15),
               const InputField(
-                keyboardType:TextInputType.text,
+                keyboardType: TextInputType.text,
                 prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 hint: 'Password',
                 isPassword: true,
@@ -73,18 +73,21 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 100,),
+              const SizedBox(
+                height: 100,
+              ),
 
-              CustomButton(text: 'Sign In', onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const HomePage()),
-                )
-              }),
+              CustomButton(
+                  text: 'Sign In',
+                  onPressed: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()),
+                        )
+                      }),
 
               //const SizedBox(height: 20),
-
 
               // Container(
               //   width: double.infinity,
@@ -104,9 +107,6 @@ class LoginPage extends StatelessWidget {
               //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               //     ),
               //   ),
-
-
-
 
               const SizedBox(height: 30),
               Row(
