@@ -1,3 +1,5 @@
+import 'package:MedInvent/presentation/components/BottomNavBar.dart';
+import 'package:MedInvent/presentation/components/sideNavBar.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget{
@@ -10,12 +12,16 @@ class _HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.grey,
-      body: SafeArea(
+      backgroundColor: Colors.white,
+      drawer: const SideNavBar(),
+      appBar: AppBar(
+        title: const Text("Home"),
+      ),
+      body: const SafeArea(
         child: Column(children:[
           //app bar
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              padding: EdgeInsets.symmetric(horizontal: 25.0),
               child:Row(
                 children:[
                   Text(
@@ -27,10 +33,10 @@ class _HomePageState extends State<HomePage>{
 
           //medication card
 
-          //appoinment cards
+          //appointment cards
         ]),
-      )
-
+      ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
