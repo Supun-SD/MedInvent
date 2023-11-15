@@ -73,18 +73,16 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              InputField(
-                controller: _emailTEC,
-                keyboardType: TextInputType.text,
-                prefixIcon: const Icon(Icons.person, color: Colors.grey),
+              const InputField(
+                keyboardType:TextInputType.text,
+                prefixIcon: Icon(Icons.person, color: Colors.grey),
                 hint: 'Email/Phone No',
                 isPassword: false,
               ),
               const SizedBox(height: 15),
-              InputField(
-                controller: _passwordTEC,
-                keyboardType: TextInputType.text,
-                prefixIcon: const Icon(Icons.lock, color: Colors.grey),
+              const InputField(
+                keyboardType:TextInputType.text,
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 hint: 'Password',
                 isPassword: true,
               ),
@@ -106,28 +104,42 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 50,
-              ),
-              CustomButton(
-                  text: 'Sign In',
-                  onPressed: () => {
-                        if (_emailTEC.text == username &&
-                            _passwordTEC.text == password)
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomePage()),
-                            )
-                          }
-                        else
-                          {
-                            _invalidCredentials(),
-                            _emailTEC.clear(),
-                            _passwordTEC.clear()
-                          }
-                      }),
+
+              const SizedBox(height: 100,),
+
+              CustomButton(text: 'Sign In', onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomePage()),
+                )
+              }),
+
+              //const SizedBox(height: 20),
+
+
+              // Container(
+              //   width: double.infinity,
+              //   padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              //   child: TextButton(
+              //     onPressed: () {},
+              //     style: TextButton.styleFrom(
+              //       foregroundColor: Colors.white,
+              //       backgroundColor: const Color(0xFF2980B9),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(30.0),
+              //       ),
+              //       minimumSize: const Size(0, 50.0),
+              //     ),
+              //     child: const Text(
+              //       'Sign In',
+              //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              //     ),
+              //   ),
+
+
+
+
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
