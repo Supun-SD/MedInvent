@@ -21,6 +21,9 @@ class _Register3State extends State<Register3> {
 
   @override
   Widget build(BuildContext context) {
+
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -30,59 +33,44 @@ class _Register3State extends State<Register3> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Enter your residential address',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: screenHeight * 0.02),
                 ),
-                const SizedBox(
-                  height: 90,
-                ),
+                SizedBox(height: screenHeight * 0.1),
                 InputField(
                     validator: (value) => emptyValidation(value, "Line 1"),
                     controller: _addressLine1,
                     keyboardType: TextInputType.text,
                     hint: 'Line 1',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     controller: _addressLine2,
                     keyboardType: TextInputType.text,
                     hint: 'Line 2 (Optional)',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     validator: (value) => emptyValidation(value, "City"),
                     controller: _city,
                     keyboardType: TextInputType.text,
                     hint: 'City',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     validator: (value) => emptyValidation(value, "District"),
                     controller: _district,
                     keyboardType: TextInputType.text,
                     hint: 'District',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     controller: _postalCode,
                     keyboardType: TextInputType.number,
                     hint: 'Postal Code',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
+                SizedBox(height: screenHeight * 0.1),
                 CustomButton(
                   text: 'Next',
                   onPressed: () {

@@ -22,6 +22,10 @@ class _WelcomeState extends State<Landing> {
 
   @override
   Widget build(BuildContext context) {
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -39,7 +43,7 @@ class _WelcomeState extends State<Landing> {
             ],
           ),
           Positioned(
-            bottom: 100,
+            bottom: screenHeight * 0.12,
             left: 0,
             right: 0,
             child: Center(
@@ -47,8 +51,8 @@ class _WelcomeState extends State<Landing> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List<Widget>.generate(3, (int index) {
                   return Container(
-                    width: 10,
-                    height: 10,
+                    width: screenWidth * 0.03,
+                    height: screenHeight * 0.012,
                     margin: const EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,

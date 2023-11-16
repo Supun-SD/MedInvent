@@ -8,11 +8,13 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
-      padding: const EdgeInsets.only(top: 12),
+      padding: EdgeInsets.only(top: screenHeight * 0.015),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Color(0xFF45AEA0), Color(0xFF4749A0)],
@@ -25,31 +27,46 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ),
       ),
       child: SizedBox(
-        height: 70,
+        height: screenHeight * 0.08,
         child: BottomNavigationBar(
           selectedItemColor: Colors.white,
           backgroundColor: Colors.transparent,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.edit_document),
+              icon: Icon(
+                Icons.edit_document,
+                size: screenHeight * 0.035,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month),
+              icon: Icon(
+                Icons.calendar_month,
+                size: screenHeight * 0.035,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
+              icon: Icon(
+                Icons.home_filled,
+                size: screenHeight * 0.035,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
+              icon: Icon(
+                Icons.search,
+                size: screenHeight * 0.035,
+              ),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
+              icon: Icon(
+                Icons.account_circle,
+                size: screenHeight * 0.035,
+              ),
               label: '',
             ),
           ],
@@ -58,4 +75,3 @@ class _BottomNavBarState extends State<BottomNavBar> {
     );
   }
 }
-

@@ -9,11 +9,14 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
       child: Container(
         width: double.infinity,
-        height: 50,
+        height: screenHeight * 0.06,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: const Color(0xFF2980B9),
@@ -22,8 +25,8 @@ class CustomButton extends StatelessWidget {
           onPressed: onPressed,
           child: Text(
             text,
-            style: const TextStyle(
-              fontSize: 20,
+            style: TextStyle(
+              fontSize: screenHeight * 0.025,
               color: Colors.white,
             ),
           ),

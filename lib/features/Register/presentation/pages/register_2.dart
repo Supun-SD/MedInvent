@@ -23,6 +23,9 @@ class Register2State extends State<Register2> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -32,49 +35,45 @@ class Register2State extends State<Register2> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Please Enter the following information',
-                  style: TextStyle(fontSize: 18),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
+                  child: Text(
+                    'Please Enter the following information',
+                    style: TextStyle(fontSize: screenHeight * 0.02),
+                  ),
                 ),
-                const SizedBox(
-                  height: 90,
-                ),
+                SizedBox(height: screenHeight * 0.1),
                 InputField(
                     validator: (value) => emptyValidation(value, "First Name"),
                     controller: _fName,
                     keyboardType: TextInputType.text,
                     hint: 'First Name',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     validator: (value) => emptyValidation(value, "Last Name"),
                     controller: _lName,
                     keyboardType: TextInputType.text,
                     hint: 'Last Name',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     validator: (value) => emptyValidation(value, "NIC"),
                     controller: _NIC,
                     keyboardType: TextInputType.text,
                     hint: 'NIC',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(30.0),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.1),
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 25, vertical: 3),
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.003,
+                        horizontal: screenWidth * 0.055),
                     child: DropdownButton<String>(
                       isExpanded: true,
                       value: selectedGender,
@@ -92,9 +91,7 @@ class Register2State extends State<Register2> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 100,
-                ),
+                SizedBox(height: screenHeight * 0.1),
                 CustomButton(
                   text: 'Next',
                   onPressed: () {

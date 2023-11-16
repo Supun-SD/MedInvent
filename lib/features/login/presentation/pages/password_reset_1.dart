@@ -43,6 +43,10 @@ class _PasswordReset1State extends State<PasswordReset1> {
 
   @override
   Widget build(BuildContext context) {
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -51,15 +55,15 @@ class _PasswordReset1State extends State<PasswordReset1> {
               key: _formKey,
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'Reset your password',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: screenHeight * 0.025,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(100, 50, 100, 50),
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.25, vertical: screenHeight * 0.05),
                     child: Image.asset('assets/images/pwreset.jpg'),
                   ),
                   InputField(
@@ -68,8 +72,8 @@ class _PasswordReset1State extends State<PasswordReset1> {
                       prefixIcon: const Icon(Icons.person),
                       hint: 'Email/Phone No.',
                       isPassword: false),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: screenHeight * 0.02,
                   ),
                   InputField(
                       controller: _NIC,
@@ -77,7 +81,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
                       prefixIcon: const Icon(Icons.tag),
                       hint: 'NIC',
                       isPassword: false),
-                  const SizedBox(height: 100),
+                  SizedBox(height: screenHeight * 0.07),
                   CustomButton(
                       text: 'Reset Password',
                       onPressed: () => {
