@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:MedInvent/presentation/components/input_field_edit.dart';
 import 'package:MedInvent/presentation/components/Savebutton.dart';
+import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 
 class SecurityInfo extends StatelessWidget {
   const SecurityInfo({super.key});
@@ -127,6 +128,7 @@ class SecurityInfo extends StatelessWidget {
               ),
             )),
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

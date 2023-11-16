@@ -1,10 +1,10 @@
+import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/presentation/components/input_field_edit.dart';
-import 'package:MedInvent/presentation/components/Savebutton.dart';
 import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 
-class BasicInfo extends StatelessWidget {
-  const BasicInfo({super.key});
+class AddMember extends StatelessWidget {
+  const AddMember({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +23,7 @@ class BasicInfo extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Container(
               margin: const EdgeInsets.only(top: 100.0),
+              padding: const EdgeInsets.only(top: 5.0),
               height: 750,
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
@@ -55,13 +56,10 @@ class BasicInfo extends StatelessWidget {
                         fit: BoxFit.fitWidth,
                       ),
                     ),
-                    const AddText(
-                      text: 'Basic Information',
-                      topValue: 41.8,
-                    ),
                     Container(
+                      margin: const EdgeInsets.only(top: 25.0),
                       width: 356,
-                      height: 340,
+                      height: 490,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
@@ -81,8 +79,13 @@ class BasicInfo extends StatelessWidget {
                       child: const Column(
                         children: [
                           Inputbutton(
-                            topic: 'First Name',
+                            topic: 'Relationship',
                             tvalue: 33,
+                            bvalue: 24,
+                            wiht: 300,
+                          ),
+                          Inputbutton(
+                            topic: 'First Name',
                             bvalue: 24,
                             wiht: 300,
                           ),
@@ -93,61 +96,6 @@ class BasicInfo extends StatelessWidget {
                           ),
                           Inputbutton(
                             topic: 'NIC',
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Inputbutton(
-                                topic: 'City',
-                                bvalue: 24,
-                                wiht: 144,
-                                rvalue: 10,
-                              ),
-                              Inputbutton(
-                                topic: 'Distric',
-                                bvalue: 24,
-                                wiht: 144,
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    const AddText(
-                      text: 'Secondary Information',
-                      topValue: 41.8,
-                    ),
-                    Container(
-                      width: 356,
-                      height: 340,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 30.0,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: const Column(
-                        children: [
-                          Inputbutton(
-                            topic: 'Address Line 01',
-                            tvalue: 33,
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Inputbutton(
-                            topic: 'Address Line 02',
                             bvalue: 24,
                             wiht: 300,
                           ),
@@ -186,9 +134,15 @@ class BasicInfo extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SaveButton(
-                      onTap: () {},
-                      save: 'Save',
+                    AddButton(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Familymembers()),
+                        );
+                      },
+                      save: 'Add',
                     ),
                   ],
                 ),
@@ -199,27 +153,40 @@ class BasicInfo extends StatelessWidget {
     );
   }
 }
-
-class AddText extends StatelessWidget {
-  const AddText({
+class AddButton extends StatelessWidget {
+  const AddButton({
     super.key,
-    required this.text,
-    this.topValue = 0.0,
+    required this.onTap,
+    required this.save,
   });
-  final String text;
-  final double topValue;
+  final String save;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topLeft,
-      margin: EdgeInsets.only(top: topValue, left: 48, bottom: 15),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 20,
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12.0),
+        width: 135,
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(top: 30.0,bottom: 50),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+          color: Color(0xFF2980B9),
+        ),
+        child: Text(
+          save,
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

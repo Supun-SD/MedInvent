@@ -1,5 +1,7 @@
 import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
+import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
 import 'package:MedInvent/features/Profile/presentation/security_info_page.dart';
+import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -136,7 +138,13 @@ class ProfilePage extends StatelessWidget {
                             buttonText1: 'Family Members',
                             buttonText2: 'Edit,Add Profiles',
                             iconData2: Icons.navigate_next,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Familymembers()),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -175,6 +183,7 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
           )),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
