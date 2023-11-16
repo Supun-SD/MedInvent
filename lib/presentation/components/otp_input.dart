@@ -5,13 +5,16 @@ class OTPInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Form(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          height: 60,
-          width: 60,
+          height: screenHeight * 0.04,
+          width: screenWidth * 0.13,
           child: TextFormField(
             autofocus: true,
             keyboardType: TextInputType.number,
@@ -28,8 +31,8 @@ class OTPInput extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 60,
-          width: 60,
+          height: screenHeight * 0.04,
+          width: screenWidth * 0.13,
           child: TextFormField(
             autofocus: true,
             keyboardType: TextInputType.number,
@@ -46,8 +49,8 @@ class OTPInput extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 60,
-          width: 60,
+          height: screenHeight * 0.04,
+          width: screenWidth * 0.13,
           child: TextFormField(
             autofocus: true,
             keyboardType: TextInputType.number,
@@ -64,8 +67,8 @@ class OTPInput extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 60,
-          width: 60,
+          height: screenHeight * 0.04,
+          width: screenWidth * 0.13,
           child: TextFormField(
             autofocus: true,
             keyboardType: TextInputType.number,

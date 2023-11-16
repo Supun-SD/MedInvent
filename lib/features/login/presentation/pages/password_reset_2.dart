@@ -8,6 +8,10 @@ class PasswordReset2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -15,26 +19,29 @@ class PasswordReset2 extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Reset your password',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: screenHeight * 0.025,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(100, 50, 100, 30),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.25, vertical: screenHeight * 0.05),
                   child: Image.asset('assets/images/pwreset.jpg'),
                 ),
-                const Text(
-                  'Enter the confirmation code sent to +94771234567',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                  child: Text(
+                    'Enter the confirmation code sent to +94771234567',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: screenHeight * 0.02,
+                    ),
                   ),
                 ),
-                const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15, vertical: screenHeight * 0.05),
                     child: OTPInput(),
                 ),
                 const SizedBox(height: 50,),

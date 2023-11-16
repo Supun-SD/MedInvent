@@ -44,6 +44,10 @@ class _Register4State extends State<Register4> {
 
   @override
   Widget build(BuildContext context) {
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -53,41 +57,30 @@ class _Register4State extends State<Register4> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Enter your demographic details',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: screenHeight * 0.02),
                 ),
-                const SizedBox(
-                  height: 90,
-                ),
+                SizedBox(height: screenHeight * 0.1),
                 InputField(
                     validator: (value) => dobValidation(value),
                     controller: _dob,
                     keyboardType: TextInputType.datetime,
                     hint: 'Date of Birth (YYYY-MM-DD)',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     controller: _height,
                     keyboardType: TextInputType.number,
                     hint: 'Height (cm)',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     controller: _weight,
                     keyboardType: TextInputType.number,
                     hint: 'Weight (Kg)',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
-                const SizedBox(
-                  height: 100,
-                ),
+              SizedBox(height: screenHeight * 0.1),
                 CustomButton(
                   text: 'Register',
                   onPressed: () {

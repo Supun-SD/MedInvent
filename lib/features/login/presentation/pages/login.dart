@@ -43,6 +43,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -50,29 +53,29 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
+              Text(
                 'Welcome back to MedInvent',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 22,
+                  fontSize: screenHeight * 0.025,
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              SizedBox(
+                height: screenHeight * 0.01,
               ),
-              const Text(
+              Text(
                 'You have to sign in to continue',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: screenHeight * 0.017,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 100),
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.25),
                 child: Image.asset(
                   'assets/images/login.png',
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.03),
               InputField(
                 controller: _emailTEC,
                 keyboardType: TextInputType.text,
@@ -80,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                 hint: 'Email/Phone No',
                 isPassword: false,
               ),
-              const SizedBox(height: 15),
+              SizedBox(height: screenHeight * 0.02),
               InputField(
                 controller: _passwordTEC,
                 keyboardType: TextInputType.text,
@@ -89,7 +92,8 @@ class _LoginPageState extends State<LoginPage> {
                 isPassword: true,
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 60.0, top: 10),
+                padding: EdgeInsets.only(
+                    right: screenWidth * 0.15, top: screenHeight * 0.02),
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
@@ -100,14 +104,15 @@ class _LoginPageState extends State<LoginPage> {
                             builder: (context) => const PasswordReset1()),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Forgot Password ?',
+                      style: TextStyle(fontSize: screenHeight * 0.016),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 50,
+              SizedBox(
+                height: screenHeight * 0.05,
               ),
               CustomButton(
                   text: 'Sign In',
@@ -128,13 +133,15 @@ class _LoginPageState extends State<LoginPage> {
                             _passwordTEC.clear()
                           }
                       }),
-              const SizedBox(height: 30),
+              SizedBox(height: screenHeight * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'New to Medinvent? ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenHeight * 0.016),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -144,12 +151,12 @@ class _LoginPageState extends State<LoginPage> {
                             builder: (context) => const Register1()),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Register here',
                       style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: screenHeight * 0.016),
                     ),
                   ),
                 ],

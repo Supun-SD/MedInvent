@@ -13,7 +13,6 @@ class Register1 extends StatefulWidget {
 }
 
 class _Register1State extends State<Register1> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _mobileNo = TextEditingController();
@@ -22,6 +21,9 @@ class _Register1State extends State<Register1> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -31,19 +33,24 @@ class _Register1State extends State<Register1> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
+                Text(
                   "Welcome to MedInvent",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenHeight * 0.025,
+                  ),
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: screenHeight * 0.01,
                 ),
-                const Text(
+                Text(
                   "Please register to continue",
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(
+                    fontSize: screenHeight * 0.02,
+                  ),
                 ),
-                const SizedBox(
-                  height: 85,
+                SizedBox(
+                  height: screenHeight * 0.1,
                 ),
                 InputField(
                     validator: validateEmail,
@@ -52,9 +59,7 @@ class _Register1State extends State<Register1> {
                     prefixIcon: const Icon(Icons.email_outlined),
                     hint: 'Email',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     validator: validateMobileNo,
                     controller: _mobileNo,
@@ -62,9 +67,7 @@ class _Register1State extends State<Register1> {
                     prefixIcon: const Icon(Icons.phone),
                     hint: 'Mobile No.',
                     isPassword: false),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
                     validator: (value) => validatePassword(value),
                     controller: _password,
@@ -72,19 +75,16 @@ class _Register1State extends State<Register1> {
                     prefixIcon: const Icon(Icons.lock_open),
                     hint: 'Password',
                     isPassword: true),
-                const SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 InputField(
-                    validator: (value) => confirmPassword(value, _password.text),
+                    validator: (value) =>
+                        confirmPassword(value, _password.text),
                     controller: _confirmPassword,
                     keyboardType: TextInputType.text,
                     prefixIcon: const Icon(Icons.lock_open),
                     hint: 'Confirm Password',
                     isPassword: true),
-                const SizedBox(
-                  height: 70,
-                ),
+                SizedBox(height: screenHeight * 0.08),
                 CustomButton(
                   text: 'Next',
                   onPressed: () {
@@ -97,15 +97,15 @@ class _Register1State extends State<Register1> {
                     }
                   },
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
+                SizedBox(height: screenHeight * 0.04),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Already have an account? ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: screenHeight * 0.016),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -115,12 +115,12 @@ class _Register1State extends State<Register1> {
                               builder: (context) => const LoginPage()),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'Sign in',
                         style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: screenHeight * 0.016),
                       ),
                     ),
                   ],
