@@ -7,6 +7,10 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
@@ -23,9 +27,9 @@ class ProfilePage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: SingleChildScrollView(
               child: Container(
-                margin: const EdgeInsets.only(top: 100.0),
-                height: 750,
-                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(top: screenHeight * 0.15),
+                height: screenHeight,
+                width: screenWidth,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(50),
@@ -36,10 +40,8 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      height: 448,
-                      width: 358,
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(top: 50.0),
+                      margin: EdgeInsets.symmetric(horizontal: screenWidth*0.08, vertical: screenHeight *0.05),
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
@@ -51,8 +53,7 @@ class ProfilePage extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black26,
-                            blurRadius: 30.0,
-                            offset: Offset(0, 3),
+                            blurRadius: 100.0,
                           ),
                         ],
                       ),
@@ -138,6 +139,7 @@ class ProfilePage extends StatelessWidget {
                             iconData2: Icons.navigate_next,
                             onTap: () {},
                           ),
+                          SizedBox(height: screenHeight*0.03,)
                         ],
                       ),
                     ),
@@ -145,7 +147,6 @@ class ProfilePage extends StatelessWidget {
                       height: 70,
                       width: 358,
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(top: 28.0),
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
@@ -158,7 +159,6 @@ class ProfilePage extends StatelessWidget {
                           BoxShadow(
                             color: Colors.black26,
                             blurRadius: 40.0,
-                            offset: Offset(0, 3),
                           ),
                         ],
                       ),
