@@ -107,6 +107,11 @@ class PrescriptionTemplate extends StatefulWidget {
 }
 
 class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
+  bool isAssigned = false;
+  String assigneeName = "John Doe";
+  String relationship = "Mother";
+  String profilePicture = "assets/images/pic.png";
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -126,35 +131,78 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.07, vertical: screenHeight * 0.02),
+            horizontal: screenWidth * 0.07, vertical: screenHeight * 0.025),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Not Assigned",
-                  style: TextStyle(fontSize: screenHeight * 0.017),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF2980B9),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(screenHeight * 0.05),
+            Visibility(
+              visible: !isAssigned,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Assigned",
+                    style: TextStyle(fontSize: screenHeight * 0.017),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        isAssigned = true;
+                      });
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: const Color(0xFF2980B9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(screenHeight * 0.05),
+                      ),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                      child: Text(
+                        "Assign",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: screenHeight * 0.015),
+                      ),
                     ),
                   ),
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                    child: Text(
-                      "Assign",
-                      style: TextStyle(
-                          color: Colors.white, fontSize: screenHeight * 0.015),
+                ],
+              ),
+            ),
+            Visibility(
+              visible: isAssigned,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: screenHeight * 0.02),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage(profilePicture),
+                      radius: screenHeight * 0.03,
                     ),
-                  ),
+                    SizedBox(
+                      width: screenWidth * 0.05,
+                    ),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            assigneeName,
+                            style: TextStyle(
+                                fontSize: screenHeight * 0.02,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.005,
+                          ),
+                          Text(
+                            relationship,
+                            style: TextStyle(fontSize: screenHeight * 0.015),
+                          ),
+                        ]),
+                  ],
                 ),
-              ],
+              ),
             ),
             Row(children: [
               Text(
@@ -236,7 +284,9 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
                     ),
                   ],
                 ),
-                SizedBox(width: screenWidth * 0.05,),
+                SizedBox(
+                  width: screenWidth * 0.05,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -275,11 +325,12 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
                   ),
                   child: Padding(
                     padding:
-                    EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                     child: Text(
                       "More details",
                       style: TextStyle(
-                          color: Color(0xFF2980B9), fontSize: screenHeight * 0.015),
+                          color: Color(0xFF2980B9),
+                          fontSize: screenHeight * 0.015),
                     ),
                   ),
                 ),
