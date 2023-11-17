@@ -112,6 +112,12 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
   String relationship = "Mother";
   String profilePicture = "assets/images/pic.png";
 
+  void updateAssignedStatus() {
+    setState(() {
+      isAssigned = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -145,9 +151,15 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
                   ),
                   TextButton(
                     onPressed: () {
-                      setState(() {
-                        isAssigned = true;
-                      });
+                      showModalBottomSheet(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(screenHeight * 0.05)),
+                        ),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AssignPrescription(onAssignPressed: updateAssignedStatus);
+                        },
+                      );
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: const Color(0xFF2980B9),
@@ -329,7 +341,7 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
                     child: Text(
                       "More details",
                       style: TextStyle(
-                          color: Color(0xFF2980B9),
+                          color: const Color(0xFF2980B9),
                           fontSize: screenHeight * 0.015),
                     ),
                   ),
@@ -342,3 +354,108 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
     );
   }
 }
+
+class AssignPrescription extends StatefulWidget {
+  final VoidCallback onAssignPressed;
+
+  const AssignPrescription({super.key, required this.onAssignPressed});
+
+  @override
+  AssignPrescriptionState createState() => AssignPrescriptionState();
+}
+
+class AssignPrescriptionState
+    extends State<AssignPrescription> {
+  List<String> avatars = ['Avatar 1', 'Avatar 2'];
+  String selectedAvatar = '';
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      height: screenHeight * 0.4,
+      padding: EdgeInsets.all(screenWidth * 0.1),
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Assign the prescription',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: screenHeight * 0.02,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.025),
+          Text(
+            'Select the Patient’s Profile to assign this prescription',
+            style: TextStyle(
+              fontSize: screenHeight * 0.018,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.025),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: avatars
+                .map((avatar) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedAvatar = avatar;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: avatar == selectedAvatar
+                                ? Colors.blue
+                                : Colors.transparent,
+                            width: screenHeight * 0.0025,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: screenHeight * 0.04,
+                          backgroundColor: avatar == selectedAvatar
+                              ? Colors.white
+                              : Colors.white,
+                          child: Padding(
+                              padding: EdgeInsets.all(screenHeight * 0.005),
+                              child: Image.asset("assets/images/pic.png")),
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+          SizedBox(height: screenHeight * 0.04),
+          TextButton(
+              onPressed: () {
+                setState(() {
+                  widget.onAssignPressed();
+                  Navigator.pop(context);
+                });
+              },
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFF2980B9),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(screenHeight * 0.05),
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+              child: Text(
+                "Assign",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: screenHeight * 0.018,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
