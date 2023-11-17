@@ -1,4 +1,5 @@
 import 'package:MedInvent/features/Profile/presentation/main_profile_page.dart';
+import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dart';
 import 'package:flutter/material.dart';
 
 class SideNavBar extends StatefulWidget {
@@ -63,6 +64,20 @@ class _SideNavBarState extends State<SideNavBar> {
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
             onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.edit_document, size: screenHeight * 0.03),
+            title: Text(
+              'Prescriptions',
+              style: TextStyle(fontSize: screenHeight * 0.018),
+            ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Prescriptions(),
+                  ));
+            },
           ),
           ListTile(
             leading: Icon(Icons.location_on, size: screenHeight * 0.03),
