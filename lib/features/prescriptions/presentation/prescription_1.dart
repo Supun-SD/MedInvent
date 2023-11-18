@@ -1,3 +1,4 @@
+import 'package:MedInvent/features/prescriptions/presentation/prescriptionDetails.dart';
 import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 
@@ -58,21 +59,24 @@ class _PrescriptionsState extends State<Prescriptions> {
                   padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.08,
                       vertical: screenHeight * 0.05),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const PrescriptionTemplate(
-                          date: "2023/01/12",
-                          pharmacy: "Sumudu Pharmacy",
-                          doctor: "Dr Amith"),
-                      SizedBox(
-                        height: screenHeight * 0.03,
-                      ),
-                      const PrescriptionTemplate(
-                          date: "2023/01/12",
-                          pharmacy: "Sumudu Pharmacy",
-                          doctor: "Dr Amith"),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: screenHeight * 0.1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const PrescriptionTemplate(
+                            date: "2023/01/12",
+                            pharmacy: "Sumudu Pharmacy",
+                            doctor: "Dr Amith"),
+                        SizedBox(
+                          height: screenHeight * 0.03,
+                        ),
+                        const PrescriptionTemplate(
+                            date: "2023/01/12",
+                            pharmacy: "Sumudu Pharmacy",
+                            doctor: "Dr Amith"),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -152,6 +156,7 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
                   TextButton(
                     onPressed: () {
                       showModalBottomSheet(
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(top: Radius.circular(screenHeight * 0.05)),
                         ),
@@ -190,7 +195,7 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
                   children: [
                     CircleAvatar(
                       backgroundImage: AssetImage(profilePicture),
-                      radius: screenHeight * 0.03,
+                      radius: screenHeight * 0.025,
                     ),
                     SizedBox(
                       width: screenWidth * 0.05,
@@ -228,107 +233,41 @@ class _PrescriptionTemplateState extends State<PrescriptionTemplate> {
             ),
             Row(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: screenHeight * 0.008),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_month_outlined,
-                            color: Colors.black45,
-                            size: screenHeight * 0.025,
-                          ),
-                          SizedBox(
-                            width: screenWidth * 0.02,
-                          ),
-                          Text(
-                            "Date issued",
-                            style: TextStyle(
-                                fontSize: screenHeight * 0.015,
-                                color: Colors.black45),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: screenHeight * 0.008),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            color: Colors.black45,
-                            size: screenHeight * 0.025,
-                          ),
-                          SizedBox(
-                            width: screenWidth * 0.02,
-                          ),
-                          Text(
-                            "Pharmacy",
-                            style: TextStyle(
-                                fontSize: screenHeight * 0.015,
-                                color: Colors.black45),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: screenHeight * 0.008),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.medical_services,
-                            color: Colors.black45,
-                            size: screenHeight * 0.025,
-                          ),
-                          SizedBox(
-                            width: screenWidth * 0.02,
-                          ),
-                          Text(
-                            "Doctor",
-                            style: TextStyle(
-                                fontSize: screenHeight * 0.015,
-                                color: Colors.black45),
-                          ),
-                        ],
-                      ),
-                    ),
+                    Title(
+                        icon:
+                        Icon(Icons.calendar_month_outlined),
+                        title: "Date issued"),
+                    Title(
+                        icon: Icon(Icons.location_on),
+                        title: "Pharmacy"),
+                    Title(
+                        icon: Icon(Icons.person),
+                        title: "Doctor"),
                   ],
                 ),
-                SizedBox(
-                  width: screenWidth * 0.05,
-                ),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                        padding: EdgeInsets.only(bottom: screenHeight * 0.015),
-                        child: Text(
-                          widget.date,
-                          style: TextStyle(fontSize: screenHeight * 0.015),
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(bottom: screenHeight * 0.015),
-                        child: Text(
-                          widget.pharmacy,
-                          style: TextStyle(fontSize: screenHeight * 0.015),
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(bottom: screenHeight * 0.015),
-                        child: Text(
-                          widget.doctor,
-                          style: TextStyle(fontSize: screenHeight * 0.015),
-                        )),
+                    Data(data: widget.date),
+                    Data(data: widget.pharmacy),
+                    Data(data: widget.doctor),
                   ],
                 )
               ],
             ),
+            SizedBox(height: screenHeight* 0.02,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PrescriptionDetails()),
+                    );
+                  },
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(screenHeight * 0.05),
@@ -459,3 +398,66 @@ class AssignPrescriptionState
   }
 }
 
+class Title extends StatelessWidget {
+  final Icon icon;
+  final String title;
+
+  const Title({Key? key, required this.icon, required this.title})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return SizedBox(
+      width: screenWidth * 0.35,
+      height: screenHeight * 0.035,
+      child: Row(
+        children: [
+          Icon(
+            icon.icon,
+            color: Colors.black45,
+            size: screenHeight * 0.02,
+          ),
+          SizedBox(
+            width: screenWidth * 0.02,
+          ),
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: screenHeight * 0.015, color: Colors.black45),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Data extends StatelessWidget {
+
+  final String data;
+
+  const Data({Key? key, required this.data})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return SizedBox(
+      width: screenWidth * 0.35,
+      height: screenHeight * 0.035,
+      child: Row(
+        children: [
+          Text(
+            data,
+            style: TextStyle(
+                fontSize: screenHeight * 0.015, color: Colors.black),
+          ),
+        ],
+      ),
+    );
+  }
+}
