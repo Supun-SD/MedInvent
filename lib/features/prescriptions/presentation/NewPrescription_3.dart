@@ -1,14 +1,14 @@
 import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 
-class MedicineDetails extends StatefulWidget {
-  const MedicineDetails({super.key});
+class Reminders extends StatefulWidget {
+  const Reminders({super.key});
 
   @override
-  State<MedicineDetails> createState() => MedicineDetailsState();
+  State<Reminders> createState() => RemindersState();
 }
 
-class MedicineDetailsState extends State<MedicineDetails> {
+class RemindersState extends State<Reminders> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
