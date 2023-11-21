@@ -11,7 +11,7 @@ class DocPresContent extends StatelessWidget {
 
     List<Widget> docPrescriptions = [
       const DocPrescriptionTemplate(
-          date: "2023/01/12", pharmacy: "Sumudu Pharmacy", doctor: "Dr Amith"),g
+          date: "2023/01/12", pharmacy: "Sumudu Pharmacy", doctor: "Dr Amith"),
     ];
 
     return SingleChildScrollView(
@@ -30,8 +30,7 @@ class DocPresContent extends StatelessWidget {
                       child: Text(
                         "You don't have any prescriptions",
                         style: TextStyle(
-                            fontSize: screenHeight * 0.018,
-                            color: Colors.grey),
+                            fontSize: screenHeight * 0.018, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -244,6 +243,13 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
   }
 }
 
+class Patient {
+  final String name;
+  final String imagePath;
+
+  Patient({required this.name, required this.imagePath});
+}
+
 class AssignPrescription extends StatefulWidget {
   final VoidCallback onAssignPressed;
 
@@ -254,8 +260,12 @@ class AssignPrescription extends StatefulWidget {
 }
 
 class AssignPrescriptionState extends State<AssignPrescription> {
-  List<String> avatars = ['Avatar 1', 'Avatar 2'];
-  String selectedAvatar = '';
+  List<Patient> patients = [
+    Patient(name: 'John Doe', imagePath: 'assets/images/pic.png'),
+    Patient(name: 'Amali', imagePath: 'assets/images/pic.png'),
+  ];
+
+  Patient? selectedPatient;
 
   @override
   Widget build(BuildContext context) {
@@ -284,37 +294,49 @@ class AssignPrescriptionState extends State<AssignPrescription> {
           SizedBox(height: screenHeight * 0.025),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: avatars
-                .map((avatar) => GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedAvatar = avatar;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: avatar == selectedAvatar
-                                ? Colors.blue
-                                : Colors.transparent,
-                            width: screenHeight * 0.0025,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: screenHeight * 0.04,
-                          backgroundColor: avatar == selectedAvatar
-                              ? Colors.white
-                              : Colors.white,
-                          child: Padding(
-                              padding: EdgeInsets.all(screenHeight * 0.005),
-                              child: Image.asset("assets/images/pic.png")),
+            children: patients.map((patient) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedPatient = patient;
+                  });
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: patient == selectedPatient
+                              ? Colors.blue
+                              : Colors.transparent,
+                          width: screenHeight * 0.0025,
                         ),
                       ),
-                    ))
-                .toList(),
+                      child: CircleAvatar(
+                        radius: screenHeight * 0.04,
+                        backgroundColor: patient == selectedPatient
+                            ? Colors.white
+                            : Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.all(screenHeight * 0.005),
+                          child: Image.asset(patient.imagePath),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.01),
+                    Text(
+                      patient.name,
+                      style: TextStyle(
+                        fontSize: screenHeight * 0.014,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
-          SizedBox(height: screenHeight * 0.04),
+          SizedBox(height: screenHeight * 0.02),
           TextButton(
             onPressed: () {
               setState(() {
