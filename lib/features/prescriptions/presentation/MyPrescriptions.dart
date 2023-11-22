@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'NewPrescription_1.dart';
 
-class MyPresContent extends StatelessWidget {
+class MyPresContent extends StatefulWidget {
   const MyPresContent({super.key});
 
+  @override
+  State<MyPresContent> createState() => _MyPresContentState();
+}
+
+class _MyPresContentState extends State<MyPresContent> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
