@@ -17,7 +17,6 @@ class BasicInfoState extends State<BasicInfo> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Container(

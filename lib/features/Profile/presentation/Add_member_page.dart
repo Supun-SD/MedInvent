@@ -17,7 +17,6 @@ class AddMemberState extends State<AddMember> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Container(

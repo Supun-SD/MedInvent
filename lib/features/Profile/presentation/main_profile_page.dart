@@ -191,8 +191,8 @@ class ProfilePageState extends State<ProfilePage> {
                       ),
                       child: Mybutton(
                         iconData1: Icons.help_outline,
-                        buttonText1: 'Family Members',
-                        buttonText2: 'Edit,',
+                        buttonText1: 'Help',
+                        buttonText2: 'FAQ',
                         iconData2: Icons.navigate_next,
                         onTap: () {},
                       ),

@@ -17,7 +17,6 @@ class SecurityInfoState extends State<SecurityInfo> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Container(
