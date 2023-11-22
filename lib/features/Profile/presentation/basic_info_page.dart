@@ -3,32 +3,56 @@ import 'package:MedInvent/presentation/components/input_field_edit.dart';
 import 'package:MedInvent/presentation/components/Savebutton.dart';
 import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 
-class BasicInfo extends StatelessWidget {
+class BasicInfo extends StatefulWidget {
   const BasicInfo({super.key});
+
+  @override
+  State<BasicInfo> createState() => BasicInfoState();
+}
+
+class BasicInfoState extends State<BasicInfo> {
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.topRight,
-            colors: [
-              Color(0xFF474CA0),
-              Color(0xFF468FA0),
-            ],
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Color(0xFF474CA0),
+                  Color(0xFF468FA0),
+                ],
+              ),
+            ),
           ),
-        ),
-        child: Align(
-            alignment: Alignment.bottomCenter,
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: AppBar(
+              title: const Text("Basic Information"),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              toolbarHeight: screenHeight * 0.1,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: Container(
-              margin: const EdgeInsets.only(top: 100.0),
-              height: 750,
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
+              height: screenHeight * 0.85,
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  topRight: Radius.circular(50),
+                  topLeft: Radius.circular(screenHeight * 0.06),
+                  topRight: Radius.circular(screenHeight * 0.06),
                 ),
                 color: Colors.white,
               ),
@@ -55,10 +79,7 @@ class BasicInfo extends StatelessWidget {
                         fit: BoxFit.fitWidth,
                       ),
                     ),
-                    const AddText(
-                      text: 'Basic Information',
-                      topValue: 41.8,
-                    ),
+                    SizedBox(height: 35,),
                     Container(
                       width: 356,
                       height: 340,
@@ -190,12 +211,20 @@ class BasicInfo extends StatelessWidget {
                       onTap: () {},
                       save: 'Save',
                     ),
+                    SizedBox(height: 60,),
                   ],
                 ),
               ),
-            )),
+            ),
+          ),
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: BottomNavBar(),
+          ),
+        ],
       ),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

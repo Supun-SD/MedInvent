@@ -4,38 +4,57 @@ import 'package:MedInvent/features/Profile/presentation/security_info_page.dart'
 import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<ProfilePage> createState() => ProfilePageState();
+}
 
-    final double screenWidth = MediaQuery.of(context).size.width;
+class ProfilePageState extends State<ProfilePage> {
+  @override
+  Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.topRight,
-              colors: [
-                Color(0xFF474CA0),
-                Color(0xFF468FA0),
-              ],
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Color(0xFF474CA0),
+                  Color(0xFF468FA0),
+                ],
+              ),
             ),
           ),
-          child: Align(
-            alignment: Alignment.bottomCenter,
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: AppBar(
+              title: const Text("Profile"),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              toolbarHeight: screenHeight * 0.1,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: SingleChildScrollView(
               child: Container(
-                margin: EdgeInsets.only(top: screenHeight * 0.15),
-                height: screenHeight,
-                width: screenWidth,
-                decoration: const BoxDecoration(
+                height: screenHeight * 0.85,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
+                    topLeft: Radius.circular(screenHeight * 0.06),
+                    topRight: Radius.circular(screenHeight * 0.06),
                   ),
                   color: Colors.white,
                 ),
@@ -182,8 +201,15 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-          )),
-      bottomNavigationBar: const BottomNavBar(),
+          ),
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: BottomNavBar(),
+          ),
+        ],
+      ),
     );
   }
 }

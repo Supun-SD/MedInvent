@@ -3,33 +3,56 @@ import 'package:flutter/material.dart';
 import 'package:MedInvent/presentation/components/input_field_edit.dart';
 import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 
-class AddMember extends StatelessWidget {
+class AddMember extends StatefulWidget {
   const AddMember({super.key});
+
+  @override
+  State<AddMember> createState() => AddMemberState();
+}
+
+class AddMemberState extends State<AddMember> {
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.topRight,
-            colors: [
-              Color(0xFF474CA0),
-              Color(0xFF468FA0),
-            ],
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Color(0xFF474CA0),
+                  Color(0xFF468FA0),
+                ],
+              ),
+            ),
           ),
-        ),
-        child: Align(
-            alignment: Alignment.bottomCenter,
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: AppBar(
+              title: const Text("Add member"),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              toolbarHeight: screenHeight * 0.1,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: Container(
-              margin: const EdgeInsets.only(top: 100.0),
-              padding: const EdgeInsets.only(top: 5.0),
-              height: 750,
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
+              height: screenHeight * 0.85,
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  topRight: Radius.circular(50),
+                  topLeft: Radius.circular(screenHeight * 0.06),
+                  topRight: Radius.circular(screenHeight * 0.06),
                 ),
                 color: Colors.white,
               ),
@@ -144,15 +167,61 @@ class AddMember extends StatelessWidget {
                       },
                       save: 'Add',
                     ),
+                    SizedBox(height: screenHeight * 0.07,)
                   ],
                 ),
               ),
-            )),
+            ),
+          ),
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: BottomNavBar(),
+          ),
+        ],
       ),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
+
+// class AddMember extends StatelessWidget {
+//   const AddMember({super.key});
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//         decoration: const BoxDecoration(
+//           gradient: LinearGradient(
+//             begin: Alignment.topLeft,
+//             end: Alignment.topRight,
+//             colors: [
+//               Color(0xFF474CA0),
+//               Color(0xFF468FA0),
+//             ],
+//           ),
+//         ),
+//         child: Align(
+//             alignment: Alignment.bottomCenter,
+//             child: Container(
+//               margin: const EdgeInsets.only(top: 100.0),
+//               padding: const EdgeInsets.only(top: 5.0),
+//               height: 750,
+//               width: MediaQuery.of(context).size.width,
+//               decoration: const BoxDecoration(
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(50),
+//                   topRight: Radius.circular(50),
+//                 ),
+//                 color: Colors.white,
+//               ),
+//
+//             )),
+//       ),
+//       bottomNavigationBar: const BottomNavBar(),
+//     );
+//   }
+// }
 class AddButton extends StatelessWidget {
   const AddButton({
     super.key,
