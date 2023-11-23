@@ -31,6 +31,9 @@ dependencies:
   intl: ^0.17.0
   flutter:
     sdk: flutter
+  step_progress_indicator: ^1.0.2
+  google_nav_bar: ^5.0.6
+
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,4 +1,5 @@
-import 'package:MedInvent/features/Profile/presentation/main_profile_page.dart';
+import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
+import 'package:MedInvent/features/home/presentation/home.dart';
 import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dart';
 import 'package:flutter/material.dart';
 
@@ -55,16 +56,20 @@ class _SideNavBarState extends State<SideNavBar> {
               'Home',
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
-            onTap: () {},
+            onTap: () {Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomePage(),
+                ));},
           ),
-          ListTile(
-            leading: Icon(Icons.calendar_month, size: screenHeight * 0.03),
-            title: Text(
-              'Appointments',
-              style: TextStyle(fontSize: screenHeight * 0.018),
-            ),
-            onTap: () {},
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.calendar_month, size: screenHeight * 0.03),
+          //   title: Text(
+          //     'Appointments',
+          //     style: TextStyle(fontSize: screenHeight * 0.018),
+          //   ),
+          //   onTap: () {},
+          // ),
           ListTile(
             leading: Icon(Icons.edit_document, size: screenHeight * 0.03),
             title: Text(
@@ -79,30 +84,30 @@ class _SideNavBarState extends State<SideNavBar> {
                   ));
             },
           ),
-          ListTile(
-            leading: Icon(Icons.location_on, size: screenHeight * 0.03),
-            title: Text(
-              'Map',
-              style: TextStyle(fontSize: screenHeight * 0.018),
-            ),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(Icons.search, size: screenHeight * 0.03),
-            title: Text(
-              'Search',
-              style: TextStyle(fontSize: screenHeight * 0.018),
-            ),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(Icons.newspaper_rounded, size: screenHeight * 0.03),
-            title: Text(
-              'News Feed',
-              style: TextStyle(fontSize: screenHeight * 0.018),
-            ),
-            onTap: () {},
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.location_on, size: screenHeight * 0.03),
+          //   title: Text(
+          //     'Map',
+          //     style: TextStyle(fontSize: screenHeight * 0.018),
+          //   ),
+          //   onTap: () {},
+          // ),
+          // ListTile(
+          //   leading: Icon(Icons.search, size: screenHeight * 0.03),
+          //   title: Text(
+          //     'Search',
+          //     style: TextStyle(fontSize: screenHeight * 0.018),
+          //   ),
+          //   onTap: () {},
+          // ),
+          // ListTile(
+          //   leading: Icon(Icons.newspaper_rounded, size: screenHeight * 0.03),
+          //   title: Text(
+          //     'News Feed',
+          //     style: TextStyle(fontSize: screenHeight * 0.018),
+          //   ),
+          //   onTap: () {},
+          // ),
           ListTile(
             leading: Icon(Icons.account_circle,size: screenHeight * 0.03),
             title: Text('Profile',style: TextStyle(fontSize: screenHeight * 0.018),),

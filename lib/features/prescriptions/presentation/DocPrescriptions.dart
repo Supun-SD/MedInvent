@@ -273,7 +273,7 @@ class AssignPrescriptionState extends State<AssignPrescription> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      height: screenHeight * 0.4,
+      height: screenHeight * 0.42,
       padding: EdgeInsets.all(screenWidth * 0.1),
       child: Column(
         children: <Widget>[

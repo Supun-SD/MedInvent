@@ -1,6 +1,7 @@
 import 'package:MedInvent/presentation/components/BottomNavBar.dart';
 import 'package:MedInvent/presentation/components/sideNavBar.dart';
 import 'package:flutter/material.dart';
+import 'package:MedInvent/presentation/components/medication_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,62 +13,100 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String username = "John Doe";
   String greeting = "Good morning and stay healthy.";
+  String medication1 ="Fever";
+  String medication2 ="Diabetes";
   Image profilePhoto = Image.asset("assets/images/pic.png");
+  final _controller= PageController();
 
   @override
   Widget build(BuildContext context) {
+    String username1 = "Amali";
+    String username = "John Doe";
+    String greeting = "Good morning and stay healthy.";
+    Image profilePhoto = Image.asset("assets/images/pic.png");
+
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white60,
       drawer: const SideNavBar(),
       body: Stack(
         children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF45AEA0), Color(0xFF4749A0)],
-                ),
-              ),
-              height: screenHeight * 0.2,
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                toolbarHeight: screenHeight * 0.2,
-                elevation: 0,
-                leading: Padding(
-                  padding: EdgeInsets.only(bottom: screenHeight * 0.07, left: screenWidth * 0.03),
-                  child: Builder(
-                    builder: (BuildContext context) {
-                      return IconButton(
-                        icon: const Icon(Icons.menu),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      );
-                    },
-                  ),
-                ),
-                actions: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: screenHeight * 0.07, left: screenWidth * 0.03),
-                    child: IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: () {},
-                    ),
-                  ),
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Color(0xFF474CA0),
+                  Color(0xFF468FA0),
                 ],
+
               ),
             ),
           ),
           Positioned(
-            top: screenHeight * 0.14,
+            top: 0,
+            left: 0,
+            right: 0,
+            child: AppBar(
+              leading: Padding(
+                padding: const EdgeInsets.only(bottom: 50, left: 15),
+                child: Builder(
+                  builder: (BuildContext context) {
+                    return IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 15, bottom: 50),
+                  child: IconButton(
+                    icon: const Icon(Icons.notifications),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              toolbarHeight: screenHeight * 0.1,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: screenHeight * 0.85,
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.08,
+                      vertical: screenHeight * 0.05),
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: screenHeight * 0.1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: screenHeight * 0.1,
             left: screenWidth * 0.08,
             right: screenWidth * 0.08,
             child: Container(
@@ -114,9 +153,49 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          Positioned(
+              bottom: screenHeight*0.5,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  Container(
+                    height: screenHeight*0.25,
+                    child: PageView(
+                      scrollDirection: Axis.horizontal,
+                      controller: _controller,
+                      children: [
+                        Medication_card(
+                            screenHeight: screenHeight,
+                            screenWidth: screenWidth,
+                            medication1: medication1,
+                            medication2: medication2,
+                            User:username,
+                            color:Colors.white ,
+                        ),
+                        Medication_card(
+                            screenHeight: screenHeight,
+                            screenWidth: screenWidth,
+                            medication1: medication1,
+                            medication2: medication2,
+                            User:username1,
+                            color:Colors.white
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+          ),
+
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: BottomNavBar(),
+          ),
         ],
       ),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
