@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dart';
 import 'package:MedInvent/presentation/components/input_field.dart';
+import 'package:MedInvent/features/Register/presentation/pages/register_1.dart';
+import 'package:MedInvent/features/home/presentation/home.dart';
 import 'package:MedInvent/presentation/components/custom_button.dart';
-import 'package:go_router/go_router.dart';
+import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -96,7 +99,11 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                      GoRouter.of(context).pushNamed('forgotPassword1');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PasswordReset1()),
+                      );
                     },
                     child: Text(
                       'Forgot Password ?',
@@ -114,7 +121,11 @@ class _LoginPageState extends State<LoginPage> {
                         if (_emailTEC.text == username &&
                             _passwordTEC.text == password)
                           {
-                            GoRouter.of(context).pushNamed('home')
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HomePage()),
+                            )
                           }
                         else
                           {
@@ -135,7 +146,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      GoRouter.of(context).pushNamed('register1');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Register1()),
+                      );
                     },
                     child: Text(
                       'Register here',

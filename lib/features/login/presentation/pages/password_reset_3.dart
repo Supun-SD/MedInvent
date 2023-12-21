@@ -1,11 +1,11 @@
 import 'package:MedInvent/features/Register/presentation/validations.dart';
+import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/presentation/components/custom_button.dart';
 import 'package:MedInvent/presentation/components//input_field.dart';
-import 'package:go_router/go_router.dart';
 
 class PasswordReset3 extends StatefulWidget {
-  const PasswordReset3({super.key});
+  PasswordReset3({super.key});
 
   @override
   State<PasswordReset3> createState() => _PasswordReset3State();
@@ -29,7 +29,10 @@ class _PasswordReset3State extends State<PasswordReset3> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // close the dialog
-                GoRouter.of(context).pushNamed('login');
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (route) => false,
+                );
               },
               child: const Text('OK'),
             ),

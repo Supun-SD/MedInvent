@@ -1,5 +1,5 @@
+import 'package:MedInvent/features/prescriptions/presentation/prescriptionDetails.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class DocPresContent extends StatelessWidget {
   const DocPresContent({super.key});
@@ -211,7 +211,11 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
               children: [
                 TextButton(
                   onPressed: () {
-                    GoRouter.of(context).pushNamed('prescriptionDetails');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PrescriptionDetails()),
+                    );
                   },
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(

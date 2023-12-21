@@ -1,7 +1,8 @@
 import 'package:MedInvent/presentation/components/custom_button.dart';
 import 'package:MedInvent/presentation/components/input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:MedInvent/features/login/presentation/pages/login.dart';
+import 'package:MedInvent/features/Register/presentation/pages/register_2.dart';
 import '../validations.dart';
 
 class Register1 extends StatefulWidget {
@@ -88,7 +89,11 @@ class _Register1State extends State<Register1> {
                   text: 'Next',
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
-                      GoRouter.of(context).pushNamed('register2');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Register2()),
+                      );
                     }
                   },
                 ),
@@ -104,7 +109,11 @@ class _Register1State extends State<Register1> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        GoRouter.of(context).pushNamed('login');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
                       },
                       child: Text(
                         'Sign in',

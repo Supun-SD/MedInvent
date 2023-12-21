@@ -11,6 +11,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String username = "John Doe";
+  String greeting = "Good morning and stay healthy.";
+  String medication1 ="Fever";
+  String medication2 ="Diabetes";
+  Image profilePhoto = Image.asset("assets/images/pic.png");
+  final _controller= PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +24,6 @@ class _HomePageState extends State<HomePage> {
     String username = "John Doe";
     String greeting = "Good morning and stay healthy.";
     Image profilePhoto = Image.asset("assets/images/pic.png");
-    String medication1 ="Fever";
-    String medication2 ="Diabetes";
-    final controller = PageController();
 
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -39,6 +42,7 @@ class _HomePageState extends State<HomePage> {
                   Color(0xFF474CA0),
                   Color(0xFF468FA0),
                 ],
+
               ),
             ),
           ),
@@ -80,7 +84,7 @@ class _HomePageState extends State<HomePage> {
             right: 0,
             child: Container(
               height: screenHeight * 0.85,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
               ),
               child: SingleChildScrollView(
@@ -90,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                       vertical: screenHeight * 0.05),
                   child: Padding(
                     padding: EdgeInsets.only(bottom: screenHeight * 0.1),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
 
@@ -155,11 +159,11 @@ class _HomePageState extends State<HomePage> {
               right: 0,
               child: Column(
                 children: [
-                  SizedBox(
+                  Container(
                     height: screenHeight*0.25,
                     child: PageView(
                       scrollDirection: Axis.horizontal,
-                      controller: controller,
+                      controller: _controller,
                       children: [
                         Medication_card(
                             screenHeight: screenHeight,
