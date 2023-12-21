@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
+import 'package:go_router/go_router.dart';
 
 class LanguageSelection extends StatelessWidget {
   const LanguageSelection({Key? key}) : super(key: key);
@@ -31,11 +32,11 @@ class LanguageSelection extends StatelessWidget {
               SizedBox(
                 height: screenHeight * 0.05,
               ),
-              languageSelectionButton(context, 'English', const LoginPage(),
+              languageSelectionButton(context, 'English', 'login',
+                  false, screenWidth, screenHeight),
+              languageSelectionButton(context, 'සිංහල', 'login', true,
                   screenWidth, screenHeight),
-              languageSelectionButton(context, 'සිංහල', const LoginPage(),
-                  screenWidth, screenHeight),
-              languageSelectionButton(context, 'தமிழ்', const LoginPage(),
+              languageSelectionButton(context, 'தமிழ்', 'login', true,
                   screenWidth, screenHeight),
             ],
           ),
@@ -44,8 +45,8 @@ class LanguageSelection extends StatelessWidget {
     );
   }
 
-  Widget languageSelectionButton(BuildContext context, String text, Widget nav,
-      double screenWidth, double screenHeight) {
+  Widget languageSelectionButton(BuildContext context, String text, String route,
+      bool isDisabled, double screenWidth, double screenHeight) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, screenHeight * 0.02, 0, 0),
       child: Container(
@@ -56,12 +57,9 @@ class LanguageSelection extends StatelessWidget {
           color: const Color(0xFF2980B9),
         ),
         child: TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => nav),
-            );
-          },
+          onPressed: isDisabled
+              ? null
+              : () => {GoRouter.of(context).pushNamed(route)},
           child: Text(
             text,
             style: TextStyle(

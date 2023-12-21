@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:MedInvent/presentation/components/custom_button.dart';
 import 'package:MedInvent/presentation/components//input_field.dart';
-import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:MedInvent/features/Register/presentation/validations.dart';
+import 'package:go_router/go_router.dart';
 
 class Register4 extends StatefulWidget {
   const Register4({super.key});
@@ -29,10 +29,7 @@ class _Register4State extends State<Register4> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // close the dialog
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                      (route) => false,
-                );
+                GoRouter.of(context).pushNamed('login');
               },
               child: const Text('OK'),
             ),

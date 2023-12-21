@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'NewPrescription_1.dart';
 
 class MyPresContent extends StatefulWidget {
@@ -182,10 +183,7 @@ class AssignPrescriptionState extends State<AssignPrescription> {
           SizedBox(height: screenHeight * 0.02),
           TextButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const NewPrescription()),
-              );
+              GoRouter.of(context).pushNamed('newPrescription')
             },
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFF2980B9),

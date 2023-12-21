@@ -1,7 +1,5 @@
-import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
-import 'package:MedInvent/features/home/presentation/home.dart';
-import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SideNavBar extends StatefulWidget {
   const SideNavBar({super.key});
@@ -56,11 +54,9 @@ class _SideNavBarState extends State<SideNavBar> {
               'Home',
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
-            onTap: () {Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ));},
+            onTap: () {
+              GoRouter.of(context).pushNamed('home');
+            },
           ),
           // ListTile(
           //   leading: Icon(Icons.calendar_month, size: screenHeight * 0.03),
@@ -68,7 +64,9 @@ class _SideNavBarState extends State<SideNavBar> {
           //     'Appointments',
           //     style: TextStyle(fontSize: screenHeight * 0.018),
           //   ),
-          //   onTap: () {},
+          //   onTap: () {
+          //      GoRouter.of(context).pushNamed('appointments');
+          //   },
           // ),
           ListTile(
             leading: Icon(Icons.edit_document, size: screenHeight * 0.03),
@@ -77,11 +75,7 @@ class _SideNavBarState extends State<SideNavBar> {
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Prescriptions(),
-                  ));
+              GoRouter.of(context).pushNamed('prescriptions');
             },
           ),
           // ListTile(
@@ -90,7 +84,9 @@ class _SideNavBarState extends State<SideNavBar> {
           //     'Map',
           //     style: TextStyle(fontSize: screenHeight * 0.018),
           //   ),
-          //   onTap: () {},
+          //   onTap: () {
+          //      GoRouter.of(context).pushNamed('map');
+          //   },
           // ),
           // ListTile(
           //   leading: Icon(Icons.search, size: screenHeight * 0.03),
@@ -98,7 +94,9 @@ class _SideNavBarState extends State<SideNavBar> {
           //     'Search',
           //     style: TextStyle(fontSize: screenHeight * 0.018),
           //   ),
-          //   onTap: () {},
+          //   onTap: () {
+          //      GoRouter.of(context).pushNamed('search');
+          //   },
           // ),
           // ListTile(
           //   leading: Icon(Icons.newspaper_rounded, size: screenHeight * 0.03),
@@ -106,17 +104,15 @@ class _SideNavBarState extends State<SideNavBar> {
           //     'News Feed',
           //     style: TextStyle(fontSize: screenHeight * 0.018),
           //   ),
-          //   onTap: () {},
+          //   onTap: () {
+          //      GoRouter.of(context).pushNamed('newsFeed');
+          //   },
           // ),
           ListTile(
             leading: Icon(Icons.account_circle,size: screenHeight * 0.03),
             title: Text('Profile',style: TextStyle(fontSize: screenHeight * 0.018),),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfilePage(),
-                  ));
+              GoRouter.of(context).pushNamed('profile');
             },
           ),
           SizedBox(
@@ -128,7 +124,9 @@ class _SideNavBarState extends State<SideNavBar> {
               'Logout',
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
-            onTap: () {},
+            onTap: () {
+              GoRouter.of(context).pushNamed('login');
+            },
           ),
         ],
       ),

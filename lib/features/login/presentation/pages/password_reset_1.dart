@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:MedInvent/features/login/presentation/pages/password_reset_2.dart';
 import 'package:MedInvent/presentation/components/custom_button.dart';
 import 'package:MedInvent/presentation/components//input_field.dart';
+import 'package:go_router/go_router.dart';
 
 class PasswordReset1 extends StatefulWidget {
   const PasswordReset1({super.key});
@@ -89,12 +89,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
                                     _email.text == userMobile) &&
                                 _NIC.text == userNIC)
                               {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const PasswordReset2()),
-                                )
+                                GoRouter.of(context).pushNamed('forgotPassword2')
                               }
                             else{
                               _credentialsMismatch(),
