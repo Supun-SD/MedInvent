@@ -1,5 +1,5 @@
 import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dart';
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 

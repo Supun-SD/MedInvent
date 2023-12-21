@@ -1,7 +1,7 @@
 import 'package:MedInvent/features/login/presentation/pages/password_reset_3.dart';
-import 'package:MedInvent/presentation/components/otp_input.dart';
+import 'package:MedInvent/components/otp_input.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/components/custom_button.dart';
+import 'package:MedInvent/components/custom_button.dart';
 
 class PasswordReset2 extends StatelessWidget {
   const PasswordReset2({super.key});

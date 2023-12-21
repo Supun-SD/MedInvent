@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
 
 class PrescriptionDetails extends StatefulWidget {
   const PrescriptionDetails({super.key});

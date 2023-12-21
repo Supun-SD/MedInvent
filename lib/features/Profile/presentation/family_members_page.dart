@@ -1,8 +1,8 @@
 import 'package:MedInvent/features/Profile/presentation/Add_member_page.dart';
-import 'package:MedInvent/presentation/components/input_field_edit.dart';
-import 'package:MedInvent/presentation/components/otp_input.dart';
+import 'package:MedInvent/components/input_field_edit.dart';
+import 'package:MedInvent/components/otp_input.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
 import 'FamilyMemberProfile.dart';
 
 class FamilyMembers extends StatefulWidget {

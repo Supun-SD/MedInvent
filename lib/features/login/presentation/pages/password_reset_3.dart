@@ -1,8 +1,8 @@
 import 'package:MedInvent/features/Register/presentation/validations.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/components/custom_button.dart';
-import 'package:MedInvent/presentation/components//input_field.dart';
+import 'package:MedInvent/components/custom_button.dart';
+import 'package:MedInvent/components//input_field.dart';
 
 class PasswordReset3 extends StatefulWidget {
   PasswordReset3({super.key});

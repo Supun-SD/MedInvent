@@ -1,7 +1,8 @@
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
-import 'package:MedInvent/presentation/components/sideNavBar.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
+import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/components/medication_card.dart';
+import 'package:MedInvent/components/medication_card.dart';
+import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -165,23 +166,57 @@ class _HomePageState extends State<HomePage> {
                       scrollDirection: Axis.horizontal,
                       controller: _controller,
                       children: [
-                        Medication_card(
+                        InkWell(
+                          child:Medication_card(
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                             medication1: medication1,
                             medication2: medication2,
                             User:username,
                             color:Colors.white ,
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const DailyMed()),
+                            );
+                          },
                         ),
-                        Medication_card(
-                            screenHeight: screenHeight,
-                            screenWidth: screenWidth,
-                            medication1: medication1,
-                            medication2: medication2,
-                            User:username1,
-                            color:Colors.white
-                        ),
+                        InkWell(
+                          child:Medication_card(
+                              screenHeight: screenHeight,
+                              screenWidth: screenWidth,
+                              medication1: medication1,
+                              medication2: medication2,
+                              User:username1,
+                              color:Colors.white
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const DailyMed()),
+                            );
+                          },
+                        )
+
+                        // Mybutton(
+                        //   iconData1: Icons.perm_identity,
+                        //   buttonText1: 'Basic Information',
+                        //   buttonText2: 'Name,NIC,Gender,DOB..',
+                        //   iconData2: Icons.navigate_next,
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) => const DailyMed()),
+                        //     );
+                        //   },
+                        // ),
                       ],
+
+
                     ),
                   ),
                 ],
@@ -197,5 +232,72 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+}
+class Mybutton extends StatelessWidget {
+  const Mybutton({
+    super.key,
+    required this.iconData1,
+    required this.buttonText1,
+    required this.buttonText2,
+    required this.iconData2,
+    required this.onTap,
+  });
+
+  final IconData iconData1;
+  final String buttonText1;
+  final String buttonText2;
+  final IconData iconData2;
+  final Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      child: Container(
+
+
+        height: 62,
+        width: 288,
+        child: Row(
+          children: [
+            Icon(
+              iconData1,
+              color: Colors.blue,
+            ),
+            Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  height: 62,
+                  margin: const EdgeInsets.only(right: 15, top: 5),
+                  width: 200,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          buttonText1,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          buttonText2,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black45,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ]),
+                )),
+            Icon(
+              iconData2,
+              color: Colors.blue,
+            ),
+          ],
+        ),
+      ),
+         );
   }
 }

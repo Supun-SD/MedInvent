@@ -1,7 +1,7 @@
 import 'package:MedInvent/features/Register/presentation/pages/register_4.dart';
 import 'package:MedInvent/features/Register/presentation/validations.dart';
-import 'package:MedInvent/presentation/components/custom_button.dart';
-import 'package:MedInvent/presentation/components//input_field.dart';
+import 'package:MedInvent/components/custom_button.dart';
+import 'package:MedInvent/components//input_field.dart';
 import 'package:flutter/material.dart';
 
 class Register3 extends StatefulWidget {

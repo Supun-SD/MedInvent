@@ -1,5 +1,5 @@
-import 'package:MedInvent/presentation/components/custom_button.dart';
-import 'package:MedInvent/presentation/components/input_field.dart';
+import 'package:MedInvent/components/custom_button.dart';
+import 'package:MedInvent/components/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_2.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/components/input_field_edit.dart';
-import 'package:MedInvent/presentation/components/Savebutton.dart';
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
+import 'package:MedInvent/components/input_field_edit.dart';
+import 'package:MedInvent/components/Savebutton.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
 
 class BasicInfo extends StatefulWidget {
   const BasicInfo({super.key});

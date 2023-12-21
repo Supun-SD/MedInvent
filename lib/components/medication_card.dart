@@ -72,8 +72,8 @@ class Medication_card extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   child: StepProgressIndicator(
-                    totalSteps: 2,
-                    currentStep: 2,
+                    totalSteps: 12,
+                    currentStep:6,
                     size: 25,
                     padding: 0,
                     selectedColor: Colors.green,
@@ -143,7 +143,7 @@ class Medication_card extends StatelessWidget {
             SizedBox(height: 5),
             StepProgressIndicator(
               totalSteps: 2,
-              currentStep: 1,
+              currentStep: 2,
               size: 25,
               padding: 0,
               selectedColor: Colors.green,
@@ -187,42 +187,6 @@ class Medication_card extends StatelessWidget {
   }
 }
 
-class ProgressBarView extends StatelessWidget {
-  ProgressBarView({this.value});
-
-  final value;
-  final _iconSize = 30;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Color(0Xffe6e6e6),
-      padding: EdgeInsets.only(left: 2, right: 2),
-      child: Stack(fit: StackFit.loose, children: [
-        LinearProgressIndicator(
-            value: value,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-
-
-            minHeight: 40),
-        LayoutBuilder(builder: (context, constrains) {
-          //5 is just the right padding
-          print(constrains.maxWidth);
-          var leftPadding = constrains.maxWidth * value - _iconSize;
-          var topPadding = (constrains.maxHeight - _iconSize) / 2;
-          return Padding(
-            padding: EdgeInsets.only(left: leftPadding, top: topPadding),
-            // child: Transform.rotate(
-            //     // angle: math.pi / 2,
-            //     child: Icon(Icons.arrow_right,
-            //         size: _iconSize.toDouble())),
-          );
-        })
-      ]),
-    );
-  }
-}
-
 class StepProgressIndicator extends StatelessWidget {
   final int totalSteps;
   final int currentStep;
@@ -234,12 +198,11 @@ class StepProgressIndicator extends StatelessWidget {
   final Gradient selectedGradientColor;
   final Gradient unselectedGradientColor;
 
-
   StepProgressIndicator({
     required this.totalSteps,
     required this.currentStep,
     this.size = 2,
-    this.padding = 11,
+    this.padding = 2,
     this.selectedColor = Colors.blue,
     this.unselectedColor = Colors.grey,
     this.roundedEdges = const Radius.circular(0),
@@ -256,7 +219,7 @@ class StepProgressIndicator extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          width: 300 ,
+          width: 300,
           height: size,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(roundedEdges),

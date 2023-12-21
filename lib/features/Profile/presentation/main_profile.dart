@@ -1,7 +1,7 @@
 import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
 import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
 import 'package:MedInvent/features/Profile/presentation/security_info_page.dart';
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {

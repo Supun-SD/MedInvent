@@ -1,7 +1,7 @@
 import 'package:MedInvent/features/prescriptions/presentation/DocPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
-import 'package:MedInvent/presentation/components/CustomTabBar.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
+import 'package:MedInvent/components/CustomTabBar.dart';
 import 'package:flutter/material.dart';
 
 class Prescriptions extends StatefulWidget {

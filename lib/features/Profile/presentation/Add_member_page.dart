@@ -1,7 +1,7 @@
 import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/presentation/components/input_field_edit.dart';
-import 'package:MedInvent/presentation/components/BottomNavBar.dart';
+import 'package:MedInvent/components/input_field_edit.dart';
+import 'package:MedInvent/components/BottomNavBar.dart';
 
 class AddMember extends StatefulWidget {
   const AddMember({super.key});
