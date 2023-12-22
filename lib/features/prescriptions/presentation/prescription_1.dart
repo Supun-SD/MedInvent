@@ -1,3 +1,4 @@
+import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/prescriptions/presentation/DocPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
 import 'package:MedInvent/components/BottomNavBar.dart';
@@ -17,6 +18,7 @@ class _PrescriptionsState extends State<Prescriptions> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      drawer: const SideNavBar(),
       body: Stack(
         children: [
           Container(
@@ -36,13 +38,24 @@ class _PrescriptionsState extends State<Prescriptions> {
             left: 0,
             right: 0,
             child: AppBar(
+              leading: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
               title: const Text("Prescriptions"),
               elevation: 0,
               backgroundColor: Colors.transparent,
-              toolbarHeight: screenHeight * 0.1,
+              toolbarHeight: screenHeight * 0.07,
             ),
           ),
           Positioned(
+            top: screenHeight * 0.13,
             bottom: 0,
             left: 0,
             right: 0,
@@ -65,12 +78,6 @@ class _PrescriptionsState extends State<Prescriptions> {
                     MyPresContent()
                   ]),
                 )),
-          ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: BottomNavBar(),
           ),
         ],
       ),

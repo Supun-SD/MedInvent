@@ -172,12 +172,6 @@ class AddMemberState extends State<AddMember> {
               ),
             ),
           ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: BottomNavBar(),
-          ),
         ],
       ),
     );

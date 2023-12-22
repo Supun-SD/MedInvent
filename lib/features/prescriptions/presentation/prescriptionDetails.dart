@@ -210,12 +210,6 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                 ),
               ),
             ),
-            const Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: BottomNavBar(),
-            ),
           ],
         ),
       ),

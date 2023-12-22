@@ -1,3 +1,4 @@
+import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
 import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
 import 'package:MedInvent/features/Profile/presentation/security_info_page.dart';
@@ -18,6 +19,7 @@ class ProfilePageState extends State<ProfilePage> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      drawer: const SideNavBar(),
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -38,13 +40,24 @@ class ProfilePageState extends State<ProfilePage> {
             left: 0,
             right: 0,
             child: AppBar(
+              leading: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
               title: const Text("Profile"),
               elevation: 0,
               backgroundColor: Colors.transparent,
-              toolbarHeight: screenHeight * 0.1,
+              toolbarHeight: screenHeight * 0.07,
             ),
           ),
           Positioned(
+            top: screenHeight * 0.13,
             bottom: 0,
             left: 0,
             right: 0,
@@ -201,12 +214,6 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
-          ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: BottomNavBar(),
           ),
         ],
       ),

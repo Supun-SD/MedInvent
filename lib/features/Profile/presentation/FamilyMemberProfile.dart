@@ -214,12 +214,6 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
               toolbarHeight: screenHeight * 0.1,
             ),
           ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: BottomNavBar(),
-          ),
         ],
       ),
     );

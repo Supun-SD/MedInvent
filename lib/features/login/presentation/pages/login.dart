@@ -1,10 +1,9 @@
+import 'package:MedInvent/features/home/presentation/mainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dart';
 import 'package:MedInvent/components/input_field.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_1.dart';
-import 'package:MedInvent/features/home/presentation/home.dart';
 import 'package:MedInvent/components/custom_button.dart';
-import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -124,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const HomePage()),
+                                  builder: (context) => const Home()),
                             )
                           }
                         else

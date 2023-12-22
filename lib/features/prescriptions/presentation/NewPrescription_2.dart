@@ -147,12 +147,6 @@ class MedicineDetailsState extends State<MedicineDetails> {
                 ),
               ),
             ),
-            const Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: BottomNavBar(),
-            ),
           ],
         ),
       ),

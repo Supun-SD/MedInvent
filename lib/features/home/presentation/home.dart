@@ -5,7 +5,7 @@ import 'package:MedInvent/components/medication_card.dart';
 import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -14,97 +14,61 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String username = "John Doe";
   String greeting = "Good morning and stay healthy.";
-  String medication1 ="Fever";
-  String medication2 ="Diabetes";
+  String medication1 = "Fever";
+  String medication2 = "Diabetes";
   Image profilePhoto = Image.asset("assets/images/pic.png");
-  final _controller= PageController();
+  final _controller = PageController();
+  String username1 = "Amali";
 
   @override
   Widget build(BuildContext context) {
-    String username1 = "Amali";
-    String username = "John Doe";
-    String greeting = "Good morning and stay healthy.";
-    Image profilePhoto = Image.asset("assets/images/pic.png");
-
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white60,
+      backgroundColor: Colors.white,
       drawer: const SideNavBar(),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: [
-                  Color(0xFF474CA0),
-                  Color(0xFF468FA0),
-                ],
-
+          AppBar(
+            leading: Padding(
+              padding: const EdgeInsets.only(bottom: 50, left: 15),
+              child: Builder(
+                builder: (BuildContext context) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
               ),
             ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBar(
-              leading: Padding(
-                padding: const EdgeInsets.only(bottom: 50, left: 15),
-                child: Builder(
-                  builder: (BuildContext context) {
-                    return IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
-                  },
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 15, bottom: 50),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications),
+                  onPressed: () {},
                 ),
               ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 15, bottom: 50),
-                  child: IconButton(
-                    icon: const Icon(Icons.notifications),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              toolbarHeight: screenHeight * 0.1,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: screenHeight * 0.85,
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.08,
-                      vertical: screenHeight * 0.05),
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: screenHeight * 0.1),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-
-                      ],
-                    ),
-                  ),
+            ],
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              height: screenHeight * 0.165,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF474CA0),
+                    Color(0xFF468FA0),
+                  ], // Example gradient colors
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
             ),
+            toolbarHeight: screenHeight * 0.1,
           ),
           Positioned(
             top: screenHeight * 0.1,
@@ -144,7 +108,8 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             "Hi $username!",
                             style: TextStyle(
-                                fontSize: screenHeight * 0.03, fontWeight: FontWeight.bold),
+                                fontSize: screenHeight * 0.03,
+                                fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -155,85 +120,76 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Positioned(
-              bottom: screenHeight*0.5,
-              left: 0,
-              right: 0,
-              child: Column(
-                children: [
-                  Container(
-                    height: screenHeight*0.25,
-                    child: PageView(
-                      scrollDirection: Axis.horizontal,
-                      controller: _controller,
-                      children: [
-                        InkWell(
-                          child:Medication_card(
+            left: 0,
+            right: 0,
+            top: screenHeight * 0.25,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: screenHeight * 0.25,
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    controller: _controller,
+                    children: [
+                      InkWell(
+                        child: Medication_card(
+                          screenHeight: screenHeight,
+                          screenWidth: screenWidth,
+                          medication1: medication1,
+                          medication2: medication2,
+                          User: username,
+                          color: Colors.white,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const DailyMed()),
+                          );
+                        },
+                      ),
+                      InkWell(
+                        child: Medication_card(
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                             medication1: medication1,
                             medication2: medication2,
-                            User:username,
-                            color:Colors.white ,
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const DailyMed()),
-                            );
-                          },
-                        ),
-                        InkWell(
-                          child:Medication_card(
-                              screenHeight: screenHeight,
-                              screenWidth: screenWidth,
-                              medication1: medication1,
-                              medication2: medication2,
-                              User:username1,
-                              color:Colors.white
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const DailyMed()),
-                            );
-                          },
-                        )
+                            User: username1,
+                            color: Colors.white),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const DailyMed()),
+                          );
+                        },
+                      )
 
-                        // Mybutton(
-                        //   iconData1: Icons.perm_identity,
-                        //   buttonText1: 'Basic Information',
-                        //   buttonText2: 'Name,NIC,Gender,DOB..',
-                        //   iconData2: Icons.navigate_next,
-                        //   onTap: () {
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (context) => const DailyMed()),
-                        //     );
-                        //   },
-                        // ),
-                      ],
-
-
-                    ),
+                      // Mybutton(
+                      //   iconData1: Icons.perm_identity,
+                      //   buttonText1: 'Basic Information',
+                      //   buttonText2: 'Name,NIC,Gender,DOB..',
+                      //   iconData2: Icons.navigate_next,
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => const DailyMed()),
+                      //     );
+                      //   },
+                      // ),
+                    ],
                   ),
-                ],
-              )
-          ),
-
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: BottomNavBar(),
-          ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
   }
 }
+
 class Mybutton extends StatelessWidget {
   const Mybutton({
     super.key,
@@ -253,9 +209,7 @@ class Mybutton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: Container(
-
-
+      child: SizedBox(
         height: 62,
         width: 288,
         child: Row(
@@ -298,6 +252,6 @@ class Mybutton extends StatelessWidget {
           ],
         ),
       ),
-         );
+    );
   }
 }

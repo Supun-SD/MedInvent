@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  final int currentIndex;
+  final Function(int) onTap;
+
+  BottomNavBar({required this.currentIndex, required this.onTap});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -67,6 +70,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
       child: SizedBox(
         height: screenHeight * 0.08,
         child: BottomNavigationBar(
+          onTap: widget.onTap,
+          currentIndex: widget.currentIndex,
           selectedItemColor: Colors.white,
           backgroundColor: Colors.transparent,
           elevation: 0,
