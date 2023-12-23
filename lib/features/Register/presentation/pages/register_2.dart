@@ -1,11 +1,14 @@
+import 'package:MedInvent/components/user_data.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_3.dart';
 import 'package:MedInvent/features/Register/presentation/validations.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:MedInvent/components/user_data.dart';
 
 class Register2 extends StatefulWidget {
-  const Register2({Key? key}) : super(key: key);
+  final UserData usedata;
+  const Register2({Key? key, required this.usedata}) : super(key: key);
 
   @override
   Register2State createState() => Register2State();
@@ -96,10 +99,14 @@ class Register2State extends State<Register2> {
                   text: 'Next',
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
+                      widget.usedata.first_name = _fName.text;
+                      widget.usedata.last_name = _lName.text;
+                      widget.usedata.nic = _NIC.text;
+                      widget.usedata.gender = selectedGender;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const Register3()),
+                            builder: (context) => Register3(usedata: widget.usedata)),
                       );
                     }
                   },

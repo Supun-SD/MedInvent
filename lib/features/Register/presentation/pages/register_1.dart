@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_2.dart';
 import '../validations.dart';
-
+import 'package:MedInvent/components/user_data.dart';
 class Register1 extends StatefulWidget {
-  const Register1({super.key});
+  final UserData u =new UserData();
+  Register1({super.key});
 
   @override
   State<Register1> createState() => _Register1State();
@@ -89,10 +90,13 @@ class _Register1State extends State<Register1> {
                   text: 'Next',
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
+                      widget.u.email = _email.text;
+                      widget.u.mnumber = _mobileNo.text;
+                      widget.u.password = _password.text;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const Register2()),
+                            builder: (context) =>Register2(usedata: widget.u)),
                       );
                     }
                   },
@@ -133,3 +137,5 @@ class _Register1State extends State<Register1> {
     );
   }
 }
+
+
