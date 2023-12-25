@@ -3,9 +3,11 @@ import 'package:MedInvent/features/Register/presentation/validations.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:MedInvent/components/user_data.dart';
 
 class Register3 extends StatefulWidget {
-  const Register3({super.key});
+  final UserData usedata;
+  const Register3({super.key, required this.usedata});
 
   @override
   State<Register3> createState() => _Register3State();
@@ -78,7 +80,7 @@ class _Register3State extends State<Register3> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const Register4()),
+                            builder: (context) => Register4(usedata: widget.usedata,)),
                       );
                     }
                   },

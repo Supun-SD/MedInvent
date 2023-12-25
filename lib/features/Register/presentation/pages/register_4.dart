@@ -3,9 +3,13 @@ import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:MedInvent/features/Register/presentation/validations.dart';
+import 'package:MedInvent/components/user_data.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Register4 extends StatefulWidget {
-  const Register4({super.key});
+  final UserData usedata;
+  const Register4({super.key, required this.usedata});
 
   @override
   State<Register4> createState() => _Register4State();
@@ -30,7 +34,7 @@ class _Register4State extends State<Register4> {
               onPressed: () {
                 Navigator.of(context).pop(); // close the dialog
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                       (route) => false,
                 );
               },
@@ -85,6 +89,10 @@ class _Register4State extends State<Register4> {
                   text: 'Register',
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
+                      widget.usedata.birth_date = _dob.text;
+                      widget.usedata.height = _height.text;
+                      widget.usedata.weight = _weight.text;
+                      postData();
                       _registrationSuccess();
                     }
                   },
@@ -96,6 +104,30 @@ class _Register4State extends State<Register4> {
       ),
     );
   }
+  postData() async{
+    var response = await http.post(
+      //below i have added my PC IP  address "192.168.1.14" instead of adding localhost
+      //since we are using pc emulator for checking purposes.
+      //you can change it  to your PC IP address when you are going to work with this post method.
+        Uri.parse("http://192.168.1.14:3300/user"),
+        headers: {"Content-Type": "application/json"},
+        body:jsonEncode({
+          'user_password':widget.usedata.password,
+          'email':widget.usedata.email,
+          'first_name':widget.usedata.first_name,
+          'last_name':widget.usedata.last_name,
+          'nic':widget.usedata.nic,
+          'gender':widget.usedata.gender,
+          'weight':widget.usedata.weight,
+          'birth_date':widget.usedata.birth_date,
+          'height':widget.usedata.height,
+          'mnumber':widget.usedata.mnumber,
+        }),
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+  }
+
 }
 
 
