@@ -4,11 +4,10 @@ import 'package:MedInvent/features/Register/presentation/validations.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/components/user_data.dart';
 
 class Register2 extends StatefulWidget {
-  final UserData usedata;
-  const Register2({Key? key, required this.usedata}) : super(key: key);
+  final UserData userData;
+  const Register2({Key? key, required this.userData}) : super(key: key);
 
   @override
   Register2State createState() => Register2State();
@@ -21,6 +20,7 @@ class Register2State extends State<Register2> {
   final TextEditingController _fName = TextEditingController();
   final TextEditingController _lName = TextEditingController();
   final TextEditingController _NIC = TextEditingController();
+  final TextEditingController _dob = TextEditingController();
 
   String selectedGender = 'Male';
 
@@ -67,6 +67,13 @@ class Register2State extends State<Register2> {
                     hint: 'NIC',
                     isPassword: false),
                 SizedBox(height: screenHeight * 0.02),
+                InputField(
+                    validator: (value) => dobValidation(value),
+                    controller: _dob,
+                    keyboardType: TextInputType.datetime,
+                    hint: 'Date of Birth (YYYY-MM-DD)',
+                    isPassword: false),
+                SizedBox(height: screenHeight * 0.02),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
                   child: Container(
@@ -99,14 +106,16 @@ class Register2State extends State<Register2> {
                   text: 'Next',
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
-                      widget.usedata.first_name = _fName.text;
-                      widget.usedata.last_name = _lName.text;
-                      widget.usedata.nic = _NIC.text;
-                      widget.usedata.gender = selectedGender;
+                      widget.userData.first_name = _fName.text;
+                      widget.userData.last_name = _lName.text;
+                      widget.userData.nic = _NIC.text;
+                      widget.userData.birth_date = _dob.text;
+                      widget.userData.gender = selectedGender;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Register3(usedata: widget.usedata)),
+                            builder: (context) =>
+                                Register3(userData: widget.userData)),
                       );
                     }
                   },

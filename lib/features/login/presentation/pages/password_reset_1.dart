@@ -41,9 +41,22 @@ class _PasswordReset1State extends State<PasswordReset1> {
     );
   }
 
+  void verification() {
+    if ((_email.text == userEmail || _email.text == userMobile) &&
+        _NIC.text == userNIC) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PasswordReset2()),
+      );
+    } else {
+      _credentialsMismatch();
+      _email.clear();
+      _NIC.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -63,7 +76,9 @@ class _PasswordReset1State extends State<PasswordReset1> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.25, vertical: screenHeight * 0.05),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.25,
+                        vertical: screenHeight * 0.05),
                     child: Image.asset('assets/images/pwreset.jpg'),
                   ),
                   InputField(
@@ -82,26 +97,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
                       hint: 'NIC',
                       isPassword: false),
                   SizedBox(height: screenHeight * 0.07),
-                  CustomButton(
-                      text: 'Reset Password',
-                      onPressed: () => {
-                            if ((_email.text == userEmail ||
-                                    _email.text == userMobile) &&
-                                _NIC.text == userNIC)
-                              {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const PasswordReset2()),
-                                )
-                              }
-                            else{
-                              _credentialsMismatch(),
-                              _email.clear(),
-                              _NIC.clear(),
-                            }
-                          }),
+                  CustomButton(text: 'Reset Password', onPressed: verification),
                 ],
               ),
             ),

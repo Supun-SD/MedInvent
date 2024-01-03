@@ -1,12 +1,12 @@
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components/input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_2.dart';
 import '../validations.dart';
 import 'package:MedInvent/components/user_data.dart';
+
 class Register1 extends StatefulWidget {
-  final UserData u =new UserData();
+  final UserData u = UserData();
   Register1({super.key});
 
   @override
@@ -96,7 +96,7 @@ class _Register1State extends State<Register1> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>Register2(usedata: widget.u)),
+                            builder: (context) =>Register2(userData: widget.u)),
                       );
                     }
                   },
@@ -113,11 +113,7 @@ class _Register1State extends State<Register1> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                        );
+                        Navigator.pop(context);
                       },
                       child: Text(
                         'Sign in',

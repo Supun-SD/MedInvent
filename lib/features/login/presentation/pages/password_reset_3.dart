@@ -5,7 +5,7 @@ import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 
 class PasswordReset3 extends StatefulWidget {
-  PasswordReset3({super.key});
+  const PasswordReset3({super.key});
 
   @override
   State<PasswordReset3> createState() => _PasswordReset3State();
@@ -28,7 +28,7 @@ class _PasswordReset3State extends State<PasswordReset3> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // close the dialog
+                Navigator.of(context).pop();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginPage()),
                   (route) => false,

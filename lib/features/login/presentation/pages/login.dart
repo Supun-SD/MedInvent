@@ -41,6 +41,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void loginAuth() {
+    if (_emailTEC.text == username && _passwordTEC.text == password) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+      );
+    } else {
+      _invalidCredentials();
+      _emailTEC.clear();
+      _passwordTEC.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -115,24 +128,9 @@ class _LoginPageState extends State<LoginPage> {
                 height: screenHeight * 0.05,
               ),
               CustomButton(
-                  text: 'Sign In',
-                  onPressed: () => {
-                        if (_emailTEC.text == username &&
-                            _passwordTEC.text == password)
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Home()),
-                            )
-                          }
-                        else
-                          {
-                            _invalidCredentials(),
-                            _emailTEC.clear(),
-                            _passwordTEC.clear()
-                          }
-                      }),
+                text: 'Sign In',
+                onPressed: loginAuth,
+              ),
               SizedBox(height: screenHeight * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -147,8 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => Register1()),
+                        MaterialPageRoute(builder: (context) => Register1()),
                       );
                     },
                     child: Text(
