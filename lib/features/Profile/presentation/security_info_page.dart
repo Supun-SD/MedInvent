@@ -1,7 +1,7 @@
+import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/input_field_edit.dart';
 import 'package:MedInvent/components/Savebutton.dart';
-import 'package:MedInvent/components/BottomNavBar.dart';
 
 class SecurityInfo extends StatefulWidget {
   const SecurityInfo({super.key});
@@ -56,97 +56,94 @@ class SecurityInfoState extends State<SecurityInfo> {
                 color: Colors.white,
               ),
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const AddText(
-                      text: 'Security Information',
-                      topValue: 41.8,
-                    ),
-                    Container(
-                      width: 356,
-                      height: 192,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.07,),
+                  child: Column(
+                    children: [
+                      const AddText(
+                        text: 'Security Information',
+                        topValue: 41.8,
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: screenHeight * 0.02, horizontal: screenWidth * 0.02),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 70,
+                            ),
+                          ],
                         ),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 30.0,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: const Column(
-                        children: [
-                          Inputbutton(
-                            topic: 'Telephone Number',
-                            tvalue: 33,
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Inputbutton(
-                            topic: 'Email Address',
-                            bvalue: 33,
-                            wiht: 300,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const AddText(
-                      text: 'Change Password',
-                      topValue: 41.8,
-                    ),
-                    Container(
-                      width: 356,
-                      height: 267,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Info(
+                              label: "Email",
+                              data: "sample@gmail.com",
+                            ),
+                            Info(
+                              label: "Mobile Number",
+                              data: "0778646255",
+                            ),
+                          ],
                         ),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 30.0,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
                       ),
-                      child: const Column(
-                        children: [
-                          Inputbutton(
-                            topic: 'Old Password',
-                            tvalue: 33,
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Inputbutton(
-                            topic: 'New Password',
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Inputbutton(
-                            topic: 'Confirm Password',
-                            bvalue: 33,
-                            wiht: 300,
-                          ),
-                        ],
+                      const AddText(
+                        text: 'Change Password',
+                        topValue: 41.8,
                       ),
-                    ),
-                    SaveButton(
-                      onTap: () {},
-                      save: 'Save',
-                    ),
-                    SizedBox(height: screenHeight * 0.07),
-                  ],
+                      Container(
+                        width: 356,
+                        height: 267,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 30.0,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const Column(
+                          children: [
+                            Inputbutton(
+                              topic: 'Old Password',
+                              tvalue: 33,
+                              bvalue: 24,
+                              wiht: 300,
+                            ),
+                            Inputbutton(
+                              topic: 'New Password',
+                              bvalue: 24,
+                              wiht: 300,
+                            ),
+                            Inputbutton(
+                              topic: 'Confirm Password',
+                              bvalue: 33,
+                              wiht: 300,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SaveButton(
+                        onTap: () {},
+                        save: 'Save',
+                      ),
+                      SizedBox(height: screenHeight * 0.07),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -170,7 +167,7 @@ class AddText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      margin: EdgeInsets.only(top: topValue, left: 48, bottom: 15),
+      margin: EdgeInsets.only(top: topValue, left: 10, bottom: 15),
       child: Text(
         text,
         style: const TextStyle(

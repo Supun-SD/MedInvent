@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:MedInvent/components/input_field_edit.dart';
-import 'package:MedInvent/components/Savebutton.dart';
-import 'package:MedInvent/components/BottomNavBar.dart';
 
 class BasicInfo extends StatefulWidget {
   const BasicInfo({super.key});
@@ -56,162 +53,124 @@ class BasicInfoState extends State<BasicInfo> {
                 color: Colors.white,
               ),
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 130,
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.only(top: 32.0),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.07,
+                      vertical: screenHeight * 0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: CircleAvatar(
+                          radius: screenHeight * 0.065,
+                          backgroundImage:
+                              const AssetImage('assets/images/pic.png'),
                         ),
-                        // color: Colors.red,
                       ),
-                      child: Image.asset(
-                        'assets/images/pic.png',
-                        width: 130.0,
-                        height: 130.0,
-                        fit: BoxFit.fitWidth,
+                      SizedBox(
+                        height: screenHeight * 0.03,
                       ),
-                    ),
-                    SizedBox(height: 35,),
-                    Container(
-                      width: 356,
-                      height: 340,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
+                      Text(
+                        "Basic Information",
+                        style: TextStyle(
+                            fontSize: screenHeight * 0.025,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.02,
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: screenHeight * 0.02, horizontal: screenWidth * 0.02),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 70,
+                            ),
+                          ],
                         ),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 30.0,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: const Column(
-                        children: [
-                          Inputbutton(
-                            topic: 'First Name',
-                            tvalue: 33,
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Inputbutton(
-                            topic: 'Last Name',
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Inputbutton(
-                            topic: 'NIC',
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Inputbutton(
-                                topic: 'City',
-                                bvalue: 24,
-                                wiht: 144,
-                                rvalue: 10,
-                              ),
-                              Inputbutton(
-                                topic: 'Distric',
-                                bvalue: 24,
-                                wiht: 144,
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    const AddText(
-                      text: 'Secondary Information',
-                      topValue: 41.8,
-                    ),
-                    Container(
-                      width: 356,
-                      height: 340,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Info(
+                              label: "First Name",
+                              data: "Dhanushka",
+                            ),
+                            Info(
+                              label: "Last Name",
+                              data: "Fernando",
+                            ),
+                            Info(
+                              label: "NIC",
+                              data: "20001256675",
+                            ),
+                            Info(
+                              label: "Date of Birth",
+                              data: "2000-12-12",
+                            ),
+                            Info(
+                              label: "Gender",
+                              data: "Male",
+                            ),
+                          ],
                         ),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 30.0,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
                       ),
-                      child: const Column(
-                        children: [
-                          Inputbutton(
-                            topic: 'Address Line 01',
-                            tvalue: 33,
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Inputbutton(
-                            topic: 'Address Line 02',
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Inputbutton(
-                                topic: 'Gender',
-                                bvalue: 24,
-                                wiht: 144,
-                                rvalue: 10,
-                              ),
-                              Inputbutton(
-                                topic: 'DOB',
-                                bvalue: 24,
-                                wiht: 144,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Inputbutton(
-                                topic: 'Height',
-                                bvalue: 24,
-                                wiht: 144,
-                                rvalue: 10,
-                              ),
-                              Inputbutton(
-                                topic: 'Weight',
-                                bvalue: 24,
-                                wiht: 144,
-                              ),
-                            ],
-                          )
-                        ],
+                      SizedBox(
+                        height: screenHeight * 0.03,
                       ),
-                    ),
-                    SaveButton(
-                      onTap: () {},
-                      save: 'Save',
-                    ),
-                    SizedBox(height: 60,),
-                  ],
+                      Text(
+                        "Secondary Information",
+                        style: TextStyle(
+                            fontSize: screenHeight * 0.025,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.02,
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: screenHeight * 0.02, horizontal: screenWidth * 0.02),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 70,
+                            ),
+                          ],
+                        ),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Info(
+                              label: "Address Line 1",
+                              data: "27/1",
+                            ),
+                            Info(
+                              label: "Address Line 2",
+                              data: "abc",
+                            ),
+                            Info(
+                              label: "City",
+                              data: "Moratuwa",
+                            ),
+                            Info(
+                              label: "District",
+                              data: "Colombo",
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -222,28 +181,50 @@ class BasicInfoState extends State<BasicInfo> {
   }
 }
 
-class AddText extends StatelessWidget {
-  const AddText({
-    super.key,
-    required this.text,
-    this.topValue = 0.0,
-  });
-  final String text;
-  final double topValue;
+class Info extends StatelessWidget {
+  const Info({required this.label, required this.data, super.key});
+
+  final String label, data;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topLeft,
-      margin: EdgeInsets.only(top: topValue, left: 48, bottom: 15),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 20,
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.all(screenWidth * 0.03),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey,
+              width: 1.0,
+            ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
+          child: Text(data, style: TextStyle(fontSize: screenWidth * 0.04)),
         ),
-      ),
+        Positioned(
+          top: 0,
+          left: 25,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+            decoration:const BoxDecoration(
+              color: Color(0xFFF2F2F2),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: screenWidth * 0.035,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

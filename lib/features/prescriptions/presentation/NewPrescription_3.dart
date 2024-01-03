@@ -135,9 +135,9 @@ class RemindersState extends State<Reminders> {
                       SizedBox(height: screenHeight * 0.1,),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
+                          Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(builder: (context) => const Prescriptions()),
+                                (route) => false,
                           );
                         },
                         style: TextButton.styleFrom(

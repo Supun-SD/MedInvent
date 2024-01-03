@@ -1,4 +1,5 @@
 import 'package:MedInvent/components/BottomNavBar.dart';
+import 'package:MedInvent/features/prescriptions/data/drugs.dart';
 import 'package:flutter/material.dart';
 
 import 'NewPrescription_2.dart';
@@ -11,18 +12,8 @@ class NewPrescription extends StatefulWidget {
 }
 
 class NewPrescriptionState extends State<NewPrescription> {
-  static List<Medicine> medicineList = [
-    Medicine(image: "assets/images/drugs.png", medName: "Amlodipine"),
-    Medicine(image: "assets/images/drugs.png", medName: "Acetaminophen"),
-    Medicine(image: "assets/images/drugs.png", medName: "Bisoprolol"),
-    Medicine(image: "assets/images/drugs.png", medName: "Cetirizine"),
-    Medicine(image: "assets/images/drugs.png", medName: "Clonidine"),
-    Medicine(image: "assets/images/drugs.png", medName: "Enalapril"),
-    Medicine(image: "assets/images/drugs.png", medName: "Heparinoid"),
-    Medicine(image: "assets/images/drugs.png", medName: "Panadol"),
-  ];
 
-  List<Medicine> displayMedicine = List.from(medicineList);
+  List displayMedicine = List.from(medicineList);
 
   void updateList(String value) {
     setState(() {
@@ -172,9 +163,4 @@ class NewPrescriptionState extends State<NewPrescription> {
   }
 }
 
-class Medicine {
-  String image;
-  String medName;
 
-  Medicine({required this.image, required this.medName});
-}
