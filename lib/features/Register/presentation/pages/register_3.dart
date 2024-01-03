@@ -31,8 +31,8 @@ class _Register3State extends State<Register3> {
       Uri.parse("http://192.168.1.109:3300/user"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        'user_password': widget.userData.password,
         'email': widget.userData.email,
+        'user_password': widget.userData.password,
         'first_name': widget.userData.first_name,
         'last_name': widget.userData.last_name,
         'nic': widget.userData.nic,
