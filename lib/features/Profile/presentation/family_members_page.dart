@@ -154,9 +154,10 @@ class _AddNewMemberState extends State<AddNewMember> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
+    final double keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
 
     return SizedBox(
-      height: screenHeight * 0.4,
+      height: screenHeight * 0.4 + keyboardSpace,
       child: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
