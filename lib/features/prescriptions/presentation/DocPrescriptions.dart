@@ -12,6 +12,8 @@ class DocPresContent extends StatelessWidget {
     List<Widget> docPrescriptions = [
       const DocPrescriptionTemplate(
           date: "2023/01/12", pharmacy: "Sumudu Pharmacy", doctor: "Dr Amith"),
+      const DocPrescriptionTemplate(
+          date: "2023/01/12", pharmacy: "Sumudu Pharmacy", doctor: "Dr Amith"),
     ];
 
     return SingleChildScrollView(
@@ -78,6 +80,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
+      margin: EdgeInsets.only(bottom: screenHeight * 0.025),
       width: screenWidth,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(screenHeight * 0.05),

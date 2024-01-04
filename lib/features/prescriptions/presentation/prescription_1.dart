@@ -38,16 +38,6 @@ class _PrescriptionsState extends State<Prescriptions> {
             left: 0,
             right: 0,
             child: AppBar(
-              leading: Builder(
-                builder: (BuildContext context) {
-                  return IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
-              ),
               title: const Text("Prescriptions"),
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -70,13 +60,9 @@ class _PrescriptionsState extends State<Prescriptions> {
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(top: screenHeight * 0.04),
-                  child: const CustomTabBar(tabTitles: [
-                    "Doctor's Prescriptions",
-                    "My Prescriptions"
-                  ], tabViews: [
-                    DocPresContent(),
-                    MyPresContent()
-                  ]),
+                  child: const CustomTabBar(
+                      tabTitles: ["Doctor's Prescriptions", "My Prescriptions"],
+                      tabViews: [DocPresContent(), MyPresContent()]),
                 )),
           ),
         ],
