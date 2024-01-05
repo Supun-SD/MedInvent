@@ -7,7 +7,8 @@ import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dar
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({required this.sideNavIndex,super.key});
+  final int sideNavIndex ;
 
   @override
   State<Home> createState() => _HomeState();
@@ -23,6 +24,12 @@ class _HomeState extends State<Home> {
     const ProfilePage()
   ];
   int currentIndex = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.sideNavIndex;
+  }
 
   @override
   Widget build(BuildContext context) {

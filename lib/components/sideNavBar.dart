@@ -1,5 +1,6 @@
 import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
 import 'package:MedInvent/features/home/presentation/home.dart';
+import 'package:MedInvent/features/home/presentation/mainPage.dart';
 import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dart';
 import 'package:flutter/material.dart';
 
@@ -56,11 +57,14 @@ class _SideNavBarState extends State<SideNavBar> {
               'Home',
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
-            onTap: () {Navigator.push(
+            onTap: () {
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ));},
+                  builder: (context) => const Home(sideNavIndex: 2),
+                ),
+              );
+            },
           ),
           // ListTile(
           //   leading: Icon(Icons.calendar_month, size: screenHeight * 0.03),
@@ -77,11 +81,12 @@ class _SideNavBarState extends State<SideNavBar> {
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Prescriptions(),
-                  ));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(sideNavIndex: 0),
+                ),
+              );
             },
           ),
           // ListTile(
@@ -109,14 +114,18 @@ class _SideNavBarState extends State<SideNavBar> {
           //   onTap: () {},
           // ),
           ListTile(
-            leading: Icon(Icons.account_circle,size: screenHeight * 0.03),
-            title: Text('Profile',style: TextStyle(fontSize: screenHeight * 0.018),),
+            leading: Icon(Icons.account_circle, size: screenHeight * 0.03),
+            title: Text(
+              'Profile',
+              style: TextStyle(fontSize: screenHeight * 0.018),
+            ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfilePage(),
-                  ));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(sideNavIndex: 4),
+                ),
+              );
             },
           ),
           SizedBox(
