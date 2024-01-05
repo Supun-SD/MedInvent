@@ -66,14 +66,21 @@ class _SideNavBarState extends State<SideNavBar> {
               );
             },
           ),
-          // ListTile(
-          //   leading: Icon(Icons.calendar_month, size: screenHeight * 0.03),
-          //   title: Text(
-          //     'Appointments',
-          //     style: TextStyle(fontSize: screenHeight * 0.018),
-          //   ),
-          //   onTap: () {},
-          // ),
+          ListTile(
+            leading: Icon(Icons.calendar_month, size: screenHeight * 0.03),
+            title: Text(
+              'Appointments',
+              style: TextStyle(fontSize: screenHeight * 0.018),
+            ),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(sideNavIndex: 1),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(Icons.edit_document, size: screenHeight * 0.03),
             title: Text(
@@ -89,22 +96,29 @@ class _SideNavBarState extends State<SideNavBar> {
               );
             },
           ),
-          // ListTile(
-          //   leading: Icon(Icons.location_on, size: screenHeight * 0.03),
-          //   title: Text(
-          //     'Map',
-          //     style: TextStyle(fontSize: screenHeight * 0.018),
-          //   ),
-          //   onTap: () {},
-          // ),
-          // ListTile(
-          //   leading: Icon(Icons.search, size: screenHeight * 0.03),
-          //   title: Text(
-          //     'Search',
-          //     style: TextStyle(fontSize: screenHeight * 0.018),
-          //   ),
-          //   onTap: () {},
-          // ),
+          ListTile(
+            leading: Icon(Icons.location_on, size: screenHeight * 0.03),
+            title: Text(
+              'Map',
+              style: TextStyle(fontSize: screenHeight * 0.018),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.search, size: screenHeight * 0.03),
+            title: Text(
+              'Search',
+              style: TextStyle(fontSize: screenHeight * 0.018),
+            ),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(sideNavIndex: 3),
+                ),
+              );
+            },
+          ),
           // ListTile(
           //   leading: Icon(Icons.newspaper_rounded, size: screenHeight * 0.03),
           //   title: Text(
@@ -129,7 +143,7 @@ class _SideNavBarState extends State<SideNavBar> {
             },
           ),
           SizedBox(
-            height: screenHeight * 0.2,
+            height: screenHeight * 0.15,
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app, size: screenHeight * 0.03),

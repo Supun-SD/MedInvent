@@ -24,16 +24,19 @@ class CustomTabBar extends StatelessWidget {
             child: Container(
               height: screenHeight * 0.06,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF45AEA0), Color(0xFF4749A0)],
+                ),
                 borderRadius: BorderRadius.circular(screenHeight * 0.1),
               ),
               child: TabBar(
+                padding: EdgeInsets.all(screenHeight * 0.0025),
                 indicator: BoxDecoration(
-                  color: const Color(0xFF2980B9),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(screenHeight * 0.1),
                 ),
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.black,
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.white,
                 tabs: tabTitles.map((title) {
                   return Tab(
                     child: Column(

@@ -1,5 +1,5 @@
 import 'package:MedInvent/components/BottomNavBar.dart';
-import 'package:MedInvent/features/Appointments/appointments.dart';
+import 'package:MedInvent/features/Appointments/presentation/appointments.dart';
 import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
 import 'package:MedInvent/features/Search/search.dart';
 import 'package:MedInvent/features/home/presentation/home.dart';
