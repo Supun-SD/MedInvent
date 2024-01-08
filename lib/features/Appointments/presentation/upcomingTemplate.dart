@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class UpcomingTemplate extends StatelessWidget {
+class UpcomingTemplate extends StatefulWidget {
   UpcomingTemplate(
       {required this.doctor,
       required this.speciality,
@@ -20,6 +20,43 @@ class UpcomingTemplate extends StatelessWidget {
   bool cancelled;
 
   @override
+  State<UpcomingTemplate> createState() => _UpcomingTemplateState();
+}
+
+class _UpcomingTemplateState extends State<UpcomingTemplate> {
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+          title: const Text("Confirmation"),
+          content: const Text("Are you sure you want to cancel this appointment?"),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Confirm"),
+              onPressed: () {
+                setState(() {
+                  widget.cancelled = true;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -30,28 +67,28 @@ class UpcomingTemplate extends StatelessWidget {
           top: screenWidth * 0.035),
       padding: EdgeInsets.all(screenHeight * 0.025),
       decoration: BoxDecoration(
-        color: const Color(0xFFE3E3E3),
+        color: const Color(0xFFEDEDED),
         borderRadius: BorderRadius.circular(screenWidth * 0.07),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            doctor,
+            widget.doctor,
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: screenHeight * 0.023),
           ),
           Text(
-            speciality,
+            widget.speciality,
             style: TextStyle(
                 fontSize: screenHeight * 0.015, color: const Color(0xFF6B6B6B)),
           ),
           SizedBox(
             height: screenHeight * 0.02,
           ),
-          Text(hospital),
+          Text(widget.hospital),
           const Divider(
-            color: Colors.grey,
+            color: Color(0xFFB5B5B5),
             thickness: 1,
           ),
           SizedBox(
@@ -59,27 +96,29 @@ class UpcomingTemplate extends StatelessWidget {
           ),
           Row(
             children: [
-              Text(date),
+              Text(widget.date),
               SizedBox(
                 width: screenWidth * 0.1,
               ),
-              Text(time),
+              Text(widget.time),
             ],
           ),
           SizedBox(
             height: screenHeight * 0.005,
           ),
           const Divider(
-            color: Colors.grey,
+            color: Color(0xFFB5B5B5),
             thickness: 1,
           ),
           SizedBox(
             height: screenHeight * 0.01,
           ),
-          if (isRefundable)
-            if (!cancelled)
+          if (widget.isRefundable)
+            if (!widget.cancelled)
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  _showConfirmationDialog(context);
+                },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(

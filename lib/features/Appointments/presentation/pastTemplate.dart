@@ -30,7 +30,7 @@ class PastTemplate extends StatelessWidget {
           top: screenWidth * 0.035),
       padding: EdgeInsets.all(screenHeight * 0.025),
       decoration: BoxDecoration(
-        color: const Color(0xFFE3E3E3),
+        color: const Color(0xFFEDEDED),
         borderRadius: BorderRadius.circular(screenWidth * 0.07),
       ),
       child: Column(
@@ -51,7 +51,7 @@ class PastTemplate extends StatelessWidget {
           ),
           Text(hospital),
           const Divider(
-            color: Colors.grey,
+            color: Color(0xFFB5B5B5),
             thickness: 1,
           ),
           SizedBox(
@@ -70,7 +70,7 @@ class PastTemplate extends StatelessWidget {
             height: screenHeight * 0.005,
           ),
           const Divider(
-            color: Colors.grey,
+            color: Color(0xFFB5B5B5),
             thickness: 1,
           ),
           SizedBox(
