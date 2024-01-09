@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:MedInvent/components/BottomNavBar.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -25,6 +25,7 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     getLocationUpdates();
+    _loadLocationIcon();
   }
 
   Future<void> _cameraToPosition(LatLng pos) async {
@@ -70,6 +71,15 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
+  BitmapDescriptor? _locationIcon;
+
+  Future<void> _loadLocationIcon() async {
+    final ByteData byteData =
+        await rootBundle.load('assets/images/location.png');
+    final Uint8List byteList = byteData.buffer.asUint8List();
+    _locationIcon = BitmapDescriptor.fromBytes(byteList);
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -93,11 +103,19 @@ class _MapPageState extends State<MapPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.location_off, size: screenHeight * 0.08,color: Colors.grey,),
-                      const SizedBox(height: 30,),
+                      Icon(
+                        Icons.location_off,
+                        size: screenHeight * 0.08,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
                       Text(
                         "Turn on location service on your device",
-                        style: TextStyle(fontSize: screenWidth * 0.05,),
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.05,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -113,7 +131,7 @@ class _MapPageState extends State<MapPage> {
               markers: {
                 Marker(
                   markerId: const MarkerId("_currentLocation"),
-                  icon: BitmapDescriptor.defaultMarker,
+                  icon: _locationIcon!,
                   position: _currentP!,
                 ),
               },
