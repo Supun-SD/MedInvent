@@ -1,5 +1,6 @@
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Search/doctors.dart';
+import 'package:MedInvent/features/Search/pharmacies.dart';
 import 'package:flutter/material.dart';
 
 import 'package:MedInvent/features/Search/categories.dart';
@@ -70,9 +71,9 @@ class _SearchState extends State<Search> {
                       borderRadius: BorderRadius.circular(50),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 30,
-                        ),
+                            color: Colors.grey.withOpacity(0.4),
+                            blurRadius: 30,
+                            offset: const Offset(0, 15)),
                       ],
                     ),
                     child: Padding(
@@ -95,7 +96,7 @@ class _SearchState extends State<Search> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 10),
+                                      padding: const EdgeInsets.only(left: 15),
                                       child: Text(
                                         value,
                                         style: TextStyle(
@@ -149,7 +150,7 @@ class _SearchState extends State<Search> {
                   top: screenHeight * 0.12,
                   left: 0,
                   right: 0,
-                  child: Padding(
+                  child: Container(
                     padding: EdgeInsets.only(left: screenWidth * 0.06),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,8 +188,11 @@ class _SearchState extends State<Search> {
                           child: Row(
                             children: nearbyDoctors.map((doctor) {
                               return Padding(
-                                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                                child: NearbyDoctor(doctorName: doctor.name, speciality: doctor.speciality),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.02),
+                                child: NearbyDoctor(
+                                    doctorName: doctor.name,
+                                    speciality: doctor.speciality),
                               );
                             }).toList(),
                           ),
@@ -202,6 +206,15 @@ class _SearchState extends State<Search> {
                               fontSize: screenWidth * 0.05,
                               fontWeight: FontWeight.bold),
                         ),
+                        SizedBox(
+                          height: screenHeight * 0.025,
+                        ),
+                        Column(
+                          children: pharmacies
+                              .map((p) => NearbyPharmacy(
+                                  name: p.name, mobileNo: p.contactNo))
+                              .toList(),
+                        )
                       ],
                     ),
                   ),
@@ -229,20 +242,22 @@ class Category extends StatelessWidget {
       onTap: () {},
       child: Container(
         margin: EdgeInsets.only(right: screenWidth * 0.03),
-        height: screenHeight * 0.1,
-        width: screenHeight * 0.1,
+        height: screenHeight * 0.08,
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
             const Color(0xFF1578B6).withOpacity(0.67),
             const Color(0xFF626599),
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-          borderRadius: BorderRadius.circular(20.0), // Add border radius here
+          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Center(
-          child: Text(
-            category,
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.035),
+            child: Text(
+              category,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),
@@ -251,7 +266,8 @@ class Category extends StatelessWidget {
 }
 
 class NearbyDoctor extends StatelessWidget {
-  const NearbyDoctor({required this.doctorName, required this.speciality,super.key});
+  const NearbyDoctor(
+      {required this.doctorName, required this.speciality, super.key});
 
   final String doctorName;
   final String speciality;
@@ -262,7 +278,7 @@ class NearbyDoctor extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return InkWell(
-      onTap: (){},
+      onTap: () {},
       child: Container(
         margin: EdgeInsets.only(right: screenWidth * 0.03),
         decoration: BoxDecoration(
@@ -270,27 +286,43 @@ class NearbyDoctor extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 10,
-              offset: const Offset(5,0)
-            ),
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 10,
+                offset: const Offset(5, 0)),
           ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Column(
             children: [
-              Image.asset('assets/images/doctor.jpg', height: screenHeight * 0.15,),
-              SizedBox(height: screenHeight * 0.01,),
+              Image.asset(
+                'assets/images/doctor.jpg',
+                height: screenHeight * 0.15,
+              ),
+              SizedBox(
+                height: screenHeight * 0.01,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(doctorName, style: TextStyle(fontWeight: FontWeight.bold,fontSize: screenWidth * 0.028),),
-                  SizedBox(height: screenHeight * 0.005,),
-                  Text(speciality, style: TextStyle(fontSize: screenWidth * 0.025),)
+                  Text(
+                    doctorName,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth * 0.028),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.005,
+                  ),
+                  Text(
+                    speciality,
+                    style: TextStyle(fontSize: screenWidth * 0.025),
+                  )
                 ],
               ),
-              SizedBox(height: screenHeight * 0.02,)
+              SizedBox(
+                height: screenHeight * 0.02,
+              )
             ],
           ),
         ),
@@ -299,3 +331,49 @@ class NearbyDoctor extends StatelessWidget {
   }
 }
 
+class NearbyPharmacy extends StatelessWidget {
+  const NearbyPharmacy({required this.name, required this.mobileNo, super.key});
+
+  final String name;
+  final String mobileNo;
+
+  void openDialer(String number) {}
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      margin: EdgeInsets.only(right: screenWidth * 0.06, bottom: screenHeight * 0.015),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            blurRadius: 15,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Text(name),
+          const Spacer(),
+          Row(
+            children: [
+              IconButton(
+                  onPressed: () {}, icon: Icon(Icons.location_on_outlined)),
+              IconButton(
+                  onPressed: () {
+                    openDialer(mobileNo);
+                  },
+                  icon: Icon(Icons.call_outlined)),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
