@@ -1,7 +1,5 @@
-import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
-import 'package:MedInvent/features/home/presentation/home.dart';
+import 'package:MedInvent/features/Map/map_screen.dart';
 import 'package:MedInvent/features/home/presentation/mainPage.dart';
-import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dart';
 import 'package:flutter/material.dart';
 
 class SideNavBar extends StatefulWidget {
@@ -89,14 +87,21 @@ class _SideNavBarState extends State<SideNavBar> {
               );
             },
           ),
-          // ListTile(
-          //   leading: Icon(Icons.location_on, size: screenHeight * 0.03),
-          //   title: Text(
-          //     'Map',
-          //     style: TextStyle(fontSize: screenHeight * 0.018),
-          //   ),
-          //   onTap: () {},
-          // ),
+          ListTile(
+            leading: Icon(Icons.location_on, size: screenHeight * 0.03),
+            title: Text(
+              'Map',
+              style: TextStyle(fontSize: screenHeight * 0.018),
+            ),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MapPage(),
+                ),
+              );
+            },
+          ),
           // ListTile(
           //   leading: Icon(Icons.search, size: screenHeight * 0.03),
           //   title: Text(
