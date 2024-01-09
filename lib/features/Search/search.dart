@@ -37,192 +37,193 @@ class _SearchState extends State<Search> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    width: double.infinity,
-                    height: screenHeight * 0.06,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF474CA0),
-                          Color(0xFF468FA0),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: screenHeight * 0.02,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            blurRadius: 30,
-                            offset: const Offset(0, 15)),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: screenHeight,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  width: double.infinity,
+                  height: screenHeight * 0.06,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFF474CA0),
+                        Color(0xFF468FA0),
                       ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Center(
-                              child: DropdownButton<String>(
-                                value: selectedValue,
-                                items: <String>[
-                                  'Doctors',
-                                  'Pharmacies',
-                                  'Medicine'
-                                ].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        value,
-                                        style: TextStyle(
-                                            fontSize: screenWidth * 0.035),
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedValue = newValue!;
-                                  });
-                                },
-                                underline: Container(
-                                  decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: Colors.transparent),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Expanded(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30.0),
-                                color: Colors.grey[200],
-                              ),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: 'Search for $selectedValue',
-                                  hintStyle:
-                                      TextStyle(fontSize: screenWidth * 0.035),
-                                  border: InputBorder.none,
-                                  icon: const Icon(Icons.search),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
-                Positioned(
-                  top: screenHeight * 0.12,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: EdgeInsets.only(left: screenWidth * 0.06),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+              Positioned(
+                top: screenHeight * 0.02,
+                left: 0,
+                right: 0,
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.05),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          blurRadius: 30,
+                          offset: const Offset(0, 15)),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
                       children: [
-                        Text(
-                          "Categories",
-                          style: TextStyle(
-                              fontSize: screenWidth * 0.05,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.02,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: Categories.values.map((category) {
-                              return Category(
-                                  category:
-                                      category.toString().split('.').last);
-                            }).toList(),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Center(
+                            child: DropdownButton<String>(
+                              value: selectedValue,
+                              items: <String>[
+                                'Doctors',
+                                'Pharmacies',
+                                'Medicine'
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 15),
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(
+                                          fontSize: screenWidth * 0.035),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedValue = newValue!;
+                                });
+                              },
+                              underline: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.transparent),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: screenHeight * 0.025,
+                        const SizedBox(
+                          width: 8,
                         ),
-                        Text(
-                          "Nearby Doctors",
-                          style: TextStyle(
-                              fontSize: screenWidth * 0.05,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: nearbyDoctors.map((doctor) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: screenHeight * 0.02),
-                                child: NearbyDoctor(
-                                    doctorName: doctor.name,
-                                    speciality: doctor.speciality),
-                              );
-                            }).toList(),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30.0),
+                              color: Colors.grey[200],
+                            ),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Search for $selectedValue',
+                                hintStyle: TextStyle(
+                                    fontSize: screenWidth * 0.035),
+                                border: InputBorder.none,
+                                icon: const Icon(Icons.search),
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: screenHeight * 0.015,
-                        ),
-                        Text(
-                          "Nearby Pharmacies",
-                          style: TextStyle(
-                              fontSize: screenWidth * 0.05,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.025,
-                        ),
-                        Column(
-                          children: pharmacies
-                              .map((p) => NearbyPharmacy(
-                                  name: p.name, mobileNo: p.contactNo))
-                              .toList(),
-                        )
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+                top: screenHeight * 0.12,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.only(left: screenWidth * 0.06),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Categories",
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.05,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.02,
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: Categories.values.map((category) {
+                            return Category(
+                                category:
+                                    category.toString().split('.').last);
+                          }).toList(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.025,
+                      ),
+                      Text(
+                        "Nearby Doctors",
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.05,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: nearbyDoctors.map((doctor) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.02),
+                              child: NearbyDoctor(
+                                  doctorName: doctor.name,
+                                  speciality: doctor.speciality),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.015,
+                      ),
+                      Text(
+                        "Nearby Pharmacies",
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.05,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.025,
+                      ),
+                      ...pharmacies
+                          .map((p) => NearbyPharmacy(
+                              name: p.name, mobileNo: p.contactNo))
+                          .toList(),
+                      SizedBox(
+                        height: screenHeight * 0.1,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -337,15 +338,14 @@ class NearbyPharmacy extends StatelessWidget {
   final String name;
   final String mobileNo;
 
-  void openDialer(String number) {}
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      margin: EdgeInsets.only(right: screenWidth * 0.06, bottom: screenHeight * 0.015),
+      margin: EdgeInsets.only(
+          right: screenWidth * 0.06, bottom: screenHeight * 0.015),
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -364,12 +364,13 @@ class NearbyPharmacy extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                  onPressed: () {}, icon: Icon(Icons.location_on_outlined)),
-              IconButton(
                   onPressed: () {
-                    openDialer(mobileNo);
+
                   },
-                  icon: Icon(Icons.call_outlined)),
+                  icon: const Icon(Icons.location_on_outlined)),
+              IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.call_outlined)),
             ],
           )
         ],
