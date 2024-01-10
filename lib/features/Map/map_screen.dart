@@ -21,40 +21,46 @@ class _MapPageState extends State<MapPage> {
       Completer<GoogleMapController>();
 
   static const LatLng _location = LatLng(6.9271, 79.8612);
+  String? _selectedCategory;
 
   LatLng? _currentP;
-  final List<Marker> _markers = <Marker>[];
+  final Set<Marker> _markers = {};
   final List<BitmapDescriptor> _locationIcon = [];
 
   List<Doctor> nearbyDoctors = [
     Doctor(
         name: "Albert Alexander",
+        speciality: "Cardiologist",
         arriveTime: '5.00 PM',
         leaveTime: '7.30 PM',
         datesList: ['Monday', 'Wednesday', 'Saturday'],
         location: const LatLng(6.797554, 79.891743)),
     Doctor(
         name: "Stephen Strange",
+        speciality: "Physician",
         arriveTime: '5.00 PM',
         leaveTime: '7.30 PM',
         datesList: ['Monday', 'Wednesday', 'Saturday'],
         location: const LatLng(6.800708, 79.897652)),
     Doctor(
         name: "Kapila",
+        speciality: "Neurologist",
         arriveTime: '5.00 PM',
         leaveTime: '7.30 PM',
         datesList: ['Monday', 'Wednesday', 'Saturday'],
-        location: const LatLng(6.793944, 79.907120))
+        location: const LatLng(6.793944, 79.907120)),
   ];
   List<Pharmacy> nearbyPharmacies = [
     Pharmacy(
         name: "Harcourts Pharmacy",
+        contact: "+94771234567",
         openTime: "9.00 AM",
         closeTime: "8.00 PM",
         datesList: ['Monday', 'Tuesday', 'Wednesday'],
-        location: const LatLng(6.783916, 79.904922)),
+        location: const LatLng(6.791256, 79.901482)),
     Pharmacy(
         name: "Halo Pharmacy",
+        contact: "+94778545662",
         openTime: "9.00 AM",
         closeTime: "8.00 PM",
         datesList: ['Monday', 'Tuesday', 'Wednesday'],
@@ -64,7 +70,7 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     getLocationUpdates();
-    addMarkers();
+    _loadLocationIcon().then((value) => addMarkers());
     super.initState();
   }
 
@@ -105,6 +111,7 @@ class _MapPageState extends State<MapPage> {
         setState(() {
           _currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          addMarkers();
         });
       }
     });
@@ -119,9 +126,164 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-  void addMarkers() async {
-    await _loadLocationIcon();
+  void _showPopupDoctor(BuildContext context, String name, String spec,
+      String arrive, String leave) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text("Dr $name",
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 5.0),
+              Text(spec,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  )),
+              const SizedBox(height: 20.0),
+              Row(
+                children: [
+                  const Text("Available time",
+                      style: TextStyle(
+                        fontSize: 16,
+                      )),
+                  const Spacer(),
+                  Text("$arrive - $leave",
+                      style: const TextStyle(
+                        fontSize: 16,
+                      )),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              Center(
+                child: TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color(0xFF2980B9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'View profile',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
 
+  void _showPopupPharmacy(BuildContext context, String name, String contactNo,
+      String open, String close) {
+    bool openStatus = true;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(name,
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10.0),
+              openStatus
+                  ? Row(
+                      children: [
+                        const Icon(
+                          Icons.local_pharmacy,
+                          color: Colors.green,
+                        ),
+                        const SizedBox(
+                          width: 7,
+                        ),
+                        const Text("Open Now"),
+                        const Spacer(),
+                        Text(contactNo,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            )),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        const Icon(
+                          Icons.local_pharmacy,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(
+                          width: 7,
+                        ),
+                        const Text("Closed"),
+                        const Spacer(),
+                        Text(contactNo,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            )),
+                      ],
+                    ),
+              const SizedBox(height: 20.0),
+              Row(
+                children: [
+                  const Text(
+                    "Open time",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const Spacer(),
+                  Text(
+                    "$open - $close",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              Center(
+                child: TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color(0xFF2980B9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'View profile',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void addMarkers() {
     _markers.clear();
     if (_currentP != null) {
       _markers.add(
@@ -129,6 +291,9 @@ class _MapPageState extends State<MapPage> {
           markerId: const MarkerId("currentLocation"),
           position: _currentP!,
           icon: _locationIcon[0],
+          infoWindow: const InfoWindow(
+            title: "My Location",
+          ),
         ),
       );
     }
@@ -136,24 +301,77 @@ class _MapPageState extends State<MapPage> {
     for (var doctor in nearbyDoctors) {
       _markers.add(
         Marker(
-          markerId: MarkerId(doctor.name),
-          position: doctor.location,
-          icon: _locationIcon[1],
-        ),
+            markerId: MarkerId(doctor.name),
+            position: doctor.location,
+            icon: _locationIcon[1],
+            onTap: () {
+              _showPopupDoctor(context, doctor.name, doctor.speciality,
+                  doctor.arriveTime, doctor.leaveTime);
+            }),
       );
     }
 
     for (var pharmacy in nearbyPharmacies) {
       _markers.add(
         Marker(
-          markerId: MarkerId(pharmacy.name),
-          position: pharmacy.location,
-          icon: _locationIcon[5],
-        ),
+            markerId: MarkerId(pharmacy.name),
+            position: pharmacy.location,
+            icon: _locationIcon[5],
+            onTap: () {
+              _showPopupPharmacy(context, pharmacy.name, pharmacy.contact,
+                  pharmacy.openTime, pharmacy.closeTime);
+            }),
       );
     }
 
     setState(() {});
+  }
+
+  Set<Marker> _getMarkersForSelectedCategory() {
+    Set<Marker> selectedMarkers = {
+      Marker(
+        markerId: const MarkerId("currentLocation"),
+        position: _currentP!,
+        icon: _locationIcon[0],
+        infoWindow: const InfoWindow(
+          title: "My Location",
+        ),
+      ),
+    };
+
+    if (_selectedCategory == null || _selectedCategory == 'all') {
+      return Set<Marker>.of(_markers);
+    } else if (_selectedCategory == 'doctors') {
+      for (var doctor in nearbyDoctors) {
+        selectedMarkers.add(
+          Marker(
+            markerId: MarkerId(doctor.name),
+            position: doctor.location,
+            icon: _locationIcon[1],
+            onTap: () {
+              _showPopupDoctor(context, doctor.name, doctor.speciality,
+                  doctor.arriveTime, doctor.leaveTime);
+            },
+          ),
+        );
+      }
+    } else if (_selectedCategory == 'pharmacies') {
+      for (var pharmacy in nearbyPharmacies) {
+        selectedMarkers.add(
+          Marker(
+            markerId: MarkerId(pharmacy.name),
+            position: pharmacy.location,
+            icon: _locationIcon[5],
+            onTap: () {
+              _showPopupPharmacy(context, pharmacy.name, pharmacy.contact,
+                  pharmacy.openTime, pharmacy.closeTime);
+            },
+          ),
+        );
+      }
+    }
+
+    return selectedMarkers;
   }
 
   @override
@@ -208,16 +426,68 @@ class _MapPageState extends State<MapPage> {
                     ],
                   )),
             )
-          : GoogleMap(
-              onMapCreated: ((GoogleMapController controller) =>
-                  _mapController.complete(controller)),
-              initialCameraPosition: const CameraPosition(
-                target: _location,
-                zoom: 13,
-              ),
-              markers: Set<Marker>.of(_markers),
-              myLocationEnabled: false,
-              zoomControlsEnabled: false,
+          : Stack(
+              children: [
+                GoogleMap(
+                  onMapCreated: ((GoogleMapController controller) =>
+                      _mapController.complete(controller)),
+                  initialCameraPosition: const CameraPosition(
+                    target: _location,
+                    zoom: 13,
+                  ),
+                  markers: _getMarkersForSelectedCategory(),
+                  myLocationEnabled: false,
+                  zoomControlsEnabled: false,
+                ),
+                Positioned(
+                  top: 30.0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.3),
+                    padding: const EdgeInsets.only(left: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.7),
+                          spreadRadius: 2,
+                          blurRadius: 50,
+                        ),
+                      ],
+
+                    ),
+                    child: DropdownButton<String>(
+                      value: _selectedCategory,
+                      items: const [
+                        DropdownMenuItem<String>(
+                          value: 'all',
+                          child: Text('All'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'doctors',
+                          child: Text('Doctors'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'pharmacies',
+                          child: Text('Pharmacies'),
+                        ),
+                      ],
+                      onChanged: (String? value) {
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                      },
+                      hint: const Text('All'),
+                      underline: Container(
+                        height: 0,
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  )
+                ),
+              ],
             ),
     );
   }
