@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:MedInvent/components/sideNavBar.dart';
+import 'package:MedInvent/features/Map/doctor.dart';
+import 'package:MedInvent/features/Map/pharmacy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,21 +20,59 @@ class _MapPageState extends State<MapPage> {
   final Completer<GoogleMapController> _mapController =
       Completer<GoogleMapController>();
 
-  static const LatLng _location = LatLng(37.4223, -122.0848);
+  static const LatLng _location = LatLng(6.9271, 79.8612);
+
   LatLng? _currentP;
+  final List<Marker> _markers = <Marker>[];
+  final List<BitmapDescriptor> _locationIcon = [];
+
+  List<Doctor> nearbyDoctors = [
+    Doctor(
+        name: "Albert Alexander",
+        arriveTime: '5.00 PM',
+        leaveTime: '7.30 PM',
+        datesList: ['Monday', 'Wednesday', 'Saturday'],
+        location: const LatLng(6.797554, 79.891743)),
+    Doctor(
+        name: "Stephen Strange",
+        arriveTime: '5.00 PM',
+        leaveTime: '7.30 PM',
+        datesList: ['Monday', 'Wednesday', 'Saturday'],
+        location: const LatLng(6.800708, 79.897652)),
+    Doctor(
+        name: "Kapila",
+        arriveTime: '5.00 PM',
+        leaveTime: '7.30 PM',
+        datesList: ['Monday', 'Wednesday', 'Saturday'],
+        location: const LatLng(6.793944, 79.907120))
+  ];
+  List<Pharmacy> nearbyPharmacies = [
+    Pharmacy(
+        name: "Harcourts Pharmacy",
+        openTime: "9.00 AM",
+        closeTime: "8.00 PM",
+        datesList: ['Monday', 'Tuesday', 'Wednesday'],
+        location: const LatLng(6.783916, 79.904922)),
+    Pharmacy(
+        name: "Halo Pharmacy",
+        openTime: "9.00 AM",
+        closeTime: "8.00 PM",
+        datesList: ['Monday', 'Tuesday', 'Wednesday'],
+        location: const LatLng(6.788014, 79.892936)),
+  ];
 
   @override
   void initState() {
-    super.initState();
     getLocationUpdates();
-    _loadLocationIcon();
+    addMarkers();
+    super.initState();
   }
 
   Future<void> _cameraToPosition(LatLng pos) async {
     final GoogleMapController controller = await _mapController.future;
     CameraPosition newCameraPosition = CameraPosition(
       target: pos,
-      zoom: 13,
+      zoom: 14,
     );
     await controller.animateCamera(
       CameraUpdate.newCameraPosition(newCameraPosition),
@@ -65,19 +105,55 @@ class _MapPageState extends State<MapPage> {
         setState(() {
           _currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          _cameraToPosition(_currentP!);
         });
       }
     });
   }
 
-  BitmapDescriptor? _locationIcon;
-
   Future<void> _loadLocationIcon() async {
-    final ByteData byteData =
-        await rootBundle.load('assets/images/location.png');
-    final Uint8List byteList = byteData.buffer.asUint8List();
-    _locationIcon = BitmapDescriptor.fromBytes(byteList);
+    for (int i = 1; i < 8; i++) {
+      final ByteData byteData =
+          await rootBundle.load('assets/mapIcons/icon$i.png');
+      final Uint8List byteList = byteData.buffer.asUint8List();
+      _locationIcon.add(BitmapDescriptor.fromBytes(byteList));
+    }
+  }
+
+  void addMarkers() async {
+    await _loadLocationIcon();
+
+    _markers.clear();
+    if (_currentP != null) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId("currentLocation"),
+          position: _currentP!,
+          icon: _locationIcon[0],
+        ),
+      );
+    }
+
+    for (var doctor in nearbyDoctors) {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(doctor.name),
+          position: doctor.location,
+          icon: _locationIcon[1],
+        ),
+      );
+    }
+
+    for (var pharmacy in nearbyPharmacies) {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(pharmacy.name),
+          position: pharmacy.location,
+          icon: _locationIcon[5],
+        ),
+      );
+    }
+
+    setState(() {});
   }
 
   @override
@@ -94,6 +170,17 @@ class _MapPageState extends State<MapPage> {
         title: const Text(
           "Map",
           style: TextStyle(color: Colors.black),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _cameraToPosition(_currentP!);
+        },
+        backgroundColor: Colors.white,
+        mini: true,
+        child: const Icon(
+          Icons.location_history,
+          color: Colors.black,
         ),
       ),
       body: _currentP == null
@@ -128,13 +215,9 @@ class _MapPageState extends State<MapPage> {
                 target: _location,
                 zoom: 13,
               ),
-              markers: {
-                Marker(
-                  markerId: const MarkerId("_currentLocation"),
-                  icon: _locationIcon!,
-                  position: _currentP!,
-                ),
-              },
+              markers: Set<Marker>.of(_markers),
+              myLocationEnabled: false,
+              zoomControlsEnabled: false,
             ),
     );
   }
