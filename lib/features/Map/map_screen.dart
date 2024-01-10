@@ -374,6 +374,97 @@ class _MapPageState extends State<MapPage> {
     return selectedMarkers;
   }
 
+  void ShowLegend() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final double screenWidth = MediaQuery.of(context).size.width;
+        final double screenHeight = MediaQuery.of(context).size.height;
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          title: const Center(child: Text('legend')),
+          content: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/mapIcons/icon2.png",
+                      height: screenHeight * 0.04,
+                    ),
+                    SizedBox(
+                      width: screenWidth * 0.05,
+                    ),
+                    const Text("Available Doctors")
+                  ],
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
+                ),
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/mapIcons/icon3.png",
+                      height: screenHeight * 0.04,
+                    ),
+                    SizedBox(
+                      width: screenWidth * 0.05,
+                    ),
+                    const Text("Unavailable Doctors")
+                  ],
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
+                ),
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/mapIcons/icon6.png",
+                      height: screenHeight * 0.04,
+                    ),
+                    SizedBox(
+                      width: screenWidth * 0.05,
+                    ),
+                    const Text("Open Pharmacies")
+                  ],
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
+                ),
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/mapIcons/icon7.png",
+                      height: screenHeight * 0.04,
+                    ),
+                    SizedBox(
+                      width: screenWidth * 0.05,
+                    ),
+                    const Text("Close Pharmacies")
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10),
+              child: TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -390,16 +481,32 @@ class _MapPageState extends State<MapPage> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _cameraToPosition(_currentP!);
-        },
-        backgroundColor: Colors.white,
-        mini: true,
-        child: const Icon(
-          Icons.location_history,
-          color: Colors.black,
-        ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            onPressed: () {
+              _cameraToPosition(_currentP!);
+            },
+            backgroundColor: Colors.white,
+            mini: true,
+            child: const Icon(
+              Icons.location_history,
+              color: Colors.black,
+            ),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              ShowLegend();
+            },
+            backgroundColor: Colors.white,
+            mini: true,
+            child: const Icon(
+              Icons.legend_toggle,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       body: _currentP == null
           ? Center(
@@ -440,53 +547,52 @@ class _MapPageState extends State<MapPage> {
                   zoomControlsEnabled: false,
                 ),
                 Positioned(
-                  top: 30.0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.3),
-                    padding: const EdgeInsets.only(left: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.7),
-                          spreadRadius: 2,
-                          blurRadius: 50,
-                        ),
-                      ],
-
-                    ),
-                    child: DropdownButton<String>(
-                      value: _selectedCategory,
-                      items: const [
-                        DropdownMenuItem<String>(
-                          value: 'all',
-                          child: Text('All'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'doctors',
-                          child: Text('Doctors'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'pharmacies',
-                          child: Text('Pharmacies'),
-                        ),
-                      ],
-                      onChanged: (String? value) {
-                        setState(() {
-                          _selectedCategory = value;
-                        });
-                      },
-                      hint: const Text('All'),
-                      underline: Container(
-                        height: 0,
-                        color: Colors.transparent,
+                    top: 30.0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.3),
+                      padding: const EdgeInsets.only(left: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.7),
+                            spreadRadius: 2,
+                            blurRadius: 50,
+                          ),
+                        ],
                       ),
-                    ),
-                  )
-                ),
+                      child: DropdownButton<String>(
+                        value: _selectedCategory,
+                        items: const [
+                          DropdownMenuItem<String>(
+                            value: 'all',
+                            child: Text('All'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'doctors',
+                            child: Text('Doctors'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'pharmacies',
+                            child: Text('Pharmacies'),
+                          ),
+                        ],
+                        onChanged: (String? value) {
+                          setState(() {
+                            _selectedCategory = value;
+                          });
+                        },
+                        hint: const Text('All'),
+                        underline: Container(
+                          height: 0,
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    )),
               ],
             ),
     );
