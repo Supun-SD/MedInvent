@@ -1,4 +1,7 @@
+import 'package:MedInvent/features/Search/data/doctors.dart';
+import 'package:MedInvent/features/Search/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/categories.dart';
+import 'package:MedInvent/features/Search/models/doctor.dart';
 import 'package:flutter/material.dart';
 
 class AdvancedSearch extends StatefulWidget {
@@ -27,6 +30,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
     'Clinic 4',
     'Clinic 5',
   ];
+
   @override
   void initState() {
     selectedSpec = widget.category;
@@ -50,6 +54,13 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
     }
   }
 
+  List<Doctor> suggestedDoctors = [
+    doctors[0],
+    doctors[1],
+    doctors[2],
+    doctors[3]
+  ];
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -72,7 +83,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                     child: Text(
                   "Find your doctor",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: screenWidth * 0.05),
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.05),
                 )),
                 SizedBox(
                   height: screenHeight * 0.03,
@@ -114,8 +126,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
-                              borderSide:
-                                  const BorderSide(color: Colors.grey, width: 1),
+                              borderSide: const BorderSide(
+                                  color: Colors.grey, width: 1),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
@@ -262,17 +274,15 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                     ],
                   ),
                 ),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: screenWidth * 0.05,
-                  crossAxisSpacing: screenWidth * 0.05,
-                  padding: EdgeInsets.symmetric(vertical:screenHeight * 0.04),
-                  children: List.generate(
-                    4,
-                        (index) => SuggestedDoctors(index: index)
-                  ),
+                SizedBox(
+                  height: screenHeight * 0.025,
+                ),
+                ...suggestedDoctors
+                    .map((e) =>
+                        SuggestedDoctors(doctor: e))
+                    .toList(),
+                SizedBox(
+                  height: screenHeight * 0.025,
                 ),
               ],
             ),
@@ -282,22 +292,89 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
 }
 
 class SuggestedDoctors extends StatelessWidget {
-  const SuggestedDoctors({required this.index,super.key});
-  final int index;
+  const SuggestedDoctors({required this.doctor,super.key});
+  final Doctor doctor;
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Center(
-        child: Text(
-          'Container ${index + 1}',
-          style: const TextStyle(color: Colors.white),
+        margin: EdgeInsets.only(bottom: screenHeight * 0.015),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.4),
+              blurRadius: 20,
+            ),
+          ],
         ),
-      ),
-    );
+        child: Row(
+          children: [
+            Image.asset(
+              'assets/images/pic.png',
+              width: screenWidth * 0.12,
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Dr ${doctor.name}",
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  doctor.speciality.name,
+                  style: const TextStyle(
+                    fontSize: 12,
+                  ),
+                )
+              ],
+            ),
+            const Spacer(),
+            Container(
+              width: 36.0,
+              height: 36.0,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xFF2980B9),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DoctorProfile(doctor: doctor)),
+                  );
+                },
+                icon: const Icon(Icons.person_2_outlined,
+                    color: Colors.white, size: 18),
+                padding: const EdgeInsets.all(8.0),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Container(
+              width: 36.0,
+              height: 36.0,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xFF2980B9),
+              ),
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.calendar_month,
+                    color: Colors.white, size: 18),
+                padding: const EdgeInsets.all(8.0),
+              ),
+            ),
+          ],
+        ));
   }
 }
-
