@@ -1,20 +1,24 @@
 import 'dart:async';
-import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/features/Map/doctor.dart';
-import 'package:MedInvent/features/Map/pharmacy.dart';
+import 'package:MedInvent/features/Search/data/doctors.dart';
+import 'package:MedInvent/features/Search/data/pharmacies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+import 'package:MedInvent/components/sideNavBar.dart';
+import 'package:MedInvent/features/Search/models/categories.dart';
+import 'package:MedInvent/features/Search/models/doctor.dart';
+import 'package:MedInvent/features/Search/models/pharmacy.dart';
+
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  State<MapPage> createState() => MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class MapPageState extends State<MapPage> {
   final Location _locationController = Location();
 
   final Completer<GoogleMapController> _mapController =
@@ -28,43 +32,10 @@ class _MapPageState extends State<MapPage> {
   final List<BitmapDescriptor> _locationIcon = [];
 
   List<Doctor> nearbyDoctors = [
-    Doctor(
-        name: "Albert Alexander",
-        speciality: "Cardiologist",
-        arriveTime: '5.00 PM',
-        leaveTime: '7.30 PM',
-        datesList: ['Monday', 'Wednesday', 'Saturday'],
-        location: const LatLng(6.797554, 79.891743)),
-    Doctor(
-        name: "Stephen Strange",
-        speciality: "Physician",
-        arriveTime: '5.00 PM',
-        leaveTime: '7.30 PM',
-        datesList: ['Monday', 'Wednesday', 'Saturday'],
-        location: const LatLng(6.800708, 79.897652)),
-    Doctor(
-        name: "Kapila",
-        speciality: "Neurologist",
-        arriveTime: '5.00 PM',
-        leaveTime: '7.30 PM',
-        datesList: ['Monday', 'Wednesday', 'Saturday'],
-        location: const LatLng(6.793944, 79.907120)),
+    doctors[0], doctors[1], doctors[2],
   ];
   List<Pharmacy> nearbyPharmacies = [
-    Pharmacy(
-        name: "Harcourts Pharmacy",
-        contact: "+94771234567",
-        openTime: "9.00 AM",
-        closeTime: "8.00 PM",
-        datesList: ['Monday', 'Tuesday', 'Wednesday'],
-        location: const LatLng(6.791256, 79.901482)),
-    Pharmacy(
-        name: "Halo Pharmacy",
-        contact: "+94778545662",
-        openTime: "9.00 AM",
-        closeTime: "8.00 PM",
-        datesList: ['Monday', 'Tuesday', 'Wednesday'],
-        location: const LatLng(6.788014, 79.892936)),
+    pharmacies[0], pharmacies[1],
   ];
 
   @override
@@ -126,7 +97,7 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-  void _showPopupDoctor(BuildContext context, String name, String spec,
+  void _showPopupDoctor(BuildContext context, String name, Categories spec,
       String arrive, String leave) {
     showModalBottomSheet(
       context: context,
@@ -144,7 +115,7 @@ class _MapPageState extends State<MapPage> {
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 5.0),
-              Text(spec,
+              Text(spec.toString(),
                   style: const TextStyle(
                     fontSize: 16,
                   )),
@@ -374,7 +345,7 @@ class _MapPageState extends State<MapPage> {
     return selectedMarkers;
   }
 
-  void ShowLegend() {
+  void showLegend() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -497,7 +468,7 @@ class _MapPageState extends State<MapPage> {
           ),
           FloatingActionButton(
             onPressed: () {
-              ShowLegend();
+              showLegend();
             },
             backgroundColor: Colors.white,
             mini: true,

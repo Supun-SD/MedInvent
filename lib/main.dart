@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway'),
-      home:Landing(),
+      home:const Landing(),
     );
   }
 }

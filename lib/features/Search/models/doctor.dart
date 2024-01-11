@@ -1,8 +1,9 @@
+import 'package:MedInvent/features/Search/models/categories.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Doctor {
   String name;
-  String speciality;
+  Categories speciality;
   String arriveTime;
   String leaveTime;
   List<String> datesList;

@@ -1,9 +1,10 @@
-import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/features/Search/doctors.dart';
-import 'package:MedInvent/features/Search/pharmacies.dart';
 import 'package:flutter/material.dart';
 
-import 'package:MedInvent/features/Search/categories.dart';
+import 'package:MedInvent/components/sideNavBar.dart';
+import 'package:MedInvent/features/Search/advancedSearch.dart';
+import 'package:MedInvent/features/Search/data/doctors.dart';
+import 'package:MedInvent/features/Search/data/pharmacies.dart';
+import 'package:MedInvent/features/Search/models/categories.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -187,7 +188,7 @@ class _SearchState extends State<Search> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: nearbyDoctors.map((doctor) {
+                          children: doctors.map((doctor) {
                             return Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: screenHeight * 0.02),
@@ -212,7 +213,7 @@ class _SearchState extends State<Search> {
                       ),
                       ...pharmacies
                           .map((p) => NearbyPharmacy(
-                              name: p.name, mobileNo: p.contactNo))
+                              name: p.name, mobileNo: p.contact))
                           .toList(),
                       SizedBox(
                         height: screenHeight * 0.1,
@@ -240,7 +241,12 @@ class Category extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AdvancedSearch(category: category)),
+        );
+      },
       child: Container(
         margin: EdgeInsets.only(right: screenWidth * 0.03),
         height: screenHeight * 0.08,
@@ -271,7 +277,7 @@ class NearbyDoctor extends StatelessWidget {
       {required this.doctorName, required this.speciality, super.key});
 
   final String doctorName;
-  final String speciality;
+  final Categories speciality;
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +322,7 @@ class NearbyDoctor extends StatelessWidget {
                     height: screenHeight * 0.005,
                   ),
                   Text(
-                    speciality,
+                    speciality.toString().split('.').last,
                     style: TextStyle(fontSize: screenWidth * 0.025),
                   )
                 ],
@@ -364,9 +370,7 @@ class NearbyPharmacy extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                  onPressed: () {
-
-                  },
+                  onPressed: () {},
                   icon: const Icon(Icons.location_on_outlined)),
               IconButton(
                   onPressed: () {},
