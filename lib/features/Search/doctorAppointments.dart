@@ -1,3 +1,4 @@
+import 'package:MedInvent/features/Search/appointmentConfirmation.dart';
 import 'package:MedInvent/features/Search/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/appointment.dart';
 import 'package:MedInvent/features/Search/models/doctor.dart';
@@ -239,11 +240,16 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
                 SizedBox(height: screenHeight * 0.025),
                 AppointmentPageView(
                   appointments: appointments1,
+                  doctor: widget.doctor.name,
                 ),
                 AppointmentPageView(
                   appointments: appointments2,
+                  doctor: widget.doctor.name,
                 ),
-                AppointmentPageView(appointments: appointments3)
+                AppointmentPageView(
+                  appointments: appointments3,
+                  doctor: widget.doctor.name,
+                ),
               ],
             ),
           ],
@@ -254,9 +260,11 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
 }
 
 class AppointmentTemplate extends StatelessWidget {
-  const AppointmentTemplate({required this.appointment, super.key});
+  const AppointmentTemplate(
+      {required this.appointment, required this.doctor, super.key});
 
   final Appointment appointment;
+  final String doctor;
 
   @override
   Widget build(BuildContext context) {
@@ -342,11 +350,26 @@ class AppointmentTemplate extends StatelessWidget {
                     Center(
                         child: appointment.maximumPatients ==
                                 appointment.activePatients
-                            ? Text("The session is full", style: TextStyle(fontSize: screenWidth * 0.035, color: Colors.grey),)
+                            ? Text(
+                                "The session is full",
+                                style: TextStyle(
+                                    fontSize: screenWidth * 0.035,
+                                    color: Colors.grey),
+                              )
                             : SizedBox(
                                 width: double.infinity,
                                 child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AppointmentConfirmation(
+                                                appointment: appointment,
+                                                doctor: doctor,
+                                              )),
+                                    );
+                                  },
                                   style: TextButton.styleFrom(
                                     backgroundColor: const Color(0xFF2980B9),
                                     shape: RoundedRectangleBorder(
@@ -374,9 +397,11 @@ class AppointmentTemplate extends StatelessWidget {
 }
 
 class AppointmentPageView extends StatefulWidget {
-  const AppointmentPageView({required this.appointments, super.key});
+  const AppointmentPageView(
+      {required this.appointments, required this.doctor, super.key});
 
   final List<Appointment> appointments;
+  final String doctor;
 
   @override
   State<AppointmentPageView> createState() => _AppointmentPageViewState();
@@ -413,6 +438,7 @@ class _AppointmentPageViewState extends State<AppointmentPageView> {
               return AppointmentTemplate(
                 key: UniqueKey(),
                 appointment: widget.appointments[index],
+                doctor: widget.doctor,
               );
             },
           ),
