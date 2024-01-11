@@ -1,4 +1,5 @@
 import 'package:MedInvent/features/Map/map_screen.dart';
+import 'package:MedInvent/features/Search/search.dart';
 import 'package:MedInvent/features/home/presentation/mainPage.dart';
 import 'package:flutter/material.dart';
 
@@ -115,24 +116,15 @@ class _SideNavBarState extends State<SideNavBar> {
               'Search',
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(sideNavIndex: 3),
+                ),
+              );
+            },
           ),
-          // ListTile(
-          //   leading: Icon(Icons.search, size: screenHeight * 0.03),
-          //   title: Text(
-          //     'Search',
-          //     style: TextStyle(fontSize: screenHeight * 0.018),
-          //   ),
-          //   onTap: () {},
-          // ),
-          // ListTile(
-          //   leading: Icon(Icons.newspaper_rounded, size: screenHeight * 0.03),
-          //   title: Text(
-          //     'News Feed',
-          //     style: TextStyle(fontSize: screenHeight * 0.018),
-          //   ),
-          //   onTap: () {},
-          // ),
           ListTile(
             leading: Icon(Icons.account_circle, size: screenHeight * 0.03),
             title: Text(
