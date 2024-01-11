@@ -1,4 +1,3 @@
-import 'package:MedInvent/components/BottomNavBar.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/medication_card.dart';
@@ -12,13 +11,33 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   String username = "John Doe";
-  String greeting = "Good morning and stay healthy.";
+  String greeting = "";
   String medication1 = "Fever";
   String medication2 = "Diabetes";
   Image profilePhoto = Image.asset("assets/images/pic.png");
   final _controller = PageController();
   String username1 = "Amali";
+
+  void setGreeting() {
+    DateTime now = DateTime.now();
+    int hour = now.hour;
+
+    if (hour < 12) {
+      greeting =  "Good morning and stay healthy.";
+    } else if (hour < 18) {
+      greeting =  "Good afternoon and stay healthy.";
+    } else {
+      greeting =  "Good evening and stay healthy.";
+    }
+  }
+
+  @override
+  void initState() {
+    setGreeting();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
