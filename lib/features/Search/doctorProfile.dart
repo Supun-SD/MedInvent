@@ -1,3 +1,4 @@
+import 'package:MedInvent/features/Search/doctorAppointments.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/Search/models/doctor.dart';
 
@@ -28,7 +29,12 @@ class DoctorProfile extends StatelessWidget {
       floatingActionButton: Padding(
         padding:  EdgeInsets.only(bottom: screenHeight * 0.025),
         child: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DoctorAppointments(doctor: doctor)),
+            );
+          },
           style: TextButton.styleFrom(
             backgroundColor: const Color(0xFF4749A0),
             shape: RoundedRectangleBorder(
@@ -391,7 +397,7 @@ class HalfCirclePainter extends CustomPainter {
       ..moveTo(rect.left, rect.bottom)
       ..arcToPoint(
         Offset(rect.right, rect.bottom),
-        radius: Radius.circular(rect.width / 1.8),
+        radius: Radius.circular(rect.width / 1.5),
         clockwise: false,
       )
       ..lineTo(rect.right, rect.top)

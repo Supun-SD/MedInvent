@@ -1,3 +1,5 @@
+import 'package:MedInvent/features/Search/doctorProfile.dart';
+import 'package:MedInvent/features/Search/models/doctor.dart';
 import 'package:flutter/material.dart';
 
 import 'package:MedInvent/components/sideNavBar.dart';
@@ -193,9 +195,8 @@ class _SearchState extends State<Search> {
                               padding: EdgeInsets.symmetric(
                                   vertical: screenHeight * 0.02),
                               child: NearbyDoctor(
-                                  doctorName: doctor.name,
-                                  speciality: doctor.speciality),
-                            );
+                                doctor: doctor,
+                            ));
                           }).toList(),
                         ),
                       ),
@@ -274,10 +275,8 @@ class Category extends StatelessWidget {
 
 class NearbyDoctor extends StatelessWidget {
   const NearbyDoctor(
-      {required this.doctorName, required this.speciality, super.key});
-
-  final String doctorName;
-  final Categories speciality;
+      {required this.doctor,super.key});
+  final Doctor doctor;
 
   @override
   Widget build(BuildContext context) {
@@ -285,7 +284,12 @@ class NearbyDoctor extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DoctorProfile(doctor: doctor)),
+        );
+      },
       child: Container(
         margin: EdgeInsets.only(right: screenWidth * 0.03),
         decoration: BoxDecoration(
@@ -313,7 +317,7 @@ class NearbyDoctor extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doctorName,
+                    doctor.name,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: screenWidth * 0.028),
@@ -322,7 +326,7 @@ class NearbyDoctor extends StatelessWidget {
                     height: screenHeight * 0.005,
                   ),
                   Text(
-                    speciality.toString().split('.').last,
+                    doctor.speciality.name,
                     style: TextStyle(fontSize: screenWidth * 0.025),
                   )
                 ],
