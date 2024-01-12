@@ -442,7 +442,6 @@ class _AppointmentPageViewState extends State<AppointmentPageView> {
               );
             },
           ),
-          // Dot Indicator
           Positioned(
             bottom: screenHeight * 0.01,
             child: Row(

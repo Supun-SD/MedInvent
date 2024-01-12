@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class Medication_card extends StatelessWidget {
   final double screenHeight;
@@ -24,15 +23,13 @@ class Medication_card extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Container(
-        width: screenWidth*0.59,
-        height: screenHeight*0.1,
-        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: screenHeight * 0.1,
-              blurRadius: screenHeight * 0.5,
+              color: Colors.grey.withOpacity(0.15),
+              blurRadius: 10,
             ),
           ],
           color: color,
@@ -43,7 +40,7 @@ class Medication_card extends StatelessWidget {
           children: [
 
             Text('$User Daily Medications',),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             Align(
               alignment: Alignment.centerLeft,
@@ -51,12 +48,12 @@ class Medication_card extends StatelessWidget {
                 color: Colors.white,
                 child: Text(
                   "$medication1 Medication",
-                  style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold ),
+                  style: const TextStyle(fontSize: 11,fontWeight: FontWeight.bold ),
                 ),
               ),
             ),
 
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Stack(
               children: [
                 Container(
@@ -71,7 +68,7 @@ class Medication_card extends StatelessWidget {
                       color: color,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                  child: StepProgressIndicator(
+                  child: const StepProgressIndicator(
                     totalSteps: 12,
                     currentStep:6,
                     size: 25,
@@ -99,7 +96,7 @@ class Medication_card extends StatelessWidget {
               ],
             ),
 
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
@@ -122,7 +119,7 @@ class Medication_card extends StatelessWidget {
             ],
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
 
 
@@ -135,13 +132,13 @@ class Medication_card extends StatelessWidget {
                 color: Colors.white,
                 child: Text(
                   "$medication2 Medication",
-                  style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold ),
+                  style: const TextStyle(fontSize: 11,fontWeight: FontWeight.bold ),
                 ),
               ),
             ),
 
-            SizedBox(height: 5),
-            StepProgressIndicator(
+            const SizedBox(height: 5),
+            const StepProgressIndicator(
               totalSteps: 2,
               currentStep: 2,
               size: 25,
@@ -160,7 +157,7 @@ class Medication_card extends StatelessWidget {
                 colors: [Colors.black12, Colors.black12],
               ),
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
@@ -198,7 +195,7 @@ class StepProgressIndicator extends StatelessWidget {
   final Gradient selectedGradientColor;
   final Gradient unselectedGradientColor;
 
-  StepProgressIndicator({
+  const StepProgressIndicator({super.key,
     required this.totalSteps,
     required this.currentStep,
     this.size = 2,
@@ -243,7 +240,7 @@ class StepProgressIndicator extends StatelessWidget {
               borderRadius: BorderRadius.all(roundedEdges),
               color: Colors.transparent,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.check,
               color: Colors.white,
             ),
