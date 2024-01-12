@@ -7,6 +7,7 @@ class Pharmacy{
   String closeTime;
   List<String> datesList;
   LatLng location;
+  String address;
 
   Pharmacy({
     required this.name,
@@ -15,5 +16,6 @@ class Pharmacy{
     required this.closeTime,
     required this.datesList,
     required this.location,
+    required this.address,
   });
 }

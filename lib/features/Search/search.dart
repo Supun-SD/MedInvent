@@ -1,5 +1,7 @@
 import 'package:MedInvent/features/Search/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/doctor.dart';
+import 'package:MedInvent/features/Search/models/pharmacy.dart';
+import 'package:MedInvent/features/Search/pharmacyProfile.dart';
 import 'package:flutter/material.dart';
 
 import 'package:MedInvent/components/sideNavBar.dart';
@@ -214,7 +216,7 @@ class _SearchState extends State<Search> {
                       ),
                       ...pharmacies
                           .map((p) => NearbyPharmacy(
-                              name: p.name, mobileNo: p.contact))
+                              pharmacy: p,))
                           .toList(),
                       SizedBox(
                         height: screenHeight * 0.1,
@@ -343,45 +345,51 @@ class NearbyDoctor extends StatelessWidget {
 }
 
 class NearbyPharmacy extends StatelessWidget {
-  const NearbyPharmacy({required this.name, required this.mobileNo, super.key});
+  const NearbyPharmacy({required this.pharmacy, super.key});
 
-  final String name;
-  final String mobileNo;
-
+  final Pharmacy pharmacy;
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      margin: EdgeInsets.only(
-          right: screenWidth * 0.06, bottom: screenHeight * 0.015),
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(50),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            blurRadius: 15,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Text(name),
-          const Spacer(),
-          Row(
-            children: [
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.location_on_outlined)),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.call_outlined)),
-            ],
-          )
-        ],
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PharmacyProfile(pharmacy: pharmacy)),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+            right: screenWidth * 0.06, bottom: screenHeight * 0.015),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(50),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              blurRadius: 15,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Text(pharmacy.name),
+            const Spacer(),
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.location_on_outlined)),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.call_outlined)),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
