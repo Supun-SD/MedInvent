@@ -58,6 +58,15 @@ class _HomePageState extends State<HomePage> {
     "Track order"
   ];
 
+  List<IconData> background = [
+    Icons.local_pharmacy_rounded,
+    Icons.health_and_safety,
+    Icons.edit_document,
+    Icons.shopping_cart,
+    Icons.forum,
+    Icons.local_shipping
+  ];
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -326,7 +335,11 @@ class _HomePageState extends State<HomePage> {
                       mainAxisSpacing: 15.0,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      return Shortcut(icon: widgetIcons[index], text: widgetTexts[index],);
+                      return Shortcut(
+                        icon: widgetIcons[index],
+                        text: widgetTexts[index],
+                        background: background[index],
+                      );
                     },
                   ),
                 ),
@@ -340,19 +353,24 @@ class _HomePageState extends State<HomePage> {
 }
 
 class Shortcut extends StatelessWidget {
-  const Shortcut({required this.text, required this.icon,super.key});
+  const Shortcut(
+      {required this.text,
+      required this.icon,
+      required this.background,
+      super.key});
 
   final String icon;
   final String text;
+  final IconData background;
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
-      onTap: (){},
+      borderRadius: BorderRadius.circular(20),
+      onTap: () {},
       child: Container(
-        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -363,24 +381,45 @@ class Shortcut extends StatelessWidget {
           ],
           color: const Color(0xFFF0FCFB),
         ),
-        child: Column(
-          children: [
-            Row(
-              children: [Image.asset(icon, width: screenWidth * 0.07,)],
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            child: Stack(
               children: [
-                Expanded(
-                    child: Text(
-                  textAlign: TextAlign.center,
-                  text,
-                  style: const TextStyle(fontSize: 12),
-                ))
+                Icon(
+                  background,
+                  color: const Color(0xFF99C5C1).withOpacity(0.3),
+                  size: screenWidth * 0.25,
+                ),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset(
+                          icon,
+                          width: screenWidth * 0.07,
+                        )
+                      ],
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            child: Text(
+                          textAlign: TextAlign.center,
+                          text,
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.bold),
+                        ))
+                      ],
+                    )
+                  ],
+                ),
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
