@@ -1,10 +1,12 @@
+import 'package:MedInvent/features/Map/categories.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Doctor {
   String name;
-  String speciality;
-  String arriveTime;
-  String leaveTime;
+  Categories speciality;
+  TimeOfDay arriveTime;
+  TimeOfDay leaveTime;
   List<String> datesList;
   LatLng location;
 
@@ -16,5 +18,4 @@ class Doctor {
     required this.datesList,
     required this.location,
   });
-
 }
