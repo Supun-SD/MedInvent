@@ -22,7 +22,6 @@ class _Register1State extends State<Register1> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -91,7 +90,7 @@ class _Register1State extends State<Register1> {
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
                       widget.u.email = _email.text;
-                      widget.u.mnumber = _mobileNo.text;
+                      widget.u.mobileNumber = int.parse("94${_mobileNo.text.substring(1)}");
                       widget.u.password = _password.text;
                       Navigator.push(
                         context,
