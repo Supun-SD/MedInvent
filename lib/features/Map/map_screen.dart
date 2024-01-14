@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:MedInvent/features/Search/data/doctors.dart';
 import 'package:MedInvent/features/Search/data/pharmacies.dart';
+import 'package:MedInvent/features/Search/doctorProfile.dart';
+import 'package:MedInvent/features/Search/pharmacyProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -97,8 +99,7 @@ class MapPageState extends State<MapPage> {
     }
   }
 
-  void _showPopupDoctor(BuildContext context, String name, Categories spec,
-      String arrive, String leave) {
+  void _showPopupDoctor(BuildContext context, Doctor doctor) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -111,11 +112,11 @@ class MapPageState extends State<MapPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text("Dr $name",
+              Text("Dr ${doctor.name}",
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 5.0),
-              Text(spec.toString(),
+              Text(doctor.speciality.name,
                   style: const TextStyle(
                     fontSize: 16,
                   )),
@@ -127,7 +128,7 @@ class MapPageState extends State<MapPage> {
                         fontSize: 16,
                       )),
                   const Spacer(),
-                  Text("$arrive - $leave",
+                  Text("${doctor.arriveTime} - ${doctor.leaveTime}",
                       style: const TextStyle(
                         fontSize: 16,
                       )),
@@ -136,7 +137,12 @@ class MapPageState extends State<MapPage> {
               const SizedBox(height: 20.0),
               Center(
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DoctorProfile(doctor: doctor)),
+                    );
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: const Color(0xFF2980B9),
                     shape: RoundedRectangleBorder(
@@ -159,8 +165,7 @@ class MapPageState extends State<MapPage> {
     );
   }
 
-  void _showPopupPharmacy(BuildContext context, String name, String contactNo,
-      String open, String close) {
+  void _showPopupPharmacy(BuildContext context, Pharmacy pharmacy) {
     bool openStatus = true;
 
     showModalBottomSheet(
@@ -175,7 +180,7 @@ class MapPageState extends State<MapPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(name,
+              Text(pharmacy.name,
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10.0),
@@ -191,7 +196,7 @@ class MapPageState extends State<MapPage> {
                         ),
                         const Text("Open Now"),
                         const Spacer(),
-                        Text(contactNo,
+                        Text(pharmacy.contact,
                             style: const TextStyle(
                               fontSize: 16,
                             )),
@@ -208,7 +213,7 @@ class MapPageState extends State<MapPage> {
                         ),
                         const Text("Closed"),
                         const Spacer(),
-                        Text(contactNo,
+                        Text(pharmacy.contact,
                             style: const TextStyle(
                               fontSize: 16,
                             )),
@@ -223,7 +228,7 @@ class MapPageState extends State<MapPage> {
                   ),
                   const Spacer(),
                   Text(
-                    "$open - $close",
+                    "${pharmacy.openTime} - ${pharmacy.closeTime}",
                     style: const TextStyle(fontSize: 16),
                   ),
                 ],
@@ -231,7 +236,12 @@ class MapPageState extends State<MapPage> {
               const SizedBox(height: 20.0),
               Center(
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PharmacyProfile(pharmacy: pharmacy)),
+                    );
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: const Color(0xFF2980B9),
                     shape: RoundedRectangleBorder(
@@ -276,8 +286,7 @@ class MapPageState extends State<MapPage> {
             position: doctor.location,
             icon: _locationIcon[1],
             onTap: () {
-              _showPopupDoctor(context, doctor.name, doctor.speciality,
-                  doctor.arriveTime, doctor.leaveTime);
+              _showPopupDoctor(context, doctor);
             }),
       );
     }
@@ -289,8 +298,7 @@ class MapPageState extends State<MapPage> {
             position: pharmacy.location,
             icon: _locationIcon[5],
             onTap: () {
-              _showPopupPharmacy(context, pharmacy.name, pharmacy.contact,
-                  pharmacy.openTime, pharmacy.closeTime);
+              _showPopupPharmacy(context, pharmacy);
             }),
       );
     }
@@ -320,8 +328,7 @@ class MapPageState extends State<MapPage> {
             position: doctor.location,
             icon: _locationIcon[1],
             onTap: () {
-              _showPopupDoctor(context, doctor.name, doctor.speciality,
-                  doctor.arriveTime, doctor.leaveTime);
+              _showPopupDoctor(context, doctor);
             },
           ),
         );
@@ -334,8 +341,7 @@ class MapPageState extends State<MapPage> {
             position: pharmacy.location,
             icon: _locationIcon[5],
             onTap: () {
-              _showPopupPharmacy(context, pharmacy.name, pharmacy.contact,
-                  pharmacy.openTime, pharmacy.closeTime);
+              _showPopupPharmacy(context, pharmacy);
             },
           ),
         );
