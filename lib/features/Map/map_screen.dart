@@ -329,7 +329,9 @@ class MapPageState extends State<MapPage> {
         Marker(
             markerId: MarkerId(doctor.name),
             position: doctor.location,
-            icon: timeCheck(doctor.arriveTime, doctor.leaveTime) ? _locationIcon[1] : _locationIcon[2],
+            icon: timeCheck(doctor.arriveTime, doctor.leaveTime)
+                ? _locationIcon[1]
+                : _locationIcon[2],
             onTap: () {
               _showPopupDoctor(context, doctor);
             }),
@@ -373,7 +375,9 @@ class MapPageState extends State<MapPage> {
           Marker(
             markerId: MarkerId(doctor.name),
             position: doctor.location,
-            icon: _locationIcon[1],
+            icon: timeCheck(doctor.arriveTime, doctor.leaveTime)
+                ? _locationIcon[1]
+                : _locationIcon[2],
             onTap: () {
               _showPopupDoctor(context, doctor);
             },
@@ -386,7 +390,9 @@ class MapPageState extends State<MapPage> {
           Marker(
             markerId: MarkerId(pharmacy.name),
             position: pharmacy.location,
-            icon: _locationIcon[5],
+            icon: timeCheck(pharmacy.openTime, pharmacy.closeTime)
+                ? _locationIcon[5]
+                : _locationIcon[6],
             onTap: () {
               _showPopupPharmacy(context, pharmacy);
             },
