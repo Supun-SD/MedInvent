@@ -253,6 +253,11 @@ class PharmacyProfile extends StatelessWidget {
 class Details extends StatelessWidget {
   const Details({required this.pharmacy, super.key});
   final Pharmacy pharmacy;
+
+  String formatTimeOfDay(TimeOfDay time) {
+    return '${time.hourOfPeriod}:${time.minute.toString().padLeft(2, '0')} ${time.period == DayPeriod.am ? 'AM' : 'PM'}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -291,7 +296,7 @@ class Details extends StatelessWidget {
                   style: TextStyle(fontSize: screenWidth * 0.035),
                 )),
             Text(
-              "${pharmacy.openTime} to ${pharmacy.closeTime} ",
+              "${formatTimeOfDay(pharmacy.openTime)} to ${formatTimeOfDay(pharmacy.closeTime)} ",
               style: TextStyle(
                   fontSize: screenWidth * 0.035, fontWeight: FontWeight.bold),
             ),

@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Pharmacy {
   String name;
   String contact;
-  String openTime;
-  String closeTime;
+  TimeOfDay openTime;
+  TimeOfDay closeTime;
   List<String> datesList;
   LatLng location;
   String address;

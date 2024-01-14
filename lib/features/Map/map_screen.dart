@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:MedInvent/features/Search/data/doctors.dart';
 import 'package:MedInvent/features/Search/data/pharmacies.dart';
 import 'package:MedInvent/features/Search/doctorProfile.dart';
@@ -9,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/features/Search/models/categories.dart';
 import 'package:MedInvent/features/Search/models/doctor.dart';
 import 'package:MedInvent/features/Search/models/pharmacy.dart';
 
@@ -33,18 +33,60 @@ class MapPageState extends State<MapPage> {
   final Set<Marker> _markers = {};
   final List<BitmapDescriptor> _locationIcon = [];
 
-  List<Doctor> nearbyDoctors = [
-    doctors[0], doctors[1], doctors[2],
-  ];
-  List<Pharmacy> nearbyPharmacies = [
-    pharmacies[0], pharmacies[1],
-  ];
+  List<Doctor> nearbyDoctors = [];
+  List<Pharmacy> nearbyPharmacies = [];
 
   @override
   void initState() {
-    getLocationUpdates();
-    _loadLocationIcon().then((value) => addMarkers());
+    _initializeState();
     super.initState();
+  }
+
+  Future<void> _initializeState() async {
+    await _loadLocationIcon();
+    await getLocationUpdates();
+  }
+
+  Future<void> nearbyDoctorsAndPharmacies() async {
+    nearbyDoctors.clear();
+    nearbyPharmacies.clear();
+
+    for (int i = 0; i < doctors.length; i++) {
+      if (calculateDisplacement(_currentP!, doctors[i].location) < 5) {
+        nearbyDoctors.add(doctors[i]);
+      }
+    }
+
+    for (int i = 0; i < pharmacies.length; i++) {
+      if (calculateDisplacement(_currentP!, pharmacies[i].location) < 5) {
+        nearbyPharmacies.add(pharmacies[i]);
+      }
+    }
+  }
+
+  double calculateDisplacement(LatLng location1, LatLng location2) {
+    const double earthRadius = 6371;
+
+    double lat1Rad = _degreesToRadians(location1.latitude);
+    double lon1Rad = _degreesToRadians(location1.longitude);
+    double lat2Rad = _degreesToRadians(location2.latitude);
+    double lon2Rad = _degreesToRadians(location2.longitude);
+
+    double dLat = lat2Rad - lat1Rad;
+    double dLon = lon2Rad - lon1Rad;
+
+    double a = pow(sin(dLat / 2), 2) +
+        cos(lat1Rad) * cos(lat2Rad) * pow(sin(dLon / 2), 2);
+
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    double distance = earthRadius * c;
+
+    return distance;
+  }
+
+  double _degreesToRadians(double degrees) {
+    return degrees * (pi / 180);
   }
 
   Future<void> _cameraToPosition(LatLng pos) async {
@@ -84,6 +126,7 @@ class MapPageState extends State<MapPage> {
         setState(() {
           _currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          nearbyDoctorsAndPharmacies();
           addMarkers();
         });
       }
@@ -128,7 +171,8 @@ class MapPageState extends State<MapPage> {
                         fontSize: 16,
                       )),
                   const Spacer(),
-                  Text("${doctor.arriveTime} - ${doctor.leaveTime}",
+                  Text(
+                      "${formatTimeOfDay(doctor.arriveTime)} - ${formatTimeOfDay(doctor.leaveTime)}",
                       style: const TextStyle(
                         fontSize: 16,
                       )),
@@ -140,7 +184,8 @@ class MapPageState extends State<MapPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DoctorProfile(doctor: doctor)),
+                      MaterialPageRoute(
+                          builder: (context) => DoctorProfile(doctor: doctor)),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -166,8 +211,6 @@ class MapPageState extends State<MapPage> {
   }
 
   void _showPopupPharmacy(BuildContext context, Pharmacy pharmacy) {
-    bool openStatus = true;
-
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -184,7 +227,7 @@ class MapPageState extends State<MapPage> {
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10.0),
-              openStatus
+              timeCheck(pharmacy.openTime, pharmacy.closeTime)
                   ? Row(
                       children: [
                         const Icon(
@@ -228,7 +271,7 @@ class MapPageState extends State<MapPage> {
                   ),
                   const Spacer(),
                   Text(
-                    "${pharmacy.openTime} - ${pharmacy.closeTime}",
+                    "${formatTimeOfDay(pharmacy.openTime)} - ${formatTimeOfDay(pharmacy.closeTime)}",
                     style: const TextStyle(fontSize: 16),
                   ),
                 ],
@@ -239,7 +282,9 @@ class MapPageState extends State<MapPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PharmacyProfile(pharmacy: pharmacy)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PharmacyProfile(pharmacy: pharmacy)),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -284,7 +329,7 @@ class MapPageState extends State<MapPage> {
         Marker(
             markerId: MarkerId(doctor.name),
             position: doctor.location,
-            icon: _locationIcon[1],
+            icon: timeCheck(doctor.arriveTime, doctor.leaveTime) ? _locationIcon[1] : _locationIcon[2],
             onTap: () {
               _showPopupDoctor(context, doctor);
             }),
@@ -296,7 +341,9 @@ class MapPageState extends State<MapPage> {
         Marker(
             markerId: MarkerId(pharmacy.name),
             position: pharmacy.location,
-            icon: _locationIcon[5],
+            icon: timeCheck(pharmacy.openTime, pharmacy.closeTime)
+                ? _locationIcon[5]
+                : _locationIcon[6],
             onTap: () {
               _showPopupPharmacy(context, pharmacy);
             }),
@@ -440,6 +487,24 @@ class MapPageState extends State<MapPage> {
         );
       },
     );
+  }
+
+  bool timeCheck(TimeOfDay start, TimeOfDay end) {
+    final now = DateTime.now();
+    final currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
+
+    final startTime = DateTime(1, 1, 1, start.hour, start.minute);
+    final endTime = DateTime(1, 1, 1, end.hour, end.minute);
+
+    final currentDateTime =
+        DateTime(1, 1, 1, currentTime.hour, currentTime.minute);
+
+    return currentDateTime.isAfter(startTime) &&
+        currentDateTime.isBefore(endTime);
+  }
+
+  String formatTimeOfDay(TimeOfDay time) {
+    return '${time.hourOfPeriod}:${time.minute.toString().padLeft(2, '0')} ${time.period == DayPeriod.am ? 'AM' : 'PM'}';
   }
 
   @override
