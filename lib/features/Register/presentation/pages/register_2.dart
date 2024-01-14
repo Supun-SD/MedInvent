@@ -20,9 +20,24 @@ class Register2State extends State<Register2> {
   final TextEditingController _fName = TextEditingController();
   final TextEditingController _lName = TextEditingController();
   final TextEditingController _NIC = TextEditingController();
-  final TextEditingController _dob = TextEditingController();
 
   String selectedGender = 'Male';
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +62,14 @@ class Register2State extends State<Register2> {
                 ),
                 SizedBox(height: screenHeight * 0.1),
                 InputField(
-                    validator: (value) => emptyValidation(value, "First Name"),
+                    validator: (value) => nameValidation(value!, "First Name"),
                     controller: _fName,
                     keyboardType: TextInputType.text,
                     hint: 'First Name',
                     isPassword: false),
                 SizedBox(height: screenHeight * 0.02),
                 InputField(
-                    validator: (value) => emptyValidation(value, "Last Name"),
+                    validator: (value) => nameValidation(value!, "Last Name"),
                     controller: _lName,
                     keyboardType: TextInputType.text,
                     hint: 'Last Name',
@@ -67,12 +82,36 @@ class Register2State extends State<Register2> {
                     hint: 'NIC',
                     isPassword: false),
                 SizedBox(height: screenHeight * 0.02),
-                InputField(
-                    validator: (value) => dobValidation(value),
-                    controller: _dob,
-                    keyboardType: TextInputType.datetime,
-                    hint: 'Date of Birth (YYYY-MM-DD)',
-                    isPassword: false),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.055,
+                      vertical: screenHeight * 0.005),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "${selectedDate.toLocal()}".split(' ')[0],
+                        style: TextStyle(fontSize: screenWidth * 0.038),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () => _selectDate(context),
+                        icon: const Icon(
+                          Icons.calendar_month,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(height: screenHeight * 0.02),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
@@ -92,12 +131,16 @@ class Register2State extends State<Register2> {
                           selectedGender = newValue ?? 'Male';
                         });
                       },
+                      underline: Container(),
                       items: genderOptions.map((String gender) {
                         return DropdownMenuItem<String>(
                           value: gender,
                           child: Text(gender),
                         );
                       }).toList(),
+                      elevation: 16,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0)),
                     ),
                   ),
                 ),
@@ -106,10 +149,10 @@ class Register2State extends State<Register2> {
                   text: 'Next',
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
-                      widget.userData.first_name = _fName.text;
-                      widget.userData.last_name = _lName.text;
+                      widget.userData.firstName = _fName.text;
+                      widget.userData.lastName = _lName.text;
                       widget.userData.nic = _NIC.text;
-                      widget.userData.birth_date = _dob.text;
+                      widget.userData.birthDate = selectedDate;
                       widget.userData.gender = selectedGender;
                       Navigator.push(
                         context,

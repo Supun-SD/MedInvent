@@ -16,11 +16,9 @@ class Register3 extends StatefulWidget {
 }
 
 class _Register3State extends State<Register3> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _addressLine1 = TextEditingController();
   final TextEditingController _addressLine2 = TextEditingController();
   final TextEditingController _city = TextEditingController();
-  final TextEditingController _district = TextEditingController();
   final TextEditingController _postalCode = TextEditingController();
 
   postData() async {
@@ -33,12 +31,12 @@ class _Register3State extends State<Register3> {
       body: jsonEncode({
         'email': widget.userData.email,
         'user_password': widget.userData.password,
-        'first_name': widget.userData.first_name,
-        'last_name': widget.userData.last_name,
+        'first_name': widget.userData.firstName,
+        'last_name': widget.userData.lastName,
         'nic': widget.userData.nic,
         'gender': widget.userData.gender,
-        'birth_date': widget.userData.birth_date,
-        'mNumber': widget.userData.mnumber,
+        'birth_date': widget.userData.birthDate,
+        'mNumber': widget.userData.mobileNumber,
         'address': {
           'line1': widget.userData.line1,
           'line2': widget.userData.line2,
@@ -58,6 +56,8 @@ class _Register3State extends State<Register3> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Registration Successful'),
           content: const Text('You have successfully registered!'),
           actions: [
@@ -77,16 +77,46 @@ class _Register3State extends State<Register3> {
     );
   }
 
+  List<String> districts = [
+    'Colombo',
+    'Gampaha',
+    'Kalutara',
+    'Kandy',
+    'Matale',
+    'Nuwara Eliya',
+    'Galle',
+    'Matara',
+    'Hambantota',
+    'Jaffna',
+    'Kilinochchi',
+    'Mannar',
+    'Mullaitivu',
+    'Vavuniya',
+    'Puttalam',
+    'Kurunegala',
+    'Anuradhapura',
+    'Polonnaruwa',
+    'Badulla',
+    'Monaragala',
+    'Ratnapura',
+    'Kegalle',
+    'Trincomalee',
+    'Batticaloa',
+    'Ampara',
+  ];
+
+  String selectedDistrict = "Colombo";
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Form(
-            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -94,7 +124,11 @@ class _Register3State extends State<Register3> {
                   'Enter your residential address',
                   style: TextStyle(fontSize: screenHeight * 0.02),
                 ),
-                SizedBox(height: screenHeight * 0.1),
+                Text(
+                  '(Optional)',
+                  style: TextStyle(fontSize: screenHeight * 0.02),
+                ),
+                SizedBox(height: screenHeight * 0.07),
                 InputField(
                     validator: (value) => emptyValidation(value, "Line 1"),
                     controller: _addressLine1,
@@ -115,12 +149,37 @@ class _Register3State extends State<Register3> {
                     hint: 'City',
                     isPassword: false),
                 SizedBox(height: screenHeight * 0.02),
-                InputField(
-                    validator: (value) => emptyValidation(value, "District"),
-                    controller: _district,
-                    keyboardType: TextInputType.text,
-                    hint: 'District',
-                    isPassword: false),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.1),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.003,
+                        horizontal: screenWidth * 0.055),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: selectedDistrict,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedDistrict = newValue ?? 'Male';
+                        });
+                      },
+                      underline: Container(),
+                      items: districts.map((String gender) {
+                        return DropdownMenuItem<String>(
+                          value: gender,
+                          child: Text(gender),
+                        );
+                      }).toList(),
+                      elevation: 16,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                  ),
+                ),
                 SizedBox(height: screenHeight * 0.02),
                 InputField(
                     controller: _postalCode,
@@ -131,14 +190,11 @@ class _Register3State extends State<Register3> {
                 CustomButton(
                   text: 'Register',
                   onPressed: () {
-                    if (_formKey.currentState?.validate() == true) {
-                      widget.userData.line1 = _addressLine1.text;
-                      widget.userData.line2 = _addressLine2.text;
-                      widget.userData.city = _city.text;
-                      widget.userData.district = _district.text;
-                      widget.userData.postalCode = int.parse(_postalCode.text);
-                      _registrationSuccess();
-                    }
+                    widget.userData.line1 = _addressLine1.text;
+                    widget.userData.line2 = _addressLine2.text;
+                    widget.userData.city = _city.text;
+                    widget.userData.district = selectedDistrict;
+                    _registrationSuccess();
                   },
                 ),
               ],
