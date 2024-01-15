@@ -1,4 +1,6 @@
+import 'package:MedInvent/features/Search/data/medicines.dart';
 import 'package:MedInvent/features/Search/doctorProfile.dart';
+import 'package:MedInvent/features/Search/medicineProfile.dart';
 import 'package:MedInvent/features/Search/models/doctor.dart';
 import 'package:MedInvent/features/Search/models/pharmacy.dart';
 import 'package:MedInvent/features/Search/pharmacyProfile.dart';
@@ -19,6 +21,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   String selectedValue = 'Doctors';
+  TextEditingController search = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +72,7 @@ class _SearchState extends State<Search> {
                 left: 0,
                 right: 0,
                 child: Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.05),
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(50),
@@ -101,8 +103,7 @@ class _SearchState extends State<Search> {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(left: 15),
+                                    padding: const EdgeInsets.only(left: 15),
                                     child: Text(
                                       value,
                                       style: TextStyle(
@@ -116,10 +117,10 @@ class _SearchState extends State<Search> {
                                   selectedValue = newValue!;
                                 });
                               },
+                              borderRadius: BorderRadius.circular(20),
                               underline: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.transparent),
+                                  border: Border.all(color: Colors.transparent),
                                 ),
                               ),
                             ),
@@ -130,17 +131,21 @@ class _SearchState extends State<Search> {
                         ),
                         Expanded(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30.0),
                               color: Colors.grey[200],
                             ),
                             child: TextField(
+                              controller: search,
+                              onChanged: (String value) {
+                                setState(() {});
+                              },
                               decoration: InputDecoration(
                                 hintText: 'Search for $selectedValue',
-                                hintStyle: TextStyle(
-                                    fontSize: screenWidth * 0.035),
+                                hintStyle:
+                                    TextStyle(fontSize: screenWidth * 0.035),
                                 border: InputBorder.none,
                                 icon: const Icon(Icons.search),
                               ),
@@ -175,8 +180,7 @@ class _SearchState extends State<Search> {
                         child: Row(
                           children: Categories.values.map((category) {
                             return Category(
-                                category:
-                                    category.toString().split('.').last);
+                                category: category.toString().split('.').last);
                           }).toList(),
                         ),
                       ),
@@ -194,11 +198,11 @@ class _SearchState extends State<Search> {
                         child: Row(
                           children: doctors.map((doctor) {
                             return Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.02),
-                              child: NearbyDoctor(
-                                doctor: doctor,
-                            ));
+                                padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.02),
+                                child: NearbyDoctor(
+                                  doctor: doctor,
+                                ));
                           }).toList(),
                         ),
                       ),
@@ -216,7 +220,8 @@ class _SearchState extends State<Search> {
                       ),
                       ...pharmacies
                           .map((p) => NearbyPharmacy(
-                              pharmacy: p,))
+                                pharmacy: p,
+                              ))
                           .toList(),
                       SizedBox(
                         height: screenHeight * 0.1,
@@ -225,6 +230,110 @@ class _SearchState extends State<Search> {
                   ),
                 ),
               ),
+              if (search.text.isNotEmpty)
+                Positioned(
+                  top: screenHeight * 0.11,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: screenHeight * 0.4,
+                    margin:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: screenHeight * 0.02),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.8),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Scrollbar(
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            if (selectedValue == 'Doctors')
+                              ...doctors.map((doctor) => InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DoctorProfile(doctor: doctor),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      margin: const EdgeInsets.symmetric(vertical: 5),
+                                      child: ListTile(
+                                        selectedTileColor: Colors.grey,
+                                        title: Text(doctor.name, style: TextStyle(fontSize: screenWidth * 0.035),),
+                                      ),
+                                    ),
+                                  ))
+                            else if (selectedValue == 'Pharmacies')
+                              ...pharmacies.map((pharmacy) => InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              PharmacyProfile(pharmacy: pharmacy),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      margin: const EdgeInsets.symmetric(vertical: 5),
+                                      child: ListTile(
+                                        selectedTileColor: Colors.grey,
+                                        title: Text(pharmacy.name, style: TextStyle(fontSize: screenWidth * 0.035),),
+                                      ),
+                                    ),
+                                  ))
+                            else if (selectedValue == 'Medicine')
+                                ...medicines.map((medicine) => InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            MedicineProfile(medicine: medicine),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin: const EdgeInsets.symmetric(vertical: 5),
+                                    child: ListTile(
+                                      selectedTileColor: Colors.grey,
+                                      title: Text(medicine.name, style: TextStyle(fontSize: screenWidth * 0.035),),
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -247,7 +356,8 @@ class Category extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AdvancedSearch(category: category)),
+          MaterialPageRoute(
+              builder: (context) => AdvancedSearch(category: category)),
         );
       },
       child: Container(
@@ -276,8 +386,7 @@ class Category extends StatelessWidget {
 }
 
 class NearbyDoctor extends StatelessWidget {
-  const NearbyDoctor(
-      {required this.doctor,super.key});
+  const NearbyDoctor({required this.doctor, super.key});
   final Doctor doctor;
 
   @override
@@ -289,7 +398,8 @@ class NearbyDoctor extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DoctorProfile(doctor: doctor)),
+          MaterialPageRoute(
+              builder: (context) => DoctorProfile(doctor: doctor)),
         );
       },
       child: Container(
@@ -357,7 +467,8 @@ class NearbyPharmacy extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PharmacyProfile(pharmacy: pharmacy)),
+          MaterialPageRoute(
+              builder: (context) => PharmacyProfile(pharmacy: pharmacy)),
         );
       },
       child: Container(
@@ -384,8 +495,7 @@ class NearbyPharmacy extends StatelessWidget {
                     onPressed: () {},
                     icon: const Icon(Icons.location_on_outlined)),
                 IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.call_outlined)),
+                    onPressed: () {}, icon: const Icon(Icons.call_outlined)),
               ],
             )
           ],

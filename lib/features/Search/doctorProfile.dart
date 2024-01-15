@@ -252,11 +252,22 @@ class DoctorProfile extends StatelessWidget {
                               color: Colors.white,
                               width: 4.0,
                             ),
-                            borderRadius: BorderRadius.circular(100),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.6),
+                                blurRadius: 10,
+                              ),
+                            ],
+                            borderRadius:
+                            BorderRadius.circular(screenHeight * 0.12),
                           ),
-                          child: Image.asset(
-                            "assets/images/pic.png",
-                            height: screenHeight * 0.12,
+                          child: ClipOval(
+                            child: Image.asset(
+                              "assets/images/doctorDP.png",
+                              height: screenHeight * 0.12,
+                              width: screenHeight * 0.12,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
