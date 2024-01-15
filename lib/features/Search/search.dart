@@ -23,6 +23,37 @@ class _SearchState extends State<Search> {
   String selectedValue = 'Doctors';
   TextEditingController search = TextEditingController();
 
+  List displayDoctors = List.from(doctors);
+  List displayPharmacies = List.from(pharmacies);
+  List displayMedicine = List.from(medicines);
+
+  void updateDoctorList(String value) {
+    setState(() {
+      displayDoctors = doctors
+          .where((doctor) =>
+              doctor.name.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void updatePharmacyList(String value) {
+    setState(() {
+      displayPharmacies = pharmacies
+          .where((pharmacy) =>
+              pharmacy.name.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void updateMedicineList(String value) {
+    setState(() {
+      displayMedicine = medicines
+          .where((medicine) =>
+              medicine.name.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -140,7 +171,15 @@ class _SearchState extends State<Search> {
                             child: TextField(
                               controller: search,
                               onChanged: (String value) {
-                                setState(() {});
+                                setState(() {
+                                  if (selectedValue == 'Doctors') {
+                                    updateDoctorList(value);
+                                  } else if (selectedValue == 'Pharmacies') {
+                                    updatePharmacyList(value);
+                                  } else if (selectedValue == 'Medicine') {
+                                    updateMedicineList(value);
+                                  }
+                                });
                               },
                               decoration: InputDecoration(
                                 hintText: 'Search for $selectedValue',
@@ -236,7 +275,6 @@ class _SearchState extends State<Search> {
                   left: 0,
                   right: 0,
                   child: Container(
-                    height: screenHeight * 0.4,
                     margin:
                         EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                     padding: EdgeInsets.symmetric(
@@ -253,60 +291,79 @@ class _SearchState extends State<Search> {
                         ),
                       ],
                     ),
-                    child: Scrollbar(
-                      thumbVisibility: true,
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Column(
-                          children: [
-                            if (selectedValue == 'Doctors')
-                              ...doctors.map((doctor) => InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DoctorProfile(doctor: doctor),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
+                    child: Column(
+                      children: [
+                        if (selectedValue == 'Doctors')
+                          if (displayDoctors.isNotEmpty)
+                            ...displayDoctors.map((doctor) => InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DoctorProfile(doctor: doctor),
                                       ),
-                                      margin: const EdgeInsets.symmetric(vertical: 5),
-                                      child: ListTile(
-                                        selectedTileColor: Colors.grey,
-                                        title: Text(doctor.name, style: TextStyle(fontSize: screenWidth * 0.035),),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: ListTile(
+                                      selectedTileColor: Colors.grey,
+                                      title: Text(
+                                        doctor.name,
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.035),
                                       ),
                                     ),
-                                  ))
-                            else if (selectedValue == 'Pharmacies')
-                              ...pharmacies.map((pharmacy) => InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              PharmacyProfile(pharmacy: pharmacy),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ))
+                          else
+                            Padding(
+                              padding: EdgeInsets.all(screenWidth * 0.1),
+                              child: const Text('no result'),
+                            )
+                        else if (selectedValue == 'Pharmacies')
+                          if (pharmacies.isNotEmpty)
+                            ...displayPharmacies.map((pharmacy) => InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PharmacyProfile(pharmacy: pharmacy),
                                       ),
-                                      margin: const EdgeInsets.symmetric(vertical: 5),
-                                      child: ListTile(
-                                        selectedTileColor: Colors.grey,
-                                        title: Text(pharmacy.name, style: TextStyle(fontSize: screenWidth * 0.035),),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: ListTile(
+                                      selectedTileColor: Colors.grey,
+                                      title: Text(
+                                        pharmacy.name,
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.035),
                                       ),
                                     ),
-                                  ))
-                            else if (selectedValue == 'Medicine')
-                                ...medicines.map((medicine) => InkWell(
+                                  ),
+                                ))
+                          else
+                            Padding(
+                              padding: EdgeInsets.all(screenWidth * 0.1),
+                              child: const Text('no result'),
+                            )
+                        else if (selectedValue == 'Medicine')
+                          if (displayMedicine.isNotEmpty)
+                            ...displayMedicine.map((medicine) => InkWell(
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -321,16 +378,24 @@ class _SearchState extends State<Search> {
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    margin: const EdgeInsets.symmetric(vertical: 5),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 5),
                                     child: ListTile(
                                       selectedTileColor: Colors.grey,
-                                      title: Text(medicine.name, style: TextStyle(fontSize: screenWidth * 0.035),),
+                                      title: Text(
+                                        medicine.name,
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.035),
+                                      ),
                                     ),
                                   ),
-                                )),
-                          ],
-                        ),
-                      ),
+                                ))
+                          else
+                            Padding(
+                              padding: EdgeInsets.all(screenWidth * 0.1),
+                              child: const Text('no result'),
+                            ),
+                      ],
                     ),
                   ),
                 ),
