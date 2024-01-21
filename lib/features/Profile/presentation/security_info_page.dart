@@ -17,138 +17,135 @@ class SecurityInfoState extends State<SecurityInfo> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF474CA0),
+                Color(0xFF468FA0),
+              ],
+            ),
+          ),
+        ),
+        title: const Text("Security Information"),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF474CA0),
+                Color(0xFF468FA0),
+              ],
+            ),
+          ),
+          child: Container(
+            margin: EdgeInsets.only(top: screenHeight * 0.025),
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: [
-                  Color(0xFF474CA0),
-                  Color(0xFF468FA0),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBar(
-              title: const Text("Basic Information"),
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              toolbarHeight: screenHeight * 0.1,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: screenHeight * 0.85,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(screenHeight * 0.06),
-                  topRight: Radius.circular(screenHeight * 0.06),
-                ),
                 color: Colors.white,
-              ),
-              child: SingleChildScrollView(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.07,),
-                  child: Column(
-                    children: [
-                      const AddText(
-                        text: 'Security Information',
-                        topValue: 41.8,
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.02, horizontal: screenWidth * 0.02),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 70,
-                            ),
-                          ],
-                        ),
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Info(
-                              label: "Email",
-                              data: "sample@gmail.com",
-                            ),
-                            Info(
-                              label: "Mobile Number",
-                              data: "0778646255",
-                            ),
-                          ],
-                        ),
-                      ),
-                      const AddText(
-                        text: 'Change Password',
-                        topValue: 41.8,
-                      ),
-                      Container(
-                        width: 356,
-                        height: 267,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50.0),
+                  topRight: Radius.circular(50.0),
+                )),
+            child: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.07,
+                ),
+                child: Column(
+                  children: [
+                    const AddText(
+                      text: 'Security Information',
+                      topValue: 41.8,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.02,
+                          horizontal: screenWidth * 0.02),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0,
+                            blurRadius: 70,
                           ),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 30.0,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Column(
-                          children: [
-                            Inputbutton(
-                              topic: 'Old Password',
-                              tvalue: 33,
-                              bvalue: 24,
-                              wiht: 300,
-                            ),
-                            Inputbutton(
-                              topic: 'New Password',
-                              bvalue: 24,
-                              wiht: 300,
-                            ),
-                            Inputbutton(
-                              topic: 'Confirm Password',
-                              bvalue: 33,
-                              wiht: 300,
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
-                      SaveButton(
-                        onTap: () {},
-                        save: 'Save',
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Info(
+                            label: "Email",
+                            data: "sample@gmail.com",
+                          ),
+                          Info(
+                            label: "Mobile Number",
+                            data: "0778646255",
+                          ),
+                        ],
                       ),
-                      SizedBox(height: screenHeight * 0.07),
-                    ],
-                  ),
+                    ),
+                    const AddText(
+                      text: 'Change Password',
+                      topValue: 41.8,
+                    ),
+                    Container(
+                      width: 356,
+                      height: 267,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 30.0,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Column(
+                        children: [
+                          Inputbutton(
+                            topic: 'Old Password',
+                            tvalue: 33,
+                            bvalue: 24,
+                            wiht: 300,
+                          ),
+                          Inputbutton(
+                            topic: 'New Password',
+                            bvalue: 24,
+                            wiht: 300,
+                          ),
+                          Inputbutton(
+                            topic: 'Confirm Password',
+                            bvalue: 33,
+                            wiht: 300,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SaveButton(
+                      onTap: () {},
+                      save: 'Save',
+                    ),
+                    SizedBox(height: screenHeight * 0.07),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

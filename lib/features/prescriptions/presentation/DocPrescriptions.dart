@@ -1,3 +1,7 @@
+import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
+import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/features/prescriptions/data/docPrescriptions.dart';
+import 'package:MedInvent/features/prescriptions/model/docPrescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/prescriptionDetails.dart';
 import 'package:flutter/material.dart';
 
@@ -8,13 +12,6 @@ class DocPresContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-
-    List<Widget> docPrescriptions = [
-      const DocPrescriptionTemplate(
-          date: "2023/01/12", pharmacy: "Sumudu Pharmacy", doctor: "Dr Amith"),
-      const DocPrescriptionTemplate(
-          date: "2023/01/12", pharmacy: "Sumudu Pharmacy", doctor: "Dr Amith"),
-    ];
 
     return SingleChildScrollView(
       child: Padding(
@@ -37,7 +34,9 @@ class DocPresContent extends StatelessWidget {
                       ),
                     ),
                   ]
-                : docPrescriptions,
+                : docPrescriptions.map((e) {
+                    return DocPrescriptionTemplate(p: e);
+                  }).toList(),
           ),
         ),
       ),
@@ -46,16 +45,9 @@ class DocPresContent extends StatelessWidget {
 }
 
 class DocPrescriptionTemplate extends StatefulWidget {
-  final String date;
-  final String doctor;
-  final String pharmacy;
+  final DocPrescription p;
 
-  const DocPrescriptionTemplate({
-    Key? key,
-    required this.date,
-    required this.doctor,
-    required this.pharmacy,
-  }) : super(key: key);
+  const DocPrescriptionTemplate({super.key, required this.p});
 
   @override
   State<DocPrescriptionTemplate> createState() =>
@@ -63,15 +55,16 @@ class DocPrescriptionTemplate extends StatefulWidget {
 }
 
 class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
-  bool isAssigned = false;
-  String assigneeName = "John Doe";
-  String relationship = "Mother";
   String profilePicture = "assets/images/pic.png";
 
-  void updateAssignedStatus() {
+  void updateUI(FamilyMember? fm) {
     setState(() {
-      isAssigned = true;
+      widget.p.assignedMember = fm;
     });
+  }
+
+  void updateFromDetailsScreen() {
+    setState(() {});
   }
 
   @override
@@ -97,88 +90,90 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
             horizontal: screenWidth * 0.07, vertical: screenHeight * 0.015),
         child: Column(
           children: [
-            Visibility(
-              visible: !isAssigned,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Not Assigned",
-                    style: TextStyle(fontSize: screenHeight * 0.017),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(screenHeight * 0.05)),
+            widget.p.assignedMember != null
+                ? Padding(
+                    padding: EdgeInsets.only(
+                        top: screenHeight * 0.01, bottom: screenHeight * 0.02),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: AssetImage(profilePicture),
+                          radius: screenHeight * 0.025,
                         ),
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AssignPrescription(
-                              onAssignPressed: updateAssignedStatus);
+                        SizedBox(
+                          width: screenWidth * 0.05,
+                        ),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.p.assignedMember!.name,
+                                style: TextStyle(
+                                    fontSize: screenHeight * 0.02,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: screenHeight * 0.005,
+                              ),
+                              Text(
+                                widget.p.assignedMember!.relationship,
+                                style:
+                                    TextStyle(fontSize: screenHeight * 0.015),
+                              ),
+                            ]),
+                      ],
+                    ),
+                  )
+                : Row(
+                    children: [
+                      Text(
+                        "Not Assigned",
+                        style: TextStyle(fontSize: screenHeight * 0.017),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(screenHeight * 0.05)),
+                            ),
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AssignPrescription(
+                                prescription: widget.p,
+                                onAssignPressed:
+                                    (FamilyMember? selectedProfile) {
+                                  updateUI(selectedProfile);
+                                },
+                              );
+                            },
+                          );
                         },
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: const Color(0xFF2980B9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(screenHeight * 0.05),
-                      ),
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                      child: Text(
-                        "Assign",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenHeight * 0.015),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Visibility(
-              visible: isAssigned,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: screenHeight * 0.02),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage(profilePicture),
-                      radius: screenHeight * 0.025,
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.05,
-                    ),
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            assigneeName,
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFF2980B9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(screenHeight * 0.05),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.02),
+                          child: Text(
+                            "Assign",
                             style: TextStyle(
-                                fontSize: screenHeight * 0.02,
-                                fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontSize: screenHeight * 0.015),
                           ),
-                          SizedBox(
-                            height: screenHeight * 0.005,
-                          ),
-                          Text(
-                            relationship,
-                            style: TextStyle(fontSize: screenHeight * 0.015),
-                          ),
-                        ]),
-                  ],
-                ),
-              ),
-            ),
+                        ),
+                      ),
+                    ],
+                  ),
             Row(children: [
               Text(
-                "Fever",
+                widget.p.title,
                 style: TextStyle(
                     fontSize: screenHeight * 0.02, fontWeight: FontWeight.bold),
               )
@@ -188,22 +183,65 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
             ),
             Row(
               children: [
-                const Column(
-                  children: [
-                    Title(
-                        icon: Icon(Icons.calendar_month_outlined),
-                        title: "Date issued"),
-                    Title(icon: Icon(Icons.location_on), title: "Pharmacy"),
-                    Title(icon: Icon(Icons.person), title: "Doctor"),
-                  ],
+                SizedBox(
+                  width: screenWidth * 0.35,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_month,
+                        size: screenWidth * 0.045,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Date issued",
+                        style: TextStyle(fontSize: screenWidth * 0.035),
+                      )
+                    ],
+                  ),
                 ),
-                Column(
-                  children: [
-                    Data(data: widget.date),
-                    Data(data: widget.pharmacy),
-                    Data(data: widget.doctor),
-                  ],
+                Text(
+                  widget.p.dateIssued,
+                  style: TextStyle(
+                      fontSize: screenWidth * 0.035,
+                      fontWeight: FontWeight.bold),
                 )
+              ],
+            ),
+            SizedBox(
+              height: screenHeight * 0.015,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: screenWidth * 0.35,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.account_circle_outlined,
+                        size: screenWidth * 0.045,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Doctor",
+                        style: TextStyle(fontSize: screenWidth * 0.035),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                    child: Text(
+                  widget.p.doctor,
+                  style: TextStyle(
+                      fontSize: screenWidth * 0.035,
+                      fontWeight: FontWeight.bold),
+                ))
               ],
             ),
             SizedBox(
@@ -217,7 +255,11 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const PrescriptionDetails()),
+                          builder: (context) => PrescriptionDetails(
+                                prescription: widget.p,
+                                updatePrescriptionsScreen:
+                                    updateFromDetailsScreen,
+                              )),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -246,29 +288,22 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
   }
 }
 
-class Patient {
-  final String name;
-  final String imagePath;
-
-  Patient({required this.name, required this.imagePath});
-}
-
 class AssignPrescription extends StatefulWidget {
-  final VoidCallback onAssignPressed;
+  final DocPrescription prescription;
+  final Function(FamilyMember?) onAssignPressed;
 
-  const AssignPrescription({super.key, required this.onAssignPressed});
+  const AssignPrescription({
+    super.key,
+    required this.prescription,
+    required this.onAssignPressed,
+  });
 
   @override
   AssignPrescriptionState createState() => AssignPrescriptionState();
 }
 
 class AssignPrescriptionState extends State<AssignPrescription> {
-  List<Patient> patients = [
-    Patient(name: 'John Doe', imagePath: 'assets/images/pic.png'),
-    Patient(name: 'Amali', imagePath: 'assets/images/pic.png'),
-  ];
-
-  Patient? selectedPatient;
+  FamilyMember? selectedProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -276,9 +311,9 @@ class AssignPrescriptionState extends State<AssignPrescription> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      height: screenHeight * 0.42,
       padding: EdgeInsets.all(screenWidth * 0.1),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
             'Assign the prescription',
@@ -295,57 +330,63 @@ class AssignPrescriptionState extends State<AssignPrescription> {
             ),
           ),
           SizedBox(height: screenHeight * 0.025),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: patients.map((patient) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedPatient = patient;
-                  });
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: patient == selectedPatient
-                              ? Colors.blue
-                              : Colors.transparent,
-                          width: screenHeight * 0.0025,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: familyMembers.map((selected) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedProfile = selected;
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: selected == selectedProfile
+                                  ? Colors.blue
+                                  : Colors.transparent,
+                              width: screenHeight * 0.0025,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: screenHeight * 0.04,
+                            backgroundColor: selected == selectedProfile
+                                ? Colors.white
+                                : Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.all(screenHeight * 0.005),
+                              child: Image.asset("assets/images/pic.png"),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: CircleAvatar(
-                        radius: screenHeight * 0.04,
-                        backgroundColor: patient == selectedPatient
-                            ? Colors.white
-                            : Colors.white,
-                        child: Padding(
-                          padding: EdgeInsets.all(screenHeight * 0.005),
-                          child: Image.asset(patient.imagePath),
+                        SizedBox(height: screenHeight * 0.01),
+                        Text(
+                          selected.name.split(" ")[0],
+                          style: TextStyle(
+                            fontSize: screenHeight * 0.014,
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(height: screenHeight * 0.01),
-                    Text(
-                      patient.name,
-                      style: TextStyle(
-                        fontSize: screenHeight * 0.014,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
           SizedBox(height: screenHeight * 0.02),
           TextButton(
             onPressed: () {
               setState(() {
-                widget.onAssignPressed();
-                Navigator.pop(context);
+                widget.prescription.assignedMember = selectedProfile;
               });
+              widget.onAssignPressed(selectedProfile);
+              Navigator.pop(context);
             },
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFF2980B9),
@@ -363,68 +404,6 @@ class AssignPrescriptionState extends State<AssignPrescription> {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Title extends StatelessWidget {
-  final Icon icon;
-  final String title;
-
-  const Title({Key? key, required this.icon, required this.title})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return SizedBox(
-      width: screenWidth * 0.3,
-      height: screenHeight * 0.03,
-      child: Row(
-        children: [
-          Icon(
-            icon.icon,
-            color: Colors.black45,
-            size: screenHeight * 0.02,
-          ),
-          SizedBox(
-            width: screenWidth * 0.02,
-          ),
-          Text(
-            title,
-            style: TextStyle(
-                fontSize: screenHeight * 0.015, color: Colors.black45),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Data extends StatelessWidget {
-  final String data;
-
-  const Data({Key? key, required this.data}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return SizedBox(
-      width: screenWidth * 0.35,
-      height: screenHeight * 0.03,
-      child: Row(
-        children: [
-          Text(
-            data,
-            style:
-                TextStyle(fontSize: screenHeight * 0.015, color: Colors.black),
           ),
         ],
       ),

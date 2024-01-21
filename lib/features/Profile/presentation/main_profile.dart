@@ -2,7 +2,6 @@ import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
 import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
 import 'package:MedInvent/features/Profile/presentation/security_info_page.dart';
-import 'package:MedInvent/components/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -20,202 +19,185 @@ class ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       drawer: const SideNavBar(),
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Container(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF474CA0),
+                Color(0xFF468FA0),
+              ],
+            ),
+          ),
+        ),
+        title: const Text("Profile"),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF474CA0),
+              Color(0xFF468FA0),
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.only(top: screenHeight * 0.025),
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: [
-                  Color(0xFF474CA0),
-                  Color(0xFF468FA0),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBar(
-              leading: Builder(
-                builder: (BuildContext context) {
-                  return IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
-              ),
-              title: const Text("Profile"),
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              toolbarHeight: screenHeight * 0.07,
-            ),
-          ),
-          Positioned(
-            top: screenHeight * 0.13,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SingleChildScrollView(
-              child: Container(
-                height: screenHeight * 0.85,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(screenHeight * 0.06),
-                    topRight: Radius.circular(screenHeight * 0.06),
-                  ),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.symmetric(horizontal: screenWidth*0.08, vertical: screenHeight *0.05),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 100.0,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          const MyProfiletab(
-                            iconprofile: Icons.facebook,
-                            buttonTextMain1: 'Dhanushka',
-                            buttonTextMain2: 'danu@test.com',
-                            iconDiamond: Icons.diamond,
-                            number: '335',
-                          ),
-                          Container(
-                            color: Colors.black12,
-                            width: 290.0,
-                            height: 1,
-                          ),
-                          Mybutton(
-                            iconData1: Icons.perm_identity,
-                            buttonText1: 'Basic Information',
-                            buttonText2: 'Name,NIC,Gender,DOB..',
-                            iconData2: Icons.navigate_next,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const BasicInfo()),
-                              );
-                            },
-                          ),
-                          Container(
-                            color: Colors.black12,
-                            width: 290.0,
-                            height: 1,
-                            // Your content for the first container
-                          ),
-                          Mybutton(
-                            iconData1: Icons.verified_user_outlined,
-                            buttonText1: 'Security Information',
-                            buttonText2: 'Email Address,Telephone,Password',
-                            iconData2: Icons.navigate_next,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SecurityInfo()),
-                              );
-                            },
-                          ),
-                          Container(
-                            color: Colors.black12,
-                            width: 290.0,
-                            height: 1,
-                          ),
-                          Mybutton(
-                            iconData1: Icons.notifications_active_outlined,
-                            buttonText1: 'Notifications',
-                            buttonText2: 'Medicine,Notification settings',
-                            iconData2: Icons.navigate_next,
-                            onTap: () {},
-                          ),
-                          Container(
-                            color: Colors.black12,
-                            width: 290.0,
-                            height: 1,
-                          ),
-                          Mybutton(
-                            iconData1: Icons.g_translate_outlined,
-                            buttonText1: 'Language',
-                            buttonText2: 'Change app language',
-                            iconData2: Icons.navigate_next,
-                            onTap: () {},
-                          ),
-                          Container(
-                            color: Colors.black12,
-                            width: 290.0,
-                            height: 1,
-                          ),
-                          Mybutton(
-                            iconData1: Icons.diversity_1_outlined,
-                            buttonText1: 'Family Members',
-                            buttonText2: 'Edit,Add Profiles',
-                            iconData2: Icons.navigate_next,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const FamilyMembers()),
-                              );
-                            },
-                          ),
-                          SizedBox(height: screenHeight*0.03,)
-                        ],
-                      ),
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50.0),
+                  topRight: Radius.circular(50.0),
+                )),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.08,
+                      vertical: screenHeight * 0.05),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
                     ),
-                    Container(
-                      height: 70,
-                      width: 358,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 40.0,
-                          ),
-                        ],
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 100.0,
                       ),
-                      child: Mybutton(
-                        iconData1: Icons.help_outline,
-                        buttonText1: 'Help',
-                        buttonText2: 'FAQ',
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      const MyProfiletab(
+                        iconprofile: Icons.facebook,
+                        buttonTextMain1: 'Dhanushka',
+                        buttonTextMain2: 'danu@test.com',
+                        iconDiamond: Icons.diamond,
+                        number: '335',
+                      ),
+                      Container(
+                        color: Colors.black12,
+                        width: 290.0,
+                        height: 1,
+                      ),
+                      Mybutton(
+                        iconData1: Icons.perm_identity,
+                        buttonText1: 'Basic Information',
+                        buttonText2: 'Name,NIC,Gender,DOB..',
+                        iconData2: Icons.navigate_next,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BasicInfo()),
+                          );
+                        },
+                      ),
+                      Container(
+                        color: Colors.black12,
+                        width: 290.0,
+                        height: 1,
+                      ),
+                      Mybutton(
+                        iconData1: Icons.verified_user_outlined,
+                        buttonText1: 'Security Information',
+                        buttonText2: 'Email Address,Telephone,Password',
+                        iconData2: Icons.navigate_next,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SecurityInfo()),
+                          );
+                        },
+                      ),
+                      Container(
+                        color: Colors.black12,
+                        width: 290.0,
+                        height: 1,
+                      ),
+                      Mybutton(
+                        iconData1: Icons.notifications_active_outlined,
+                        buttonText1: 'Notifications',
+                        buttonText2: 'Medicine,Notification settings',
                         iconData2: Icons.navigate_next,
                         onTap: () {},
                       ),
-                    ),
-                  ],
+                      Container(
+                        color: Colors.black12,
+                        width: 290.0,
+                        height: 1,
+                      ),
+                      Mybutton(
+                        iconData1: Icons.g_translate_outlined,
+                        buttonText1: 'Language',
+                        buttonText2: 'Change app language',
+                        iconData2: Icons.navigate_next,
+                        onTap: () {},
+                      ),
+                      Container(
+                        color: Colors.black12,
+                        width: 290.0,
+                        height: 1,
+                      ),
+                      Mybutton(
+                        iconData1: Icons.diversity_1_outlined,
+                        buttonText1: 'Family Members',
+                        buttonText2: 'Edit,Add Profiles',
+                        iconData2: Icons.navigate_next,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const FamilyMembers()),
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.03,
+                      )
+                    ],
+                  ),
                 ),
-              ),
+                Container(
+                  height: 70,
+                  width: 358,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 40.0,
+                      ),
+                    ],
+                  ),
+                  child: Mybutton(
+                    iconData1: Icons.help_outline,
+                    buttonText1: 'Help',
+                    buttonText2: 'FAQ',
+                    iconData2: Icons.navigate_next,
+                    onTap: () {},
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

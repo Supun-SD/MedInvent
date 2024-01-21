@@ -1,7 +1,6 @@
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/prescriptions/presentation/DocPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
-import 'package:MedInvent/components/BottomNavBar.dart';
 import 'package:MedInvent/components/CustomTabBar.dart';
 import 'package:flutter/material.dart';
 
@@ -19,53 +18,45 @@ class _PrescriptionsState extends State<Prescriptions> {
 
     return Scaffold(
       drawer: const SideNavBar(),
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: [
-                  Color(0xFF474CA0),
-                  Color(0xFF468FA0),
-                ],
-              ),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF474CA0),
+                Color(0xFF468FA0),
+              ],
             ),
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBar(
-              title: const Text("Prescriptions"),
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              toolbarHeight: screenHeight * 0.07,
-            ),
+        ),
+        title: const Text("Prescriptions"),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF474CA0),
+              Color(0xFF468FA0),
+            ],
           ),
-          Positioned(
-            top: screenHeight * 0.13,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-                height: screenHeight * 0.85,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(screenHeight * 0.06),
-                    topRight: Radius.circular(screenHeight * 0.06),
-                  ),
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(top: screenHeight * 0.04),
-                  child: const CustomTabBar(
-                      tabTitles: ["Doctor's Prescriptions", "My Prescriptions"],
-                      tabViews: [DocPresContent(), MyPresContent()]),
-                )),
+        ),
+        child: Container(
+          margin: EdgeInsets.only(top: screenHeight * 0.025),
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(50.0),
+                topRight: Radius.circular(50.0),
+              )),
+          child: Padding(
+            padding: EdgeInsets.only(top: screenHeight * 0.035),
+            child: const CustomTabBar(
+                tabTitles: ["Doctor's Prescriptions", "My Prescriptions"],
+                tabViews: [DocPresContent(), MyPresContent()]),
           ),
-        ],
+        ),
       ),
     );
   }

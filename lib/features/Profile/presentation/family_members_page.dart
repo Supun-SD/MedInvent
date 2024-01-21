@@ -1,8 +1,9 @@
+import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
+import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/presentation/Add_member_page.dart';
 import 'package:MedInvent/components/input_field_edit.dart';
 import 'package:MedInvent/components/otp_input.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/components/BottomNavBar.dart';
 import 'FamilyMemberProfile.dart';
 
 class FamilyMembers extends StatefulWidget {
@@ -18,124 +19,106 @@ class _FamilyMembersState extends State<FamilyMembers> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    List<Widget> familyMembers = [
-      const FamilyMember(
-          name: "Amali Siriwardana",
-          relation: "Mother",
-          profilePhoto: "assets/images/pic.png"),
-      const FamilyMember(
-          name: "John Doe",
-          relation: "Son",
-          profilePhoto: "assets/images/pic.png"),
-      const FamilyMember(
-          name: "Jessica Johns",
-          relation: "Daughter",
-          profilePhoto: "assets/images/pic.png"),
-    ];
-
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF474CA0),
+                Color(0xFF468FA0),
+              ],
+            ),
+          ),
+        ),
+        title: const Text("Family Members"),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF474CA0),
+              Color(0xFF468FA0),
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.only(top: screenHeight * 0.025),
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.topRight,
-                colors: [
-                  Color(0xFF474CA0),
-                  Color(0xFF468FA0),
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50.0),
+                  topRight: Radius.circular(50.0),
+                )),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: screenHeight * 0.05,
+                  ),
+                  Column(
+                    children: familyMembers.isEmpty
+                        ? [
+                            Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.05,
+                                    vertical: screenHeight * 0.07),
+                                child: Text(
+                                  "You don't have any family member added",
+                                  style: TextStyle(
+                                      fontSize: screenHeight * 0.02,
+                                      color: Colors.grey),
+                                )),
+                          ]
+                        : familyMembers
+                            .map((e) => FamilyMemberCard(familyMember: e))
+                            .toList(),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.04,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(screenHeight * 0.05)),
+                        ),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AddNewMember();
+                        },
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(screenHeight * 0.05),
+                        side: const BorderSide(color: Color(0xFF2980B9)),
+                      ),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                      child: Text(
+                        "Add Member",
+                        style: TextStyle(
+                            color: const Color(0xFF2980B9),
+                            fontSize: screenHeight * 0.015),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBar(
-              title: const Text("Family Profiles"),
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              toolbarHeight: screenHeight * 0.1,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: screenHeight * 0.85,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(screenHeight * 0.06),
-                  topRight: Radius.circular(screenHeight * 0.06),
-                ),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: screenHeight * 0.05,
-                    ),
-                    Column(
-                      children: familyMembers.isEmpty
-                          ? [
-                              Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.05,
-                                      vertical: screenHeight * 0.07),
-                                  child: Text(
-                                    "You don't have any family member added",
-                                    style: TextStyle(
-                                        fontSize: screenHeight * 0.02,
-                                        color: Colors.grey),
-                                  )),
-                            ]
-                          : familyMembers,
-                    ),
-                    SizedBox(
-                      height: screenHeight * 0.04,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(screenHeight * 0.05)),
-                          ),
-                          context: context,
-                          builder: (BuildContext context) {
-                            return const AddNewMember();
-                          },
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(screenHeight * 0.05),
-                          side: const BorderSide(color: Color(0xFF2980B9)),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.05),
-                        child: Text(
-                          "Add Member",
-                          style: TextStyle(
-                              color: const Color(0xFF2980B9),
-                              fontSize: screenHeight * 0.015),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -418,19 +401,11 @@ class OtpVerify extends StatelessWidget {
   }
 }
 
-class FamilyMember extends StatelessWidget {
-  final String name;
-  final String relation;
-  final String profilePhoto;
-  final VoidCallback? onTapCallback;
+class FamilyMemberCard extends StatelessWidget {
+  final FamilyMember familyMember;
 
-  const FamilyMember({
-    Key? key,
-    required this.name,
-    required this.relation,
-    required this.profilePhoto,
-    this.onTapCallback,
-  }) : super(key: key);
+  const FamilyMemberCard({Key? key, required this.familyMember})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -442,7 +417,9 @@ class FamilyMember extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const FamilyMemberProfile(),
+            builder: (context) => FamilyMemberProfile(
+              familyMember: familyMember,
+            ),
           ),
         );
       },
@@ -467,7 +444,7 @@ class FamilyMember extends StatelessWidget {
                 width: screenWidth * 0.05,
               ),
               Image.asset(
-                profilePhoto,
+                "assets/images/pic.png",
                 height: screenWidth * 0.15,
               ),
               SizedBox(
@@ -478,13 +455,13 @@ class FamilyMember extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    familyMember.name,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: screenHeight * 0.02),
                   ),
                   Text(
-                    relation,
+                    familyMember.relationship,
                     style: TextStyle(fontSize: screenHeight * 0.015),
                   )
                 ],

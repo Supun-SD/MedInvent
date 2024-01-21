@@ -1,8 +1,9 @@
+import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/components/BottomNavBar.dart';
 
 class FamilyMemberProfile extends StatefulWidget {
-  const FamilyMemberProfile({super.key});
+  final FamilyMember familyMember;
+  const FamilyMemberProfile({required this.familyMember,super.key});
 
   @override
   State<FamilyMemberProfile> createState() => FamilyMemberProfileState();
@@ -14,15 +15,8 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    String name = "Amali Siriwardana";
-    String relation = "Mother";
     String profilePic = "assets/images/pic.png";
     int loyalityPoints = 335;
-    String NIC = "7822124456V";
-    String gender = "Female";
-    String dob = "1970/12/12";
-    String height = "5'5";
-    double weight = 65;
 
     return Scaffold(
       body: Stack(
@@ -75,7 +69,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                           height: screenHeight * 0.075,
                         ),
                         Text(
-                          name,
+                          widget.familyMember.name,
                           style: TextStyle(
                               fontSize: screenHeight * 0.02,
                               fontWeight: FontWeight.bold),
@@ -84,7 +78,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                           height: screenHeight * 0.005,
                         ),
                         Text(
-                          relation,
+                          widget.familyMember.relationship,
                           style: TextStyle(fontSize: screenHeight * 0.015),
                         ),
                         SizedBox(
@@ -144,11 +138,9 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                           ),
                           Column(
                             children: [
-                              DataBox(data: NIC),
-                              DataBox(data: gender),
-                              DataBox(data: dob),
-                              DataBox(data: height),
-                              DataBox(data: weight.toString()),
+                              DataBox(data: widget.familyMember.NIC),
+                              DataBox(data: widget.familyMember.gender),
+                              DataBox(data: widget.familyMember.dob),
                             ],
                           )
                         ],
