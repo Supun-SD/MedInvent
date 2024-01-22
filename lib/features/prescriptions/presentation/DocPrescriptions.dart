@@ -1,5 +1,7 @@
-import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
+import 'package:MedInvent/features/Profile/data/datasources/allProfiles.dart';
+import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/features/Profile/data/models/myProfile.dart';
 import 'package:MedInvent/features/prescriptions/data/docPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/model/docPrescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/prescriptionDetails.dart';
@@ -57,7 +59,7 @@ class DocPrescriptionTemplate extends StatefulWidget {
 class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
   String profilePicture = "assets/images/pic.png";
 
-  void updateUI(FamilyMember? fm) {
+  void updateUI(Profile fm) {
     setState(() {
       widget.p.assignedMember = fm;
     });
@@ -115,11 +117,12 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
                               SizedBox(
                                 height: screenHeight * 0.005,
                               ),
-                              Text(
-                                widget.p.assignedMember!.relationship,
-                                style:
-                                    TextStyle(fontSize: screenHeight * 0.015),
-                              ),
+                              if (widget.p.assignedMember is FamilyMember)
+                                Text(
+                                  widget.p.assignedMember!.relationship,
+                                  style:
+                                      TextStyle(fontSize: screenHeight * 0.015),
+                                ),
                             ]),
                       ],
                     ),
@@ -144,7 +147,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
                               return AssignPrescription(
                                 prescription: widget.p,
                                 onAssignPressed:
-                                    (FamilyMember? selectedProfile) {
+                                    (Profile selectedProfile) {
                                   updateUI(selectedProfile);
                                 },
                               );
@@ -290,7 +293,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
 
 class AssignPrescription extends StatefulWidget {
   final DocPrescription prescription;
-  final Function(FamilyMember?) onAssignPressed;
+  final Function(Profile) onAssignPressed;
 
   const AssignPrescription({
     super.key,
@@ -303,7 +306,7 @@ class AssignPrescription extends StatefulWidget {
 }
 
 class AssignPrescriptionState extends State<AssignPrescription> {
-  FamilyMember? selectedProfile;
+  var selectedProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +336,7 @@ class AssignPrescriptionState extends State<AssignPrescription> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: familyMembers.map((selected) {
+              children: allProfiles.map((selected) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                   child: GestureDetector(
@@ -366,12 +369,19 @@ class AssignPrescriptionState extends State<AssignPrescription> {
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.01),
-                        Text(
-                          selected.name.split(" ")[0],
-                          style: TextStyle(
-                            fontSize: screenHeight * 0.014,
-                          ),
-                        ),
+                        selected is MyProfile
+                            ? Text(
+                                "Myself",
+                                style: TextStyle(
+                                  fontSize: screenHeight * 0.014,
+                                ),
+                              )
+                            : Text(
+                                selected.name.split(" ")[0],
+                                style: TextStyle(
+                                  fontSize: screenHeight * 0.014,
+                                ),
+                              ),
                       ],
                     ),
                   ),

@@ -5,7 +5,7 @@ class DocPrescription {
   String title;
   String dateIssued;
   String doctor;
-  FamilyMember? assignedMember;
+  var assignedMember;
   List<PrescribedMedicine> prescribedMedicine;
 
   DocPrescription(this.title, this.dateIssued, this.doctor,  this.assignedMember,

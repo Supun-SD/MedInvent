@@ -1,5 +1,6 @@
-import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
+import 'package:MedInvent/features/Profile/data/datasources/allProfiles.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/features/Profile/data/models/myProfile.dart';
 import 'package:MedInvent/features/prescriptions/data/myPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/myPrescriptionDetails.dart';
@@ -14,8 +15,7 @@ class MyPresContent extends StatefulWidget {
 }
 
 class _MyPresContentState extends State<MyPresContent> {
-
-  void updateScreen(){
+  void updateScreen() {
     setState(() {});
   }
 
@@ -53,7 +53,9 @@ class _MyPresContentState extends State<MyPresContent> {
                         return MyPrescriptionTemplate(myPrescription: e);
                       }).toList(),
               ),
-              SizedBox(height: screenHeight * 0.025,),
+              SizedBox(
+                height: screenHeight * 0.025,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -67,7 +69,9 @@ class _MyPresContentState extends State<MyPresContent> {
                         ),
                         context: context,
                         builder: (BuildContext context) {
-                          return AssignPrescription(updateScreen: updateScreen,);
+                          return AssignPrescription(
+                            updateScreen: updateScreen,
+                          );
                         },
                       );
                     },
@@ -150,11 +154,11 @@ class MyPrescriptionTemplate extends StatelessWidget {
                         SizedBox(
                           height: screenHeight * 0.005,
                         ),
-                        Text(
-                          myPrescription.assignedMember!.relationship,
-                          style:
-                          TextStyle(fontSize: screenHeight * 0.015),
-                        ),
+                        if (myPrescription.assignedMember is FamilyMember)
+                          Text(
+                            myPrescription.assignedMember!.relationship,
+                            style: TextStyle(fontSize: screenHeight * 0.015),
+                          ),
                       ]),
                 ],
               ),
@@ -191,7 +195,7 @@ class MyPrescriptionTemplate extends StatelessWidget {
                   ),
                 ),
                 Text(
-                 myPrescription.dateIssued,
+                  myPrescription.dateIssued,
                   style: TextStyle(
                       fontSize: screenWidth * 0.035,
                       fontWeight: FontWeight.bold),
@@ -213,8 +217,8 @@ class MyPrescriptionTemplate extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => MyPrescriptionDetails(
-                            prescription: myPrescription,
-                          )),
+                                prescription: myPrescription,
+                              )),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -225,7 +229,7 @@ class MyPrescriptionTemplate extends StatelessWidget {
                   ),
                   child: Padding(
                     padding:
-                    EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                     child: Text(
                       "More details",
                       style: TextStyle(
@@ -243,21 +247,17 @@ class MyPrescriptionTemplate extends StatelessWidget {
   }
 }
 
-
 class AssignPrescription extends StatefulWidget {
   final VoidCallback updateScreen;
   MyPrescription newPrescription = MyPrescription();
-  AssignPrescription({
-    super.key,
-    required this.updateScreen
-  });
+  AssignPrescription({super.key, required this.updateScreen});
 
   @override
   AssignPrescriptionState createState() => AssignPrescriptionState();
 }
 
 class AssignPrescriptionState extends State<AssignPrescription> {
-  FamilyMember? selectedProfile;
+  var selectedProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +287,7 @@ class AssignPrescriptionState extends State<AssignPrescription> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: familyMembers.map((selected) {
+              children: allProfiles.map((selected) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                   child: GestureDetector(
@@ -320,12 +320,19 @@ class AssignPrescriptionState extends State<AssignPrescription> {
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.01),
-                        Text(
-                          selected.name.split(" ")[0],
-                          style: TextStyle(
-                            fontSize: screenHeight * 0.014,
-                          ),
-                        ),
+                        selected is MyProfile
+                            ? Text(
+                                "Myself",
+                                style: TextStyle(
+                                  fontSize: screenHeight * 0.014,
+                                ),
+                              )
+                            : Text(
+                                selected.name.split(" ")[0],
+                                style: TextStyle(
+                                  fontSize: screenHeight * 0.014,
+                                ),
+                              ),
                       ],
                     ),
                   ),
@@ -344,7 +351,7 @@ class AssignPrescriptionState extends State<AssignPrescription> {
                   MaterialPageRoute(
                     builder: (context) => NewPrescription(
                         newPrescription: widget.newPrescription,
-                    updatePresScreen: widget.updateScreen),
+                        updatePresScreen: widget.updateScreen),
                   ),
                 );
               }

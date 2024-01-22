@@ -1,3 +1,4 @@
+import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/prescriptions/model/docPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
@@ -19,7 +20,7 @@ class PrescriptionDetails extends StatefulWidget {
 class _PrescriptionDetailsState extends State<PrescriptionDetails> {
   String image = "assets/images/pic.png";
 
-  void updateUI(FamilyMember? fm) {
+  void updateUI(Profile fm) {
     setState(() {
       widget.prescription.assignedMember = fm;
     });
@@ -101,12 +102,14 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                       SizedBox(
                                         height: screenHeight * 0.005,
                                       ),
-                                      Text(
-                                        widget.prescription.assignedMember!
-                                            .relationship,
-                                        style: TextStyle(
-                                            fontSize: screenHeight * 0.015),
-                                      ),
+                                      if (widget.prescription.assignedMember
+                                          is FamilyMember)
+                                        Text(
+                                          widget.prescription.assignedMember!
+                                              .relationship,
+                                          style: TextStyle(
+                                              fontSize: screenHeight * 0.015),
+                                        ),
                                     ],
                                   )
                                 ],
@@ -132,8 +135,8 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                         builder: (BuildContext context) {
                                           return AssignPrescription(
                                             prescription: widget.prescription,
-                                            onAssignPressed: (FamilyMember?
-                                                selectedProfile) {
+                                            onAssignPressed:
+                                                (Profile selectedProfile) {
                                               updateUI(selectedProfile);
                                               widget
                                                   .updatePrescriptionsScreen();
@@ -246,7 +249,9 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                 )
                               ],
                             ),
-                            SizedBox(height: screenHeight * 0.02,),
+                            SizedBox(
+                              height: screenHeight * 0.02,
+                            ),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

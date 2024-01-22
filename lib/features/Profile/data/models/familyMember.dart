@@ -1,13 +1,7 @@
-import 'package:MedInvent/features/prescriptions/model/docPrescription.dart';
+import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 
-class FamilyMember {
-  String name;
+class FamilyMember extends Profile {
   String relationship;
-  String NIC;
-  String gender;
-  String dob;
-  List<DocPrescription> prescriptionsAssigned;
-
-  FamilyMember(this.name, this.relationship, this.NIC, this.gender, this.dob,
-      this.prescriptionsAssigned);
+  FamilyMember(super.name, this.relationship, super.NIC, super.gender,
+      super.dob, super.prescriptionsAssigned);
 }
