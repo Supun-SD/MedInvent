@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class FamilyMemberProfile extends StatefulWidget {
   final FamilyMember familyMember;
-  const FamilyMemberProfile({required this.familyMember,super.key});
+  const FamilyMemberProfile({required this.familyMember, super.key});
 
   @override
   State<FamilyMemberProfile> createState() => FamilyMemberProfileState();
@@ -111,7 +111,6 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: Container(
-                    height: screenHeight * 0.2,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(screenWidth * 0.07),
@@ -123,7 +122,8 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                       ],
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(top: screenHeight * 0.02),
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -132,8 +132,6 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                               TitleBox(title: "NIC"),
                               TitleBox(title: "Gender"),
                               TitleBox(title: "Date of Birth"),
-                              TitleBox(title: "Height"),
-                              TitleBox(title: "Weight"),
                             ],
                           ),
                           Column(
