@@ -104,12 +104,14 @@ class _CreateLocalProfileState extends State<CreateLocalProfile> {
                     },
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenHeight * 0.05),
+                        borderRadius:
+                            BorderRadius.circular(screenHeight * 0.05),
                         side: const BorderSide(color: Color(0xFF2980B9)),
                       ),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                       child: Text(
                         "Upload a photo",
                         style: TextStyle(
@@ -147,7 +149,8 @@ class _CreateLocalProfileState extends State<CreateLocalProfile> {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(screenWidth * 0.1),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.045),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.045),
                     child: DropdownButton<String>(
                       value: selectedGender,
                       onChanged: (String? newValue) {
@@ -163,7 +166,8 @@ class _CreateLocalProfileState extends State<CreateLocalProfile> {
                         );
                       }).toList(),
                       elevation: 16,
-                      borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0)),
                     ),
                   ),
                   SizedBox(
@@ -208,7 +212,8 @@ class _CreateLocalProfileState extends State<CreateLocalProfile> {
               ),
               TextButton(
                 onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false){
+                  if (_formKey.currentState!.validate() &&
+                      displayText != "Date of Birth") {
                     familyMembers.add(FamilyMember(
                         "${firstName.text} ${lastName.text}",
                         relationship.text,
@@ -255,8 +260,12 @@ class Input extends StatelessWidget {
       : super(key: key);
 
   String? _validateInput(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'This field cannot be empty';
+    if (label == "First name" ||
+        label == "Last name" ||
+        label == "Relationship") {
+      if (value == null || value.isEmpty) {
+        return 'This field cannot be empty';
+      }
     }
     return null;
   }
