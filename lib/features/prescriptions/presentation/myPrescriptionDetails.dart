@@ -1,3 +1,4 @@
+import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +6,7 @@ import 'package:flutter/material.dart';
 class MyPrescriptionDetails extends StatefulWidget {
   final MyPrescription prescription;
 
-  const MyPrescriptionDetails(
-      {required this.prescription,
-        super.key});
+  const MyPrescriptionDetails({required this.prescription, super.key});
 
   @override
   State<MyPrescriptionDetails> createState() => _MyPrescriptionDetailsState();
@@ -78,12 +77,10 @@ class _MyPrescriptionDetailsState extends State<MyPrescriptionDetails> {
                               width: screenWidth * 0.05,
                             ),
                             Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget
-                                      .prescription.assignedMember!.name,
+                                  widget.prescription.assignedMember!.name,
                                   style: TextStyle(
                                       fontSize: screenHeight * 0.025,
                                       fontWeight: FontWeight.bold),
@@ -91,12 +88,14 @@ class _MyPrescriptionDetailsState extends State<MyPrescriptionDetails> {
                                 SizedBox(
                                   height: screenHeight * 0.005,
                                 ),
-                                Text(
-                                  widget.prescription.assignedMember!
-                                      .relationship,
-                                  style: TextStyle(
-                                      fontSize: screenHeight * 0.015),
-                                ),
+                                if (widget.prescription.assignedMember
+                                    is FamilyMember)
+                                  Text(
+                                    widget.prescription.assignedMember!
+                                        .relationship,
+                                    style: TextStyle(
+                                        fontSize: screenHeight * 0.015),
+                                  ),
                               ],
                             )
                           ],
@@ -135,8 +134,8 @@ class _MyPrescriptionDetailsState extends State<MyPrescriptionDetails> {
                     children: [
                       SingleChildScrollView(
                         child: Padding(
-                          padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.1),
                           child: Column(
                             children: [
                               SizedBox(
@@ -144,7 +143,7 @@ class _MyPrescriptionDetailsState extends State<MyPrescriptionDetails> {
                               ),
                               ...widget.prescription.prescribedMedicine
                                   .map((medicine) =>
-                                  DrugTemplate(medicine: medicine))
+                                      DrugTemplate(medicine: medicine))
                                   .toList(),
                             ],
                           ),
@@ -187,7 +186,9 @@ class _MyPrescriptionDetailsState extends State<MyPrescriptionDetails> {
                                 )
                               ],
                             ),
-                            SizedBox(height: screenHeight * 0.02,),
+                            SizedBox(
+                              height: screenHeight * 0.02,
+                            ),
                           ],
                         ),
                       ),
@@ -219,7 +220,7 @@ class _DrugTemplateState extends State<DrugTemplate> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     Color daysLeftColor =
-    widget.medicine.daysLeft < 3 ? Colors.red : Colors.green;
+        widget.medicine.daysLeft < 3 ? Colors.red : Colors.green;
 
     return Column(
       children: [
@@ -267,17 +268,17 @@ class _DrugTemplateState extends State<DrugTemplate> {
                         decoration: BoxDecoration(
                           color: daysLeftColor,
                           borderRadius:
-                          BorderRadius.circular(screenHeight * 0.5),
+                              BorderRadius.circular(screenHeight * 0.5),
                         ),
                         height: screenHeight * 0.023,
                         width: screenWidth * 0.2,
                         child: Center(
                             child: Text(
-                              "${widget.medicine.daysLeft} days left",
-                              style: TextStyle(
-                                  fontSize: screenHeight * 0.012,
-                                  color: Colors.white),
-                            )),
+                          "${widget.medicine.daysLeft} days left",
+                          style: TextStyle(
+                              fontSize: screenHeight * 0.012,
+                              color: Colors.white),
+                        )),
                       )
                     ],
                   ),
@@ -315,7 +316,7 @@ class _DrugTemplateState extends State<DrugTemplate> {
                     ),
                     ...widget.medicine.reminders
                         .map((time) => Text(" $time | ",
-                        style: TextStyle(fontSize: screenHeight * 0.015)))
+                            style: TextStyle(fontSize: screenHeight * 0.015)))
                         .toList(),
                   ],
                 )
