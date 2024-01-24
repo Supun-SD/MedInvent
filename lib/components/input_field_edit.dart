@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Inputbutton extends StatelessWidget{
+class Inputbutton extends StatelessWidget {
   const Inputbutton({
     super.key,
     required this.topic,
     this.tvalue = 0.0,
-    this.bvalue=0.0,
-    this.lvalue=0.0,
-    this.rvalue=0.0,
-    this.wiht=0.0,
+    this.bvalue = 0.0,
+    this.lvalue = 0.0,
+    this.rvalue = 0.0,
+    this.wiht = 0.0,
   });
 
   final String topic;
@@ -21,8 +21,9 @@ class Inputbutton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: tvalue,bottom: bvalue,left: lvalue,right: rvalue),
-      width:wiht,// Adjust the margin as needed
+      margin: EdgeInsets.only(
+          top: tvalue, bottom: bvalue, left: lvalue, right: rvalue),
+      width: wiht, // Adjust the margin as needed
       child: TextField(
         decoration: InputDecoration(
           labelText: topic,

@@ -1,8 +1,6 @@
-import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
+import 'package:MedInvent/features/prescriptions/model/prescription.dart';
 
-class MyPrescription{
-  late String title;
-  late String dateIssued;
-  late var assignedMember;
-  List<PrescribedMedicine> prescribedMedicine = [];
+class MyPrescription extends Prescription {
+  MyPrescription(super.title, super.dateIssued, super.assignedMember,
+      super.prescribedMedicine);
 }

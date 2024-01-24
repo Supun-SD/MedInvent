@@ -1,13 +1,8 @@
-import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
-import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
+import 'package:MedInvent/features/prescriptions/model/prescription.dart';
 
-class DocPrescription {
-  String title;
-  String dateIssued;
+class DocPrescription extends Prescription {
   String doctor;
-  var assignedMember;
-  List<PrescribedMedicine> prescribedMedicine;
 
-  DocPrescription(this.title, this.dateIssued, this.doctor,  this.assignedMember,
-      this.prescribedMedicine);
+  DocPrescription(super.title, super.dateIssued, this.doctor,
+      super.assignedMember, super.prescribedMedicine);
 }

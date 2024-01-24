@@ -33,7 +33,8 @@ class _UpcomingTemplateState extends State<UpcomingTemplate> {
             borderRadius: BorderRadius.circular(25.0),
           ),
           title: const Text("Confirmation"),
-          content: const Text("Are you sure you want to cancel this appointment?"),
+          content:
+              const Text("Are you sure you want to cancel this appointment?"),
           actions: [
             TextButton(
               child: const Text("Cancel"),

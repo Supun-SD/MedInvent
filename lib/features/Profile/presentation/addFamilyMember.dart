@@ -58,7 +58,7 @@ class AddNewMember extends StatelessWidget {
                           ),
                           context: context,
                           builder: (BuildContext context) {
-                            return AddExistingMember(updateUI : updateUI);
+                            return AddExistingMember(updateUI: updateUI);
                           },
                         );
                       },
@@ -86,7 +86,7 @@ class AddNewMember extends StatelessWidget {
                 ),
                 Padding(
                     padding:
-                    EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                        EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -94,7 +94,7 @@ class AddNewMember extends StatelessWidget {
                           width: 1.0,
                         ),
                         borderRadius:
-                        BorderRadius.circular(screenHeight * 0.015),
+                            BorderRadius.circular(screenHeight * 0.015),
                       ),
                       child: IconButton(
                         onPressed: () {
@@ -108,7 +108,7 @@ class AddNewMember extends StatelessWidget {
                             ),
                             context: context,
                             builder: (BuildContext context) {
-                              return CreateLocalProfile(updateUI : updateUI);
+                              return CreateLocalProfile(updateUI: updateUI);
                             },
                           );
                         },
@@ -132,7 +132,3 @@ class AddNewMember extends StatelessWidget {
     );
   }
 }
-
-
-
-

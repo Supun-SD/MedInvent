@@ -278,8 +278,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                   height: screenHeight * 0.025,
                 ),
                 ...suggestedDoctors
-                    .map((e) =>
-                        SuggestedDoctors(doctor: e))
+                    .map((e) => SuggestedDoctors(doctor: e))
                     .toList(),
                 SizedBox(
                   height: screenHeight * 0.025,
@@ -292,7 +291,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
 }
 
 class SuggestedDoctors extends StatelessWidget {
-  const SuggestedDoctors({required this.doctor,super.key});
+  const SuggestedDoctors({required this.doctor, super.key});
   final Doctor doctor;
   @override
   Widget build(BuildContext context) {
@@ -349,7 +348,8 @@ class SuggestedDoctors extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DoctorProfile(doctor: doctor)),
+                    MaterialPageRoute(
+                        builder: (context) => DoctorProfile(doctor: doctor)),
                   );
                 },
                 icon: const Icon(Icons.person_2_outlined,

@@ -45,7 +45,10 @@ class _LoginPageState extends State<LoginPage> {
     if (_emailTEC.text == username && _passwordTEC.text == password) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Home(sideNavIndex: 2,)),
+        MaterialPageRoute(
+            builder: (context) => Home(
+                  sideNavIndex: 2,
+                )),
       );
     } else {
       _invalidCredentials();

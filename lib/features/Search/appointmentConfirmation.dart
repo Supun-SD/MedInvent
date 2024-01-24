@@ -624,7 +624,9 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.07,),
+              SizedBox(
+                height: screenHeight * 0.07,
+              ),
             ],
           ),
         ));

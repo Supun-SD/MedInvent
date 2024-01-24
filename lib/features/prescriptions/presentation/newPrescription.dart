@@ -1,5 +1,6 @@
 import 'package:MedInvent/features/prescriptions/data/myPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
+import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/newPrescribeMedicine.dart';
 import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_1.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class NewPrescription extends StatefulWidget {
-  final MyPrescription newPrescription;
+  final NewMyPrescription newPrescription;
   final VoidCallback updatePresScreen;
   const NewPrescription(
       {super.key,
@@ -136,10 +137,11 @@ class _NewPrescriptionState extends State<NewPrescription> {
                   if (widget.newPrescription.prescribedMedicine.isNotEmpty)
                     TextButton(
                       onPressed: () {
-                        widget.newPrescription.title = title.text;
-                        widget.newPrescription.dateIssued =
-                            DateFormat('yyyy/MM/dd').format(DateTime.now());
-                        myPrescriptions.add(widget.newPrescription);
+                        myPrescriptions.add(MyPrescription(
+                            title.text,
+                            DateFormat('yyyy/MM/dd').format(DateTime.now()),
+                            widget.newPrescription.assignedMember,
+                            widget.newPrescription.prescribedMedicine));
                         widget.updatePresScreen();
                         Navigator.pop(context);
                       },
@@ -171,7 +173,7 @@ class _NewPrescriptionState extends State<NewPrescription> {
 }
 
 class AddNewMedicine extends StatefulWidget {
-  final MyPrescription newPrescription;
+  final NewMyPrescription newPrescription;
   final VoidCallback updateUI;
 
   const AddNewMedicine(

@@ -11,7 +11,7 @@ class AppointmentSuccess extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -30,7 +30,9 @@ class AppointmentSuccess extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Text("Check your mail for the receipt",
                   style: TextStyle(
                     fontSize: screenWidth * 0.035,

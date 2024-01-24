@@ -7,15 +7,14 @@ import 'package:MedInvent/features/prescriptions/presentation/prescription_1.dar
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  const Home({required this.sideNavIndex,super.key});
-  final int sideNavIndex ;
+  const Home({required this.sideNavIndex, super.key});
+  final int sideNavIndex;
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-
   List body = [
     const Prescriptions(),
     const Appointments(),
@@ -33,7 +32,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: body[currentIndex],
       bottomNavigationBar: BottomNavBar(

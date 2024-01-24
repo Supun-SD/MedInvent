@@ -8,7 +8,6 @@ class PasswordReset2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -27,7 +26,9 @@ class PasswordReset2 extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.25, vertical: screenHeight * 0.05),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.25,
+                      vertical: screenHeight * 0.05),
                   child: Image.asset('assets/images/pwreset.jpg'),
                 ),
                 Padding(
@@ -36,22 +37,28 @@ class PasswordReset2 extends StatelessWidget {
                     'Enter the confirmation code sent to +94771234567',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: screenHeight * 0.02,
+                      fontSize: screenHeight * 0.02,
                     ),
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15, vertical: screenHeight * 0.05),
-                    child: OTPInput(),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.15,
+                      vertical: screenHeight * 0.05),
+                  child: OTPInput(),
                 ),
-                const SizedBox(height: 50,),
-                CustomButton(text: 'Submit', onPressed: () => {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PasswordReset3()),
-                  )
-                }),
+                const SizedBox(
+                  height: 50,
+                ),
+                CustomButton(
+                    text: 'Submit',
+                    onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PasswordReset3()),
+                          )
+                        }),
               ],
             ),
           ),

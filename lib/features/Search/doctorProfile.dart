@@ -27,12 +27,13 @@ class DoctorProfile extends StatelessWidget {
         ),
       ),
       floatingActionButton: Padding(
-        padding:  EdgeInsets.only(bottom: screenHeight * 0.025),
+        padding: EdgeInsets.only(bottom: screenHeight * 0.025),
         child: TextButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DoctorAppointments(doctor: doctor)),
+              MaterialPageRoute(
+                  builder: (context) => DoctorAppointments(doctor: doctor)),
             );
           },
           style: TextButton.styleFrom(
@@ -42,7 +43,8 @@ class DoctorProfile extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15, vertical: screenHeight * 0.01),
+            padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.15, vertical: screenHeight * 0.01),
             child: const Text(
               "Book an appointment",
               style: TextStyle(fontSize: 16, color: Colors.white),
@@ -259,7 +261,7 @@ class DoctorProfile extends StatelessWidget {
                               ),
                             ],
                             borderRadius:
-                            BorderRadius.circular(screenHeight * 0.12),
+                                BorderRadius.circular(screenHeight * 0.12),
                           ),
                           child: ClipOval(
                             child: Image.asset(

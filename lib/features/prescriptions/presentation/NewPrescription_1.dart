@@ -116,13 +116,13 @@ class SearchMedicineState extends State<SearchMedicine> {
                                     child: Row(
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(screenHeight * 0.015),
+                                          borderRadius: BorderRadius.circular(
+                                              screenHeight * 0.015),
                                           child: Image.asset(
                                             "assets/images/drugs.png",
                                             height: screenHeight * 0.05,
                                           ),
                                         ),
-
                                         SizedBox(
                                           width: screenWidth * 0.05,
                                         ),

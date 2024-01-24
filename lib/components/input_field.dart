@@ -20,7 +20,6 @@ class InputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -39,13 +38,14 @@ class InputField extends StatelessWidget {
           ),
           prefixIcon: prefixIcon != null
               ? Padding(
-                  padding: EdgeInsets.fromLTRB(screenWidth * 0.025, 0, 0, screenHeight * 0.005),
+                  padding: EdgeInsets.fromLTRB(
+                      screenWidth * 0.025, 0, 0, screenHeight * 0.005),
                   child: prefixIcon,
                 )
               : null,
           hintText: hint,
-          contentPadding:
-              EdgeInsets.symmetric(vertical: screenHeight * 0.022 , horizontal: screenWidth * 0.055 ),
+          contentPadding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.022, horizontal: screenWidth * 0.055),
         ),
       ),
     );

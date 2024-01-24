@@ -27,7 +27,8 @@ class _AddExistingMemberState extends State<AddExistingMember> {
             LinkProfile(
               pageController: _pageController,
             ),
-            OtpVerify(pageController: _pageController, updateUI : widget.updateUI),
+            OtpVerify(
+                pageController: _pageController, updateUI: widget.updateUI),
           ]),
     );
   }
@@ -98,7 +99,8 @@ class OtpVerify extends StatelessWidget {
   final PageController pageController;
   final VoidCallback updateUI;
 
-  const OtpVerify({super.key, required this.pageController, required this.updateUI});
+  const OtpVerify(
+      {super.key, required this.pageController, required this.updateUI});
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;

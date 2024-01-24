@@ -146,8 +146,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
                             builder: (BuildContext context) {
                               return AssignPrescription(
                                 prescription: widget.p,
-                                onAssignPressed:
-                                    (Profile selectedProfile) {
+                                onAssignPressed: (Profile selectedProfile) {
                                   updateUI(selectedProfile);
                                 },
                               );

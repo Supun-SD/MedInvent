@@ -38,7 +38,9 @@ class _FamilyMembersState extends State<FamilyMembers> {
                   ),
                   context: context,
                   builder: (BuildContext context) {
-                    return AddNewMember(updateUI: updateUI,);
+                    return AddNewMember(
+                      updateUI: updateUI,
+                    );
                   },
                 );
               },
@@ -116,7 +118,9 @@ class _FamilyMembersState extends State<FamilyMembers> {
                         ),
                         context: context,
                         builder: (BuildContext context) {
-                          return AddNewMember(updateUI: updateUI,);
+                          return AddNewMember(
+                            updateUI: updateUI,
+                          );
                         },
                       );
                     },
@@ -223,4 +227,3 @@ class FamilyMemberCard extends StatelessWidget {
     );
   }
 }
-

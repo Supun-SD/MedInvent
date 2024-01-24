@@ -1,11 +1,11 @@
-import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
+import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/newPrescribeMedicine.dart';
 import 'package:flutter/material.dart';
 
 class MedicineDetails extends StatefulWidget {
   final PageController pageController;
   final NewPrescribedMedicine newMed;
-  final MyPrescription newPres;
+  final NewMyPrescription newPres;
 
   const MedicineDetails(
       {super.key,
@@ -306,9 +306,7 @@ class MedicineDetailsState extends State<MedicineDetails> {
                       widget.newMed.qty = int.parse(amount.toString());
                       widget.newMed.daysLeft = int.parse(days.toString());
                       widget.newMed.isAfterMeal =
-                          beforeAfter.toLowerCase() == 'before'
-                              ? false
-                              : true;
+                          beforeAfter.toLowerCase() == 'before' ? false : true;
                       widget.pageController.animateToPage(2,
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut);

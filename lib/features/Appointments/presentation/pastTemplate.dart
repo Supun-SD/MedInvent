@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class PastTemplate extends StatelessWidget {
   PastTemplate(
       {required this.doctor,
-        required this.speciality,
-        required this.hospital,
-        required this.date,
-        required this.time,
-        required this.isRefundable,
-        required this.cancelled,
-        super.key});
+      required this.speciality,
+      required this.hospital,
+      required this.date,
+      required this.time,
+      required this.isRefundable,
+      required this.cancelled,
+      super.key});
 
   String doctor;
   String speciality;
@@ -76,19 +76,31 @@ class PastTemplate extends StatelessWidget {
           SizedBox(
             height: screenHeight * 0.01,
           ),
-          if(cancelled)
+          if (cancelled)
             const Row(
               children: [
-                Icon(Icons.cancel, color: Colors.redAccent, size: 15,),
-                SizedBox(width:10,),
+                Icon(
+                  Icons.cancel,
+                  color: Colors.redAccent,
+                  size: 15,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
                 Text("Cancelled")
               ],
             )
           else
             const Row(
               children: [
-                Icon(Icons.check_circle, color: Colors.green,size: 15,),
-                SizedBox(width:10,),
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 15,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
                 Text("Attended")
               ],
             )

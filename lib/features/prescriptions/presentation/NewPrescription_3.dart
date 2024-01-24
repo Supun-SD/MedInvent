@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
+import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/newPrescribeMedicine.dart';
 import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class Reminders extends StatefulWidget {
   final PageController pageController;
   final NewPrescribedMedicine newMed;
-  final MyPrescription newPrescription;
+  final NewMyPrescription newPrescription;
   final VoidCallback updateUI;
 
   const Reminders(

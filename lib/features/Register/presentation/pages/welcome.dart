@@ -6,14 +6,14 @@ class Welcome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        margin: EdgeInsets.fromLTRB(screenWidth * 0.15 , 0, screenWidth * 0.15, 0),
+        margin:
+            EdgeInsets.fromLTRB(screenWidth * 0.15, 0, screenWidth * 0.15, 0),
         child: Stack(
           children: <Widget>[
             Positioned(

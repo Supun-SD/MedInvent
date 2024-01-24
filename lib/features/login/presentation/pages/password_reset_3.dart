@@ -63,7 +63,9 @@ class _PasswordReset3State extends State<PasswordReset3> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.25, vertical: screenHeight * 0.05),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.25,
+                        vertical: screenHeight * 0.05),
                     child: Image.asset('assets/images/pwreset.jpg'),
                   ),
                   InputField(

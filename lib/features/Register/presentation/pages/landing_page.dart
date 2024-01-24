@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'language_selection.dart';
 import 'welcome.dart';
 
-
 class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
 
@@ -22,7 +21,6 @@ class _WelcomeState extends State<Landing> {
 
   @override
   Widget build(BuildContext context) {
-
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -70,5 +68,3 @@ class _WelcomeState extends State<Landing> {
     );
   }
 }
-
-

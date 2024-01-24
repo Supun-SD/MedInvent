@@ -3,6 +3,7 @@ import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/data/models/myProfile.dart';
 import 'package:MedInvent/features/prescriptions/data/myPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
+import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/myPrescriptionDetails.dart';
 import 'package:MedInvent/features/prescriptions/presentation/newPrescription.dart';
 import 'package:flutter/material.dart';
@@ -249,8 +250,7 @@ class MyPrescriptionTemplate extends StatelessWidget {
 
 class AssignPrescription extends StatefulWidget {
   final VoidCallback updateScreen;
-  MyPrescription newPrescription = MyPrescription();
-  AssignPrescription({super.key, required this.updateScreen});
+  const AssignPrescription({super.key, required this.updateScreen});
 
   @override
   AssignPrescriptionState createState() => AssignPrescriptionState();
@@ -258,6 +258,7 @@ class AssignPrescription extends StatefulWidget {
 
 class AssignPrescriptionState extends State<AssignPrescription> {
   var selectedProfile;
+  NewMyPrescription newPrescription = NewMyPrescription();
 
   @override
   Widget build(BuildContext context) {
@@ -344,13 +345,13 @@ class AssignPrescriptionState extends State<AssignPrescription> {
           TextButton(
             onPressed: () {
               if (selectedProfile != null) {
-                widget.newPrescription.assignedMember = selectedProfile;
+                newPrescription.assignedMember = selectedProfile;
                 Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => NewPrescription(
-                        newPrescription: widget.newPrescription,
+                        newPrescription: newPrescription,
                         updatePresScreen: widget.updateScreen),
                   ),
                 );

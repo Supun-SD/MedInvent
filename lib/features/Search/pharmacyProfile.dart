@@ -202,7 +202,7 @@ class PharmacyProfile extends StatelessWidget {
                                 ),
                               ],
                               borderRadius:
-                              BorderRadius.circular(screenHeight * 0.12),
+                                  BorderRadius.circular(screenHeight * 0.12),
                             ),
                             child: ClipOval(
                               child: Image.asset(
