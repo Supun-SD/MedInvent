@@ -17,6 +17,14 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   String selectedSpec = 'Select the specialization';
   String selectedClinic = 'Select a clinic';
 
+  final TextEditingController _doctor = TextEditingController();
+
+  @override
+  void dispose() {
+    _doctor.dispose();
+    super.dispose();
+  }
+
   final List<String> categories = [
     'Select the specialization',
     ...Categories.values.map((category) => category.name).toList(),
@@ -117,6 +125,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                       SizedBox(
                         height: 40,
                         child: TextField(
+                          controller: _doctor,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey[200],

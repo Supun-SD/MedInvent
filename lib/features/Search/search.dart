@@ -23,6 +23,12 @@ class _SearchState extends State<Search> {
   String selectedValue = 'Doctors';
   TextEditingController search = TextEditingController();
 
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
+  }
+
   List displayDoctors = List.from(doctors);
   List displayPharmacies = List.from(pharmacies);
   List displayMedicine = List.from(medicines);

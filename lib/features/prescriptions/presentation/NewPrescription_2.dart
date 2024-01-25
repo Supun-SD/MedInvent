@@ -27,6 +27,12 @@ class MedicineDetailsState extends State<MedicineDetails> {
   String beforeAfter = 'After';
 
   @override
+  void dispose() {
+    dosage.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;

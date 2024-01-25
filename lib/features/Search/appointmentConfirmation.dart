@@ -23,7 +23,23 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
   int eChanneling = 600;
   int discount = 200;
   int refundableFee = 250;
-  bool isRefundable = true;
+  bool isRefundable = false;
+
+  final TextEditingController _patientName = TextEditingController();
+  final TextEditingController _mobileNo = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _area = TextEditingController();
+  final TextEditingController _nic = TextEditingController();
+
+  @override
+  void dispose() {
+    _patientName.dispose();
+    _mobileNo.dispose();
+    _email.dispose();
+    _area.dispose();
+    _nic.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,6 +239,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                               SizedBox(
                                 height: 35,
                                 child: TextField(
+                                  controller: _patientName,
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.grey[200],
@@ -262,6 +279,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                     SizedBox(
                       height: 35,
                       child: TextField(
+                        controller: _mobileNo,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           filled: true,
@@ -297,6 +315,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                     SizedBox(
                       height: 35,
                       child: TextField(
+                        controller: _email,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           filled: true,
@@ -338,6 +357,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                               SizedBox(
                                 height: 35,
                                 child: TextField(
+                                  controller: _area,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                     filled: true,
@@ -380,6 +400,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                             SizedBox(
                               height: 35,
                               child: TextField(
+                                controller: _nic,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   filled: true,

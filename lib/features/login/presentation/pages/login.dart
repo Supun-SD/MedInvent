@@ -19,6 +19,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailTEC = TextEditingController();
   final TextEditingController _passwordTEC = TextEditingController();
 
+  @override
+  void dispose() {
+    _emailTEC.dispose();
+    _passwordTEC.dispose();
+    super.dispose();
+  }
+
   Future<void> _invalidCredentials() async {
     return showDialog<void>(
       context: context,
@@ -46,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Home(
+            builder: (context) => const Home(
                   sideNavIndex: 2,
                 )),
       );

@@ -21,6 +21,15 @@ class _Register1State extends State<Register1> {
   final TextEditingController _confirmPassword = TextEditingController();
 
   @override
+  void dispose() {
+    _email.dispose();
+    _mobileNo.dispose();
+    _password.dispose();
+    _confirmPassword.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
 

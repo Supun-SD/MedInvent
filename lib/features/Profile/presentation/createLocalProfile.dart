@@ -19,6 +19,15 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
   TextEditingController nic = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  @override
+  void dispose() {
+    firstName.dispose();
+    lastName.dispose();
+    relationship.dispose();
+    nic.dispose();
+    super.dispose();
+  }
+
   File? _image;
 
   final List<String> genderOptions = ['Male', 'Female'];

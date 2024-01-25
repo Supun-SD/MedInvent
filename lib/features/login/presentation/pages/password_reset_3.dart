@@ -13,10 +13,16 @@ class PasswordReset3 extends StatefulWidget {
 
 class _PasswordReset3State extends State<PasswordReset3> {
   final TextEditingController _newPassword = TextEditingController();
-
   final TextEditingController _newPasswordConfirm = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _newPassword.dispose();
+    _newPasswordConfirm.dispose();
+    super.dispose();
+  }
 
   void _passwordReset() {
     showDialog(

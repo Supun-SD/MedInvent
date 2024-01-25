@@ -24,11 +24,13 @@ class _NewPrescriptionState extends ConsumerState<NewPrescription> {
     setState(() {});
   }
 
-  void addNewMyPrescription(MyPrescription myPrescription) {
-    myPrescriptions.add(myPrescription);
-  }
-
   TextEditingController title = TextEditingController();
+
+  @override
+  void dispose() {
+    title.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

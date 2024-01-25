@@ -21,6 +21,14 @@ class Register2State extends State<Register2> {
   final TextEditingController _lName = TextEditingController();
   final TextEditingController _NIC = TextEditingController();
 
+  @override
+  void dispose() {
+    _fName.dispose();
+    _lName.dispose();
+    _NIC.dispose();
+    super.dispose();
+  }
+
   String selectedGender = 'Male';
   DateTime selectedDate = DateTime.now();
 

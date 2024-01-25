@@ -15,6 +15,13 @@ class _PasswordReset1State extends State<PasswordReset1> {
   final TextEditingController _NIC = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  @override
+  void dispose() {
+    _email.dispose();
+    _NIC.dispose();
+    super.dispose();
+  }
+
   final String userEmail = "123@gmail.com";
   final String userMobile = "0771234567";
   final String userNIC = "123456789";

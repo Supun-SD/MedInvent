@@ -21,6 +21,15 @@ class _Register3State extends State<Register3> {
   final TextEditingController _city = TextEditingController();
   final TextEditingController _postalCode = TextEditingController();
 
+  @override
+  void dispose() {
+    _addressLine1.dispose();
+    _addressLine2.dispose();
+    _city.dispose();
+    _postalCode.dispose();
+    super.dispose();
+  }
+
   postData() async {
     var response = await http.post(
       //below i have added my PC IP  address "192.168.1.14" instead of adding localhost

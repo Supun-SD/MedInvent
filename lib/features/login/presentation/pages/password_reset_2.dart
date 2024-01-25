@@ -45,7 +45,7 @@ class PasswordReset2 extends StatelessWidget {
                   padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.15,
                       vertical: screenHeight * 0.05),
-                  child: OTPInput(),
+                  child: const OTPInput(),
                 ),
                 const SizedBox(
                   height: 50,
