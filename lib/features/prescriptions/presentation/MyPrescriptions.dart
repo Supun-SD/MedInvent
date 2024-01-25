@@ -1,10 +1,10 @@
+import 'package:MedInvent/features/Profile/data/datasources/allProfiles.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/data/models/myProfile.dart';
 import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/myPrescriptionDetails.dart';
 import 'package:MedInvent/features/prescriptions/presentation/newPrescription.dart';
-import 'package:MedInvent/providers/allProfilesProvider.dart';
 import 'package:MedInvent/providers/myPrescriptionsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -260,8 +260,6 @@ class AssignPrescriptionState extends ConsumerState<AssignPrescription> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-
-    final allProfiles = ref.watch(allProfilesProvider);
 
     return Container(
       padding: EdgeInsets.all(screenWidth * 0.1),
