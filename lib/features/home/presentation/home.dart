@@ -1,6 +1,8 @@
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Appointments/data/upcomingAppointments.dart';
 import 'package:MedInvent/features/Appointments/model/appointment.dart';
+import 'package:MedInvent/features/Map/map_screen.dart';
+import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/medication_card.dart';
 import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
@@ -14,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String username = "John Doe";
-  String greeting = "";
+  late String greeting;
   String medication1 = "Fever";
   String medication2 = "Diabetes";
   Image profilePhoto = Image.asset("assets/images/pic.png");
@@ -71,6 +73,40 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    List shortcutActions = [
+      () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const MapPage(selectedCategory: "pharmacies")),
+        );
+      },
+      () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const MapPage(selectedCategory: "doctors")),
+        );
+      },
+      () {
+        showModalBottomSheet(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(screenHeight * 0.05)),
+          ),
+          context: context,
+          builder: (BuildContext context) {
+            return const AssignPrescription();
+          },
+        );
+      },
+      () {},
+      () {},
+      () {}
+    ];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
@@ -339,6 +375,7 @@ class _HomePageState extends State<HomePage> {
                         icon: widgetIcons[index],
                         text: widgetTexts[index],
                         background: background[index],
+                        onTap: shortcutActions[index],
                       );
                     },
                   ),
@@ -357,11 +394,13 @@ class Shortcut extends StatelessWidget {
       {required this.text,
       required this.icon,
       required this.background,
+      required this.onTap,
       super.key});
 
   final String icon;
   final String text;
   final IconData background;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +408,7 @@ class Shortcut extends StatelessWidget {
 
     return InkWell(
       borderRadius: BorderRadius.circular(20),
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -567,72 +606,6 @@ class UpcomingWidget extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class Mybutton extends StatelessWidget {
-  const Mybutton({
-    super.key,
-    required this.iconData1,
-    required this.buttonText1,
-    required this.buttonText2,
-    required this.iconData2,
-    required this.onTap,
-  });
-
-  final IconData iconData1;
-  final String buttonText1;
-  final String buttonText2;
-  final IconData iconData2;
-  final Function()? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: SizedBox(
-        height: 62,
-        width: 288,
-        child: Row(
-          children: [
-            Icon(
-              iconData1,
-              color: Colors.blue,
-            ),
-            Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  height: 62,
-                  margin: const EdgeInsets.only(right: 15, top: 5),
-                  width: 200,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          buttonText1,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          buttonText2,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.black45,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ]),
-                )),
-            Icon(
-              iconData2,
-              color: Colors.blue,
-            ),
-          ],
-        ),
       ),
     );
   }

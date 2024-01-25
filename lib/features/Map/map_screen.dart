@@ -14,7 +14,8 @@ import 'package:MedInvent/features/Search/models/doctor.dart';
 import 'package:MedInvent/features/Search/models/pharmacy.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+  final String selectedCategory;
+  const MapPage({super.key, required this.selectedCategory});
 
   @override
   State<MapPage> createState() => MapPageState();
@@ -38,6 +39,7 @@ class MapPageState extends State<MapPage> {
 
   @override
   void initState() {
+    _selectedCategory = widget.selectedCategory;
     _initializeState();
     super.initState();
   }
@@ -614,6 +616,7 @@ class MapPageState extends State<MapPage> {
                         ],
                       ),
                       child: DropdownButton<String>(
+                        borderRadius: BorderRadius.circular(20),
                         value: _selectedCategory,
                         items: const [
                           DropdownMenuItem<String>(

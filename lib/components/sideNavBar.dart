@@ -104,7 +104,7 @@ class _SideNavBarState extends State<SideNavBar> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MapPage(),
+                  builder: (context) => const MapPage(selectedCategory: "all"),
                 ),
               );
             },
