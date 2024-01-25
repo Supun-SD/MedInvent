@@ -2,9 +2,7 @@ import 'package:MedInvent/components/otp_input.dart';
 import 'package:flutter/material.dart';
 
 class AddExistingMember extends StatefulWidget {
-  const AddExistingMember({super.key, required this.updateUI});
-
-  final VoidCallback updateUI;
+  const AddExistingMember({super.key});
 
   @override
   State<AddExistingMember> createState() => _AddExistingMemberState();
@@ -27,8 +25,7 @@ class _AddExistingMemberState extends State<AddExistingMember> {
             LinkProfile(
               pageController: _pageController,
             ),
-            OtpVerify(
-                pageController: _pageController, updateUI: widget.updateUI),
+            OtpVerify(pageController: _pageController),
           ]),
     );
   }
@@ -97,10 +94,8 @@ class LinkProfile extends StatelessWidget {
 
 class OtpVerify extends StatelessWidget {
   final PageController pageController;
-  final VoidCallback updateUI;
 
-  const OtpVerify(
-      {super.key, required this.pageController, required this.updateUI});
+  const OtpVerify({super.key, required this.pageController});
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -138,7 +133,6 @@ class OtpVerify extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            updateUI();
             Navigator.pop(context);
           },
           style: TextButton.styleFrom(

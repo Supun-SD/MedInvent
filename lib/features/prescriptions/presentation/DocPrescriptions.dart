@@ -1,11 +1,12 @@
-import 'package:MedInvent/features/Profile/data/datasources/allProfiles.dart';
 import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/data/models/myProfile.dart';
 import 'package:MedInvent/features/prescriptions/data/docPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/model/docPrescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/prescriptionDetails.dart';
+import 'package:MedInvent/providers/allProfilesProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DocPresContent extends StatelessWidget {
   const DocPresContent({super.key});
@@ -290,7 +291,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
   }
 }
 
-class AssignPrescription extends StatefulWidget {
+class AssignPrescription extends ConsumerStatefulWidget {
   final DocPrescription prescription;
   final Function(Profile) onAssignPressed;
 
@@ -301,16 +302,18 @@ class AssignPrescription extends StatefulWidget {
   });
 
   @override
-  AssignPrescriptionState createState() => AssignPrescriptionState();
+  ConsumerState<AssignPrescription> createState() => AssignPrescriptionState();
 }
 
-class AssignPrescriptionState extends State<AssignPrescription> {
+class AssignPrescriptionState extends ConsumerState<AssignPrescription> {
   var selectedProfile;
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    final allProfiles = ref.watch(allProfilesProvider);
 
     return Container(
       padding: EdgeInsets.all(screenWidth * 0.1),

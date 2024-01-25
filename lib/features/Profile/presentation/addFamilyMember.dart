@@ -3,9 +3,7 @@ import 'package:MedInvent/features/Profile/presentation/createLocalProfile.dart'
 import 'package:flutter/material.dart';
 
 class AddNewMember extends StatelessWidget {
-  const AddNewMember({super.key, required this.updateUI});
-
-  final VoidCallback updateUI;
+  const AddNewMember({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +56,7 @@ class AddNewMember extends StatelessWidget {
                           ),
                           context: context,
                           builder: (BuildContext context) {
-                            return AddExistingMember(updateUI: updateUI);
+                            return const AddExistingMember();
                           },
                         );
                       },
@@ -108,7 +106,7 @@ class AddNewMember extends StatelessWidget {
                             ),
                             context: context,
                             builder: (BuildContext context) {
-                              return CreateLocalProfile(updateUI: updateUI);
+                              return const CreateLocalProfile();
                             },
                           );
                         },

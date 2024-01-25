@@ -1,25 +1,24 @@
-import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/presentation/addFamilyMember.dart';
+import 'package:MedInvent/providers/familyMembersProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'FamilyMemberProfile.dart';
 
-class FamilyMembers extends StatefulWidget {
+class FamilyMembers extends ConsumerStatefulWidget {
   const FamilyMembers({super.key});
 
   @override
-  State<FamilyMembers> createState() => _FamilyMembersState();
+  ConsumerState<FamilyMembers> createState() => _FamilyMembersState();
 }
 
-class _FamilyMembersState extends State<FamilyMembers> {
-  void updateUI() {
-    setState(() {});
-  }
-
+class _FamilyMembersState extends ConsumerState<FamilyMembers> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    final familyMembers = ref.watch(familyMembersProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -38,9 +37,7 @@ class _FamilyMembersState extends State<FamilyMembers> {
                   ),
                   context: context,
                   builder: (BuildContext context) {
-                    return AddNewMember(
-                      updateUI: updateUI,
-                    );
+                    return AddNewMember();
                   },
                 );
               },
@@ -118,9 +115,7 @@ class _FamilyMembersState extends State<FamilyMembers> {
                         ),
                         context: context,
                         builder: (BuildContext context) {
-                          return AddNewMember(
-                            updateUI: updateUI,
-                          );
+                          return const AddNewMember();
                         },
                       );
                     },

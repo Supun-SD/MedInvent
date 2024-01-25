@@ -1,19 +1,18 @@
 import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/providers/familyMembersProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class CreateLocalProfile extends StatefulWidget {
-  const CreateLocalProfile({super.key, required this.updateUI});
-
-  final VoidCallback updateUI;
-
+class CreateLocalProfile extends ConsumerStatefulWidget {
+  const CreateLocalProfile({super.key});
   @override
-  State<CreateLocalProfile> createState() => _CreateLocalProfileState();
+  ConsumerState<CreateLocalProfile> createState() => _CreateLocalProfileState();
 }
 
-class _CreateLocalProfileState extends State<CreateLocalProfile> {
+class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
   TextEditingController relationship = TextEditingController();
@@ -214,13 +213,13 @@ class _CreateLocalProfileState extends State<CreateLocalProfile> {
                 onPressed: () {
                   if (_formKey.currentState!.validate() &&
                       displayText != "Date of Birth") {
-                    familyMembers.add(FamilyMember(
-                        "${firstName.text} ${lastName.text}",
-                        relationship.text,
-                        nic.text,
-                        selectedGender,
-                        displayText, []));
-                    widget.updateUI();
+                    ref.read(familyMembersProvider.notifier).addFamilyMember(
+                        FamilyMember(
+                            "${firstName.text} ${lastName.text}",
+                            relationship.text,
+                            nic.text,
+                            selectedGender,
+                            displayText, []));
                     Navigator.pop(context);
                   }
                 },
