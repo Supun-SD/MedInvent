@@ -1,29 +1,28 @@
 import 'package:MedInvent/features/Profile/data/datasources/allProfiles.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/data/models/myProfile.dart';
-import 'package:MedInvent/features/prescriptions/data/myPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/myPrescriptionDetails.dart';
 import 'package:MedInvent/features/prescriptions/presentation/newPrescription.dart';
+import 'package:MedInvent/providers/myPrescriptionsProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyPresContent extends StatefulWidget {
+class MyPresContent extends ConsumerStatefulWidget {
   const MyPresContent({super.key});
 
   @override
-  State<MyPresContent> createState() => _MyPresContentState();
+  ConsumerState<MyPresContent> createState() => _MyPresContentState();
 }
 
-class _MyPresContentState extends State<MyPresContent> {
-  void updateScreen() {
-    setState(() {});
-  }
-
+class _MyPresContentState extends ConsumerState<MyPresContent> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    final myPrescriptions = ref.watch(myPrescriptionsProvider);
 
     return SingleChildScrollView(
       child: Padding(
@@ -70,9 +69,7 @@ class _MyPresContentState extends State<MyPresContent> {
                         ),
                         context: context,
                         builder: (BuildContext context) {
-                          return AssignPrescription(
-                            updateScreen: updateScreen,
-                          );
+                          return const AssignPrescription();
                         },
                       );
                     },
@@ -249,8 +246,7 @@ class MyPrescriptionTemplate extends StatelessWidget {
 }
 
 class AssignPrescription extends StatefulWidget {
-  final VoidCallback updateScreen;
-  const AssignPrescription({super.key, required this.updateScreen});
+  const AssignPrescription({super.key});
 
   @override
   AssignPrescriptionState createState() => AssignPrescriptionState();
@@ -350,9 +346,8 @@ class AssignPrescriptionState extends State<AssignPrescription> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NewPrescription(
-                        newPrescription: newPrescription,
-                        updatePresScreen: widget.updateScreen),
+                    builder: (context) =>
+                        NewPrescription(newPrescription: newPrescription),
                   ),
                 );
               }

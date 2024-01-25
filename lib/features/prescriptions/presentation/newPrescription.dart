@@ -6,24 +6,26 @@ import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_1.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_2.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_3.dart';
+import 'package:MedInvent/providers/myPrescriptionsProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class NewPrescription extends StatefulWidget {
+class NewPrescription extends ConsumerStatefulWidget {
   final NewMyPrescription newPrescription;
-  final VoidCallback updatePresScreen;
-  const NewPrescription(
-      {super.key,
-      required this.newPrescription,
-      required this.updatePresScreen});
+  const NewPrescription({super.key, required this.newPrescription});
 
   @override
-  State<NewPrescription> createState() => _NewPrescriptionState();
+  ConsumerState<NewPrescription> createState() => _NewPrescriptionState();
 }
 
-class _NewPrescriptionState extends State<NewPrescription> {
+class _NewPrescriptionState extends ConsumerState<NewPrescription> {
   void updateUI() {
     setState(() {});
+  }
+
+  void addNewMyPrescription(MyPrescription myPrescription) {
+    myPrescriptions.add(myPrescription);
   }
 
   TextEditingController title = TextEditingController();
@@ -137,12 +139,13 @@ class _NewPrescriptionState extends State<NewPrescription> {
                   if (widget.newPrescription.prescribedMedicine.isNotEmpty)
                     TextButton(
                       onPressed: () {
-                        myPrescriptions.add(MyPrescription(
-                            title.text,
-                            DateFormat('yyyy/MM/dd').format(DateTime.now()),
-                            widget.newPrescription.assignedMember,
-                            widget.newPrescription.prescribedMedicine));
-                        widget.updatePresScreen();
+                        ref
+                            .read(myPrescriptionsProvider.notifier)
+                            .addNewMyPrescription(MyPrescription(
+                                title.text,
+                                DateFormat('yyyy/MM/dd').format(DateTime.now()),
+                                widget.newPrescription.assignedMember,
+                                widget.newPrescription.prescribedMedicine));
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
