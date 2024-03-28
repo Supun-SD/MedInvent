@@ -107,18 +107,13 @@ class MapPageState extends State<MapPage> {
     PermissionStatus permissionGranted;
 
     serviceEnabled = await _locationController.serviceEnabled();
-    if (serviceEnabled) {
+    if (!serviceEnabled) {
       serviceEnabled = await _locationController.requestService();
-    } else {
-      return;
     }
 
     permissionGranted = await _locationController.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await _locationController.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
     }
 
     _locationController.onLocationChanged
@@ -559,29 +554,8 @@ class MapPageState extends State<MapPage> {
         ],
       ),
       body: _currentP == null
-          ? Center(
-              child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.location_off,
-                        size: screenHeight * 0.08,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Text(
-                        "Turn on location service on your device",
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.05,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  )),
+          ? const Center(
+              child: CircularProgressIndicator(),
             )
           : Stack(
               children: [
