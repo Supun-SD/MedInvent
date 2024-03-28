@@ -8,6 +8,7 @@ import 'package:MedInvent/features/prescriptions/presentation/prescriptionDetail
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Widget for displaying the content of doctor prescriptions
 class DocPresContent extends StatelessWidget {
   const DocPresContent({super.key});
 
@@ -47,6 +48,7 @@ class DocPresContent extends StatelessWidget {
   }
 }
 
+//Widget to display individual prescription details
 class DocPrescriptionTemplate extends StatefulWidget {
   final DocPrescription p;
 
@@ -57,15 +59,18 @@ class DocPrescriptionTemplate extends StatefulWidget {
       _DocPrescriptionTemplateState();
 }
 
+// State class for DocPrescriptionTemplate
 class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
   String profilePicture = "assets/images/pic.png";
 
+  // Method to update the UI with assigned member information
   void updateUI(Profile fm) {
     setState(() {
       widget.p.assignedMember = fm;
     });
   }
 
+  // Method to update the UI after details screen is updated
   void updateFromDetailsScreen() {
     setState(() {});
   }
@@ -93,6 +98,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
             horizontal: screenWidth * 0.07, vertical: screenHeight * 0.015),
         child: Column(
           children: [
+            // Display assigned member information or assign button
             widget.p.assignedMember != null
                 ? Padding(
                     padding: EdgeInsets.only(
@@ -135,6 +141,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
                         style: TextStyle(fontSize: screenHeight * 0.017),
                       ),
                       const Spacer(),
+                      // Button to assign prescription
                       TextButton(
                         onPressed: () {
                           showModalBottomSheet(
@@ -174,6 +181,8 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
                       ),
                     ],
                   ),
+
+            // Display prescription title, date issued, doctor, and more details button
             Row(children: [
               Text(
                 widget.p.title,
@@ -184,6 +193,8 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
             SizedBox(
               height: screenHeight * 0.02,
             ),
+
+            // Display date issued
             Row(
               children: [
                 SizedBox(
@@ -213,6 +224,8 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
                 )
               ],
             ),
+
+            // Display doctor
             SizedBox(
               height: screenHeight * 0.015,
             ),
@@ -250,6 +263,8 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
             SizedBox(
               height: screenHeight * 0.02,
             ),
+
+            // Button to navigate to prescription details screen
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -291,6 +306,7 @@ class _DocPrescriptionTemplateState extends State<DocPrescriptionTemplate> {
   }
 }
 
+// Widget for assigning prescriptions to profiles
 class AssignPrescription extends ConsumerStatefulWidget {
   final DocPrescription prescription;
   final Function(Profile) onAssignPressed;
@@ -305,6 +321,8 @@ class AssignPrescription extends ConsumerStatefulWidget {
   ConsumerState<AssignPrescription> createState() => AssignPrescriptionState();
 }
 
+
+// State class for AssignPrescription
 class AssignPrescriptionState extends ConsumerState<AssignPrescription> {
   var selectedProfile;
 
@@ -390,6 +408,8 @@ class AssignPrescriptionState extends ConsumerState<AssignPrescription> {
             ),
           ),
           SizedBox(height: screenHeight * 0.02),
+
+          // Button to assign prescription to selected profile
           TextButton(
             onPressed: () {
               setState(() {
