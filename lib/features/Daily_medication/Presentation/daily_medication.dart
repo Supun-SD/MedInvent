@@ -140,10 +140,11 @@ class CustomWidget extends StatefulWidget {
   const CustomWidget({super.key});
 
   @override
-  State<CustomWidget> createState() => _CustomWidgetState();
+  State<CustomWidget> createState() => Card();
 }
 
-class _CustomWidgetState extends State<CustomWidget> {
+
+class Card extends State<CustomWidget> {
   final borderRadius = BorderRadius.circular(5.0);
   int numberOfTablets = 0;
   int daysLeft = 0;
@@ -210,3 +211,4 @@ class _CustomWidgetState extends State<CustomWidget> {
     );
   }
 }
+

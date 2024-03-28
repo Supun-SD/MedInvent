@@ -23,6 +23,7 @@ class UpcomingTemplate extends StatefulWidget {
   State<UpcomingTemplate> createState() => _UpcomingTemplateState();
 }
 
+// cancle popup
 class _UpcomingTemplateState extends State<UpcomingTemplate> {
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
@@ -59,9 +60,10 @@ class _UpcomingTemplateState extends State<UpcomingTemplate> {
 
   @override
   Widget build(BuildContext context) {
+    // screen size
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    return Container(
+    return Container(    // appointments boxes
       margin: EdgeInsets.only(
           left: screenWidth * 0.1,
           right: screenWidth * 0.1,

@@ -45,19 +45,16 @@ class _HomePageState extends State<HomePage> {
   List<String> widgetIcons = [
     "assets/widgetIcons/pharmacy.png",
     "assets/widgetIcons/doctor.png",
-    "assets/widgetIcons/prescription.png",
     "assets/widgetIcons/checkout.png",
     "assets/widgetIcons/chat.png",
-    "assets/widgetIcons/tracking.png",
-  ];
+    ];
 
   List<String> widgetTexts = [
     "Find Pharmacy",
     "Find Doctor",
     "Add prescription",
-    "Order prescription",
     "Forum",
-    "Track order"
+
   ];
 
   List<IconData> background = [
@@ -71,6 +68,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // getting the screen height and width
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -123,6 +121,8 @@ class _HomePageState extends State<HomePage> {
         ],
         elevation: 0,
         backgroundColor: Colors.transparent,
+
+        // greadient top bar
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -151,6 +151,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Column(
               children: [
+                //greating bar
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                   decoration: BoxDecoration(
@@ -198,9 +199,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+
+                //for space
                 SizedBox(
                   height: screenHeight * 0.025,
                 ),
+
+                // medication tracker
                 SizedBox(
                   height: screenHeight * 0.25,
                   child: PageView(
@@ -220,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const DailyMed()),
+                                builder: (context) => DailyMed()),
                           );
                         },
                       ),
@@ -236,13 +241,15 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const DailyMed()),
+                                builder: (context) => DailyMed()),
                           );
                         },
                       )
                     ],
                   ),
                 ),
+
+                //upcoming appointments
                 SizedBox(
                   height: screenHeight * 0.02,
                 ),
@@ -284,6 +291,8 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(
                               width: 15,
                             ),
+
+                            //appointment tabs
                             Expanded(
                               child: Container(
                                 padding: EdgeInsets.symmetric(
@@ -363,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                   height: screenHeight * 0.28,
                   child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 6,
+                    itemCount:4 ,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
@@ -389,6 +398,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+//shortcuts
 class Shortcut extends StatelessWidget {
   const Shortcut(
       {required this.text,

@@ -21,8 +21,11 @@ class PastTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // getting screen size
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    // appointments boxes
     return Container(
       margin: EdgeInsets.only(
           left: screenWidth * 0.1,
