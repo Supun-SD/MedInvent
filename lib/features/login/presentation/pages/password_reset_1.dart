@@ -15,6 +15,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
   final TextEditingController _NIC = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  //function to dispose controllers when not in use
   @override
   void dispose() {
     _email.dispose();
@@ -26,6 +27,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
   final String userMobile = "0771234567";
   final String userNIC = "123456789";
 
+  //pop up to display if incorrect details are entered
   Future<void> _credentialsMismatch() async {
     return showDialog<void>(
       context: context,
@@ -48,6 +50,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
     );
   }
 
+  //function to verify details
   void verification() {
     if ((_email.text == userEmail || _email.text == userMobile) &&
         _NIC.text == userNIC) {

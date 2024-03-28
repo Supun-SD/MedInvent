@@ -17,6 +17,7 @@ class _PasswordReset3State extends State<PasswordReset3> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  //function to dispose controllers when not in use
   @override
   void dispose() {
     _newPassword.dispose();
@@ -24,6 +25,7 @@ class _PasswordReset3State extends State<PasswordReset3> {
     super.dispose();
   }
 
+  //pop up to display after successfull password reset
   void _passwordReset() {
     showDialog(
       context: context,

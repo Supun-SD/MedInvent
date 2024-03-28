@@ -27,16 +27,20 @@ class MapPageState extends State<MapPage> {
   final Completer<GoogleMapController> _mapController =
       Completer<GoogleMapController>();
 
+  //initial location
   static const LatLng _location = LatLng(6.9271, 79.8612);
+
   String? _selectedCategory;
 
-  LatLng? _currentP;
-  final Set<Marker> _markers = {};
-  final List<BitmapDescriptor> _locationIcon = [];
+  LatLng? _currentP; //stores the lattitude and longtitude of current location
+
+  final Set<Marker> _markers = {}; //markers to display on map
+  final List<BitmapDescriptor> _locationIcon = []; //icons
 
   List<Doctor> nearbyDoctors = [];
   List<Pharmacy> nearbyPharmacies = [];
 
+  //initialize the state on first load
   @override
   void initState() {
     _selectedCategory = widget.selectedCategory;
@@ -44,11 +48,13 @@ class MapPageState extends State<MapPage> {
     super.initState();
   }
 
+  //fucntion to run on initialization
   Future<void> _initializeState() async {
     await _loadLocationIcon();
     await getLocationUpdates();
   }
 
+  //function to update nearby doctors and pharmacies
   Future<void> nearbyDoctorsAndPharmacies() async {
     nearbyDoctors.clear();
     nearbyPharmacies.clear();
@@ -66,6 +72,7 @@ class MapPageState extends State<MapPage> {
     }
   }
 
+  //function to calculate the displacement from current location to doctor's or pharmacie's location
   double calculateDisplacement(LatLng location1, LatLng location2) {
     const double earthRadius = 6371;
 
@@ -91,6 +98,7 @@ class MapPageState extends State<MapPage> {
     return degrees * (pi / 180);
   }
 
+  //function to move the view to current location
   Future<void> _cameraToPosition(LatLng pos) async {
     final GoogleMapController controller = await _mapController.future;
     CameraPosition newCameraPosition = CameraPosition(
@@ -102,20 +110,24 @@ class MapPageState extends State<MapPage> {
     );
   }
 
+  //function to get location updates
   Future<void> getLocationUpdates() async {
     bool serviceEnabled;
     PermissionStatus permissionGranted;
 
+    //if location is not turned on ask to turn on
     serviceEnabled = await _locationController.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await _locationController.requestService();
     }
 
+    //if permission is not granted request to grant permission
     permissionGranted = await _locationController.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await _locationController.requestPermission();
     }
 
+    //listen for location change and update the location
     _locationController.onLocationChanged
         .listen((LocationData currentLocation) {
       if (currentLocation.latitude != null &&
@@ -130,6 +142,7 @@ class MapPageState extends State<MapPage> {
     });
   }
 
+  //function to load marker icons
   Future<void> _loadLocationIcon() async {
     for (int i = 1; i < 8; i++) {
       final ByteData byteData =
@@ -139,6 +152,7 @@ class MapPageState extends State<MapPage> {
     }
   }
 
+  //function to show pop up of doctor details when clicked on the marker
   void _showPopupDoctor(BuildContext context, Doctor doctor) {
     showModalBottomSheet(
       context: context,
@@ -207,6 +221,7 @@ class MapPageState extends State<MapPage> {
     );
   }
 
+  //function to show pop up of pharmacy details when clicked on the marker
   void _showPopupPharmacy(BuildContext context, Pharmacy pharmacy) {
     showModalBottomSheet(
       context: context,
@@ -306,6 +321,7 @@ class MapPageState extends State<MapPage> {
     );
   }
 
+  //function to add markers of doctors and pharmacies on the map
   void addMarkers() {
     _markers.clear();
     if (_currentP != null) {
@@ -352,6 +368,7 @@ class MapPageState extends State<MapPage> {
     setState(() {});
   }
 
+  //function to filter markers for selected category
   Set<Marker> _getMarkersForSelectedCategory() {
     Set<Marker> selectedMarkers = {
       Marker(
@@ -401,6 +418,7 @@ class MapPageState extends State<MapPage> {
     return selectedMarkers;
   }
 
+  //function to show popup of the legend
   void showLegend() {
     showDialog(
       context: context,
@@ -492,6 +510,7 @@ class MapPageState extends State<MapPage> {
     );
   }
 
+  //function to check if pharmacy or doctor is available at the moment
   bool timeCheck(TimeOfDay start, TimeOfDay end) {
     final now = DateTime.now();
     final currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
@@ -513,7 +532,6 @@ class MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.white,

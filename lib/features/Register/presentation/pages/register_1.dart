@@ -20,6 +20,7 @@ class _Register1State extends State<Register1> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
 
+  //function to dispose controllers when not in use
   @override
   void dispose() {
     _email.dispose();
@@ -94,6 +95,14 @@ class _Register1State extends State<Register1> {
                     hint: 'Confirm Password',
                     isPassword: true),
                 SizedBox(height: screenHeight * 0.08),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(color: Colors.blue),
+                    ),
+                  ),
+                ),
                 CustomButton(
                   text: 'Next',
                   onPressed: () {

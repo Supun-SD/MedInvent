@@ -6,6 +6,7 @@ class PharmacyProfile extends StatelessWidget {
   const PharmacyProfile({required this.pharmacy, super.key});
   final Pharmacy pharmacy;
 
+  //function to calculate average review for the pharmacy
   double reviewCal(Pharmacy p) {
     int tot = 0;
     double review;

@@ -21,6 +21,7 @@ class _Register3State extends State<Register3> {
   final TextEditingController _city = TextEditingController();
   final TextEditingController _postalCode = TextEditingController();
 
+  //function to dispose controllers when not in use
   @override
   void dispose() {
     _addressLine1.dispose();
@@ -30,37 +31,38 @@ class _Register3State extends State<Register3> {
     super.dispose();
   }
 
-  postData() async {
-    var response = await http.post(
-      //below i have added my PC IP  address "192.168.1.14" instead of adding localhost
-      //since we are using pc emulator for checking purposes.
-      //you can change it  to your PC IP address when you are going to work with this post method.
-      Uri.parse("http://192.168.1.109:3300/user"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        'email': widget.userData.email,
-        'user_password': widget.userData.password,
-        'first_name': widget.userData.firstName,
-        'last_name': widget.userData.lastName,
-        'nic': widget.userData.nic,
-        'gender': widget.userData.gender,
-        'birth_date': widget.userData.birthDate,
-        'mNumber': widget.userData.mobileNumber,
-        'address': {
-          'line1': widget.userData.line1,
-          'line2': widget.userData.line2,
-          'city': widget.userData.city,
-          'district': widget.userData.district,
-          'postalCode': widget.userData.postalCode,
-        }
-      }),
-    );
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-  }
+  // postData() async {
+  //   var response = await http.post(
+  //     //below i have added my PC IP  address "192.168.1.14" instead of adding localhost
+  //     //since we are using pc emulator for checking purposes.
+  //     //you can change it  to your PC IP address when you are going to work with this post method.
+  //     Uri.parse("http://192.168.1.109:3300/user"),
+  //     headers: {"Content-Type": "application/json"},
+  //     body: jsonEncode({
+  //       'email': widget.userData.email,
+  //       'user_password': widget.userData.password,
+  //       'first_name': widget.userData.firstName,
+  //       'last_name': widget.userData.lastName,
+  //       'nic': widget.userData.nic,
+  //       'gender': widget.userData.gender,
+  //       'birth_date': widget.userData.birthDate,
+  //       'mNumber': widget.userData.mobileNumber,
+  //       'address': {
+  //         'line1': widget.userData.line1,
+  //         'line2': widget.userData.line2,
+  //         'city': widget.userData.city,
+  //         'district': widget.userData.district,
+  //         'postalCode': widget.userData.postalCode,
+  //       }
+  //     }),
+  //   );
+  //   print('Response status: ${response.statusCode}');
+  //   print('Response body: ${response.body}');
+  // }
 
+
+  //registration successful message
   void _registrationSuccess() {
-    postData();
     showDialog(
       context: context,
       builder: (BuildContext context) {

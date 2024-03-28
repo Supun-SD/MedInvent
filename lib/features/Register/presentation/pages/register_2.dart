@@ -21,6 +21,7 @@ class Register2State extends State<Register2> {
   final TextEditingController _lName = TextEditingController();
   final TextEditingController _NIC = TextEditingController();
 
+  //function to dispose controllers when not in use
   @override
   void dispose() {
     _fName.dispose();
@@ -32,6 +33,8 @@ class Register2State extends State<Register2> {
   String selectedGender = 'Male';
   DateTime selectedDate = DateTime.now();
 
+
+  //pop up to select the birthdate
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,

@@ -13,12 +13,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  //temporary username ans password
   final String username = "admin";
   final String password = "admin";
 
   final TextEditingController _emailTEC = TextEditingController();
   final TextEditingController _passwordTEC = TextEditingController();
 
+  //function to dispose controllers when not in use
   @override
   void dispose() {
     _emailTEC.dispose();
@@ -26,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  //pop to show when invalid credentials are entered
   Future<void> _invalidCredentials() async {
     return showDialog<void>(
       context: context,
@@ -48,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  //function to authenticate login
   void loginAuth() {
     if (_emailTEC.text == username && _passwordTEC.text == password) {
       Navigator.push(
