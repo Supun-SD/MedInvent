@@ -82,7 +82,7 @@ class _MapPageState extends State<MapPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to get nearby pharmacies.'),
           backgroundColor: Colors.red,
         ),
@@ -151,8 +151,8 @@ class _MapPageState extends State<MapPage> {
       await fetchNearbyPharmacies();
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error getting location data: $error'),
+        const SnackBar(
+          content: Text('Error getting location data.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -369,7 +369,6 @@ class _MapPageState extends State<MapPage> {
   String formatTime(String timeString) {
     List<String> parts = timeString.split(':');
     int hours = int.parse(parts[0]);
-    int minutes = int.parse(parts[1]);
 
     String period = hours < 12 ? 'AM' : 'PM';
 
