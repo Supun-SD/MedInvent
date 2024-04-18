@@ -19,6 +19,8 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  String? _selectedCategory;
+
   late GoogleMapController mapController;
   Location location = Location();
   LatLng currentLocation = const LatLng(6.927079, 79.861243);
@@ -32,10 +34,12 @@ class _MapPageState extends State<MapPage> {
   List<Pharmacy> nearbyPharmacies = [];
 
   Set<Marker> pharmacyMarkers = {};
+  Set<Marker> doctorMarkers = {};
 
   @override
   void initState() {
     super.initState();
+    _selectedCategory = widget.selectedCategory;
     _checkLocationPermission();
     _loadCustomMarkerIcons();
   }
@@ -380,6 +384,8 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       drawer: const SideNavBar(),
       appBar: AppBar(
@@ -437,6 +443,54 @@ class _MapPageState extends State<MapPage> {
               ...pharmacyMarkers
             },
           ),
+          Positioned(
+              top: 30.0,
+              left: 0,
+              right: 0,
+              child: Container(
+                margin:
+                EdgeInsets.symmetric(horizontal: screenWidth * 0.3),
+                padding: const EdgeInsets.only(left: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(50.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.7),
+                      spreadRadius: 2,
+                      blurRadius: 50,
+                    ),
+                  ],
+                ),
+                child: DropdownButton<String>(
+                  borderRadius: BorderRadius.circular(20),
+                  value: _selectedCategory,
+                  items: const [
+                    DropdownMenuItem<String>(
+                      value: 'all',
+                      child: Text('All'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'doctors',
+                      child: Text('Doctors'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'pharmacies',
+                      child: Text('Pharmacies'),
+                    ),
+                  ],
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedCategory = value;
+                    });
+                  },
+                  hint: const Text('All'),
+                  underline: Container(
+                    height: 0,
+                    color: Colors.transparent,
+                  ),
+                ),
+              )),
           isLoading
               ? Container(
                   color: Colors.black.withOpacity(0.5),
