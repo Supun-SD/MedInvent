@@ -1,7 +1,6 @@
-import 'package:MedInvent/features/Search/data/doctors.dart';
 import 'package:MedInvent/features/Search/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/categories.dart';
-import 'package:MedInvent/features/Search/models/doctor.dart';
+import 'package:MedInvent/features/Search/models/Doctor.dart';
 import 'package:flutter/material.dart';
 
 class AdvancedSearch extends StatefulWidget {
@@ -62,12 +61,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
     }
   }
 
-  List<Doctor> suggestedDoctors = [
-    doctors[0],
-    doctors[1],
-    doctors[2],
-    doctors[3]
-  ];
+  List<Doctor> suggestedDoctors = [];
 
   @override
   Widget build(BuildContext context) {
@@ -333,12 +327,12 @@ class SuggestedDoctors extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Dr ${doctor.name}",
+                  'Dr ${doctor.fname} ${doctor.lname}',
                   style: const TextStyle(
                       fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  doctor.speciality.name,
+                  doctor.specialization,
                   style: const TextStyle(
                     fontSize: 12,
                   ),

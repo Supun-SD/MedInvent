@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:MedInvent/config/api.dart';
-import 'package:MedInvent/features/Map/Models/Pharmacy.dart';
+import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';

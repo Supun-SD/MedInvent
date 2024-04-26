@@ -1,7 +1,7 @@
 import 'package:MedInvent/features/Search/appointmentConfirmation.dart';
 import 'package:MedInvent/features/Search/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/appointment.dart';
-import 'package:MedInvent/features/Search/models/doctor.dart';
+import 'package:MedInvent/features/Search/models/Doctor.dart';
 import 'package:flutter/material.dart';
 
 class DoctorAppointments extends StatefulWidget {
@@ -136,13 +136,13 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Dr ${widget.doctor.name}",
+                                  "Dr ${widget.doctor.fname} ${widget.doctor.lname}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: screenWidth * 0.05),
                                 ),
                                 Text(
-                                  widget.doctor.speciality.name,
+                                  widget.doctor.specialization,
                                   style:
                                       TextStyle(fontSize: screenWidth * 0.035),
                                 ),
@@ -240,15 +240,15 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
                 SizedBox(height: screenHeight * 0.025),
                 AppointmentPageView(
                   appointments: appointments1,
-                  doctor: widget.doctor.name,
+                  doctor: "${widget.doctor.fname} ${widget.doctor.lname}",
                 ),
                 AppointmentPageView(
                   appointments: appointments2,
-                  doctor: widget.doctor.name,
+                  doctor: "${widget.doctor.fname} ${widget.doctor.lname}",
                 ),
                 AppointmentPageView(
                   appointments: appointments3,
-                  doctor: widget.doctor.name,
+                  doctor: "${widget.doctor.fname} ${widget.doctor.lname}",
                 ),
               ],
             ),

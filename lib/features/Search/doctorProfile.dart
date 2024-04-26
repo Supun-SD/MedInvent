@@ -1,6 +1,6 @@
 import 'package:MedInvent/features/Search/doctorAppointments.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/features/Search/models/doctor.dart';
+import 'package:MedInvent/features/Search/models/Doctor.dart';
 
 class DoctorProfile extends StatelessWidget {
   const DoctorProfile({required this.doctor, Key? key}) : super(key: key);
@@ -99,7 +99,7 @@ class DoctorProfile extends StatelessWidget {
                                 height: screenHeight * 0.08,
                               ),
                               Text(
-                                "Dr ${doctor.name}",
+                                "Dr ${doctor.fname} ${doctor.mname} ${doctor.lname}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: screenWidth * 0.055),
@@ -108,7 +108,7 @@ class DoctorProfile extends StatelessWidget {
                                 height: 5,
                               ),
                               Text(
-                                doctor.speciality.name,
+                                doctor.specialization,
                                 style: TextStyle(fontSize: screenWidth * 0.04),
                               ),
                               const SizedBox(

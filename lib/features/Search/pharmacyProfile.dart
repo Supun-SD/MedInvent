@@ -1,21 +1,21 @@
 import 'package:MedInvent/features/Search/doctorProfile.dart';
-import 'package:MedInvent/features/Search/models/pharmacy.dart';
+import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:flutter/material.dart';
 
 class PharmacyProfile extends StatelessWidget {
   const PharmacyProfile({required this.pharmacy, super.key});
   final Pharmacy pharmacy;
 
-  //function to calculate average review for the pharmacy
-  double reviewCal(Pharmacy p) {
-    int tot = 0;
-    double review;
-    for (int i = 0; i < p.reviews.length; i++) {
-      tot = tot + p.reviews[i].stars;
-    }
-    review = tot / p.reviews.length;
-    return review;
-  }
+  // //function to calculate average review for the pharmacy
+  // double reviewCal(Pharmacy p) {
+  //   int tot = 0;
+  //   double review;
+  //   for (int i = 0; i < p.reviews.length; i++) {
+  //     tot = tot + p.reviews[i].stars;
+  //   }
+  //   review = tot / p.reviews.length;
+  //   return review;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -92,20 +92,20 @@ class PharmacyProfile extends StatelessWidget {
                                 SizedBox(
                                   height: screenHeight * 0.005,
                                 ),
-                                Row(
+                                const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.star,
                                       color: Color(0xFFFFBF00),
                                       size: 20,
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 10,
                                     ),
-                                    Text(reviewCal(pharmacy).toString()),
-                                    Text(
-                                        '(${pharmacy.reviews.length} reviews)'),
+                                    // Text(reviewCal(pharmacy).toString()),
+                                    // Text(
+                                    //     '(${pharmacy.reviews.length} reviews)'),
                                   ],
                                 ),
                                 SizedBox(
@@ -290,7 +290,7 @@ class Details extends StatelessWidget {
                 )),
             Expanded(
                 child: Text(
-              pharmacy.address,
+              '${pharmacy.addressLineOne}, ${pharmacy.addressLineTwo}, ${pharmacy.city}, ${pharmacy.city}',
               style: TextStyle(
                   fontSize: screenWidth * 0.035, fontWeight: FontWeight.bold),
             ))
@@ -308,7 +308,7 @@ class Details extends StatelessWidget {
                   style: TextStyle(fontSize: screenWidth * 0.035),
                 )),
             Text(
-              "${formatTimeOfDay(pharmacy.openTime)} to ${formatTimeOfDay(pharmacy.closeTime)} ",
+              "${formatTimeOfDay(pharmacy.openHoursFrom as TimeOfDay)} to ${formatTimeOfDay(pharmacy.openHoursTo as TimeOfDay)} ",
               style: TextStyle(
                   fontSize: screenWidth * 0.035, fontWeight: FontWeight.bold),
             ),
@@ -328,7 +328,7 @@ class Details extends StatelessWidget {
                 )),
             Expanded(
               child: Text(
-                pharmacy.datesList.join(", "),
+                pharmacy.openDays.join(", "),
                 style: TextStyle(
                     fontSize: screenWidth * 0.035, fontWeight: FontWeight.bold),
               ),
@@ -347,7 +347,7 @@ class Details extends StatelessWidget {
                   style: TextStyle(fontSize: screenWidth * 0.035),
                 )),
             Text(
-              pharmacy.contact,
+              pharmacy.contactNo,
               style: TextStyle(
                   fontSize: screenWidth * 0.035, fontWeight: FontWeight.bold),
             )
@@ -391,7 +391,7 @@ class Reviews extends StatelessWidget {
           SizedBox(
             height: screenHeight * 0.05,
           ),
-          ...pharmacy.reviews.map((e) => ReviewTemplate(review: e)),
+          // ...pharmacy.reviews.map((e) => ReviewTemplate(review: e)),
           SizedBox(
             height: screenHeight * 0.03,
           ),
@@ -422,65 +422,65 @@ class Reviews extends StatelessWidget {
   }
 }
 
-class ReviewTemplate extends StatelessWidget {
-  const ReviewTemplate({required this.review, super.key});
-  final Review review;
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-    return Column(
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: screenWidth * 0.05,
-            ),
-            Image.asset(
-              "assets/images/pic.png",
-              width: screenWidth * 0.15,
-            ),
-            SizedBox(
-              width: screenWidth * 0.04,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    review.name,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: screenWidth * 0.04),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    children: [
-                      for (int i = 0; i < review.stars; i++)
-                        const Icon(
-                          Icons.star,
-                          color: Color(0xFFFFBF00),
-                          size: 15,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(review.review),
-                ],
-              ),
-            )
-          ],
-        ),
-        Divider(
-          height: screenHeight * 0.04,
-          color: Colors.grey,
-          thickness: 0.7,
-        ),
-      ],
-    );
-  }
-}
+// class ReviewTemplate extends StatelessWidget {
+//   const ReviewTemplate({required this.review, super.key});
+//   final Review review;
+//   @override
+//   Widget build(BuildContext context) {
+//     final double screenWidth = MediaQuery.of(context).size.width;
+//     final double screenHeight = MediaQuery.of(context).size.height;
+//     return Column(
+//       children: [
+//         Row(
+//           children: [
+//             SizedBox(
+//               width: screenWidth * 0.05,
+//             ),
+//             Image.asset(
+//               "assets/images/pic.png",
+//               width: screenWidth * 0.15,
+//             ),
+//             SizedBox(
+//               width: screenWidth * 0.04,
+//             ),
+//             Expanded(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     review.name,
+//                     style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: screenWidth * 0.04),
+//                   ),
+//                   const SizedBox(
+//                     height: 5,
+//                   ),
+//                   Row(
+//                     children: [
+//                       for (int i = 0; i < review.stars; i++)
+//                         const Icon(
+//                           Icons.star,
+//                           color: Color(0xFFFFBF00),
+//                           size: 15,
+//                         ),
+//                     ],
+//                   ),
+//                   const SizedBox(
+//                     height: 5,
+//                   ),
+//                   Text(review.review),
+//                 ],
+//               ),
+//             )
+//           ],
+//         ),
+//         Divider(
+//           height: screenHeight * 0.04,
+//           color: Colors.grey,
+//           thickness: 0.7,
+//         ),
+//       ],
+//     );
+//   }
+// }

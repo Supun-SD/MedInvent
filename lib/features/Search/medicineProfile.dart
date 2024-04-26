@@ -1,6 +1,6 @@
 import 'package:MedInvent/features/Search/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/medicine.dart';
-import 'package:MedInvent/features/Search/models/pharmacy.dart';
+import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:flutter/material.dart';
 
 class MedicineProfile extends StatelessWidget {

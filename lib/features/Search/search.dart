@@ -1,16 +1,18 @@
+import 'dart:convert';
+import 'package:MedInvent/config/api.dart';
 import 'package:MedInvent/features/Search/data/medicines.dart';
 import 'package:MedInvent/features/Search/doctorProfile.dart';
 import 'package:MedInvent/features/Search/medicineProfile.dart';
-import 'package:MedInvent/features/Search/models/doctor.dart';
-import 'package:MedInvent/features/Search/models/pharmacy.dart';
+import 'package:MedInvent/features/Search/models/Doctor.dart';
+import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:MedInvent/features/Search/pharmacyProfile.dart';
 import 'package:flutter/material.dart';
 
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Search/advancedSearch.dart';
-import 'package:MedInvent/features/Search/data/doctors.dart';
-import 'package:MedInvent/features/Search/data/pharmacies.dart';
 import 'package:MedInvent/features/Search/models/categories.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -23,32 +25,101 @@ class _SearchState extends State<Search> {
   String selectedValue = 'Doctors';
   TextEditingController search = TextEditingController();
 
+  bool isLoading = true;
+
   @override
   void dispose() {
     search.dispose();
     super.dispose();
   }
 
-  List displayDoctors = List.from(doctors);
-  List displayPharmacies = List.from(pharmacies);
+  List<Doctor> doctors = [];
+  List<Pharmacy> pharmacies = [];
   List displayMedicine = List.from(medicines);
 
-  void updateDoctorList(String value) {
+  Future<void> fetchPharmacies() async {
+    if (search.text.isEmpty) {
+      return;
+    }
+
+    String apiUrl =
+        '${ApiConfig.baseUrl}/pharmacy/get/getByName/${search.text}';
     setState(() {
-      displayDoctors = doctors
-          .where((doctor) =>
-              doctor.name.toLowerCase().contains(value.toLowerCase()))
-          .toList();
+      isLoading = true;
     });
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['data'] != null) {
+          List<dynamic> pharmaciesJson = jsonResponse['data'];
+
+          pharmacies.clear();
+
+          for (var pharmacyJson in pharmaciesJson) {
+            Pharmacy pharmacy = Pharmacy.fromJson(pharmacyJson);
+            pharmacies.add(pharmacy);
+          }
+        }
+      } else {
+        throw Exception('Failed to load results');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to get results'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
-  void updatePharmacyList(String value) {
+  Future<void> fetchDoctors() async {
+    if (search.text.isEmpty) {
+      return;
+    }
+
+    String apiUrl = '${ApiConfig.baseUrl}/doctor/get/getByName/${search.text}';
     setState(() {
-      displayPharmacies = pharmacies
-          .where((pharmacy) =>
-              pharmacy.name.toLowerCase().contains(value.toLowerCase()))
-          .toList();
+      isLoading = true;
     });
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['data'] != null) {
+          List<dynamic> doctorsJson = jsonResponse['data'];
+
+          doctors.clear();
+
+          for (var doctorJson in doctorsJson) {
+            Doctor doctor = Doctor.fromJson(doctorJson);
+            doctors.add(doctor);
+          }
+        }
+      } else {
+        throw Exception('Failed to load results');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to get results'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void updateMedicineList(String value) {
@@ -179,9 +250,9 @@ class _SearchState extends State<Search> {
                               onChanged: (String value) {
                                 setState(() {
                                   if (selectedValue == 'Doctors') {
-                                    updateDoctorList(value);
+                                    fetchDoctors();
                                   } else if (selectedValue == 'Pharmacies') {
-                                    updatePharmacyList(value);
+                                    fetchPharmacies();
                                   } else if (selectedValue == 'Medicine') {
                                     updateMedicineList(value);
                                   }
@@ -238,19 +309,19 @@ class _SearchState extends State<Search> {
                             fontSize: screenWidth * 0.05,
                             fontWeight: FontWeight.bold),
                       ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: doctors.map((doctor) {
-                            return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: screenHeight * 0.02),
-                                child: NearbyDoctor(
-                                  doctor: doctor,
-                                ));
-                          }).toList(),
-                        ),
-                      ),
+                      // SingleChildScrollView(
+                      //   scrollDirection: Axis.horizontal,
+                      //   child: Row(
+                      //     children: doctors.map((doctor) {
+                      //       return Padding(
+                      //           padding: EdgeInsets.symmetric(
+                      //               vertical: screenHeight * 0.02),
+                      //           child: NearbyDoctor(
+                      //             doctor: doctor,
+                      //           ));
+                      //     }).toList(),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: screenHeight * 0.015,
                       ),
@@ -300,72 +371,90 @@ class _SearchState extends State<Search> {
                     child: Column(
                       children: [
                         if (selectedValue == 'Doctors')
-                          if (displayDoctors.isNotEmpty)
-                            ...displayDoctors.map((doctor) => InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            DoctorProfile(doctor: doctor),
+                          if (!isLoading)
+                            if (doctors.isNotEmpty)
+                              ...doctors.map((doctor) => InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DoctorProfile(doctor: doctor),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: ListTile(
-                                      selectedTileColor: Colors.grey,
-                                      title: Text(
-                                        doctor.name,
-                                        style: TextStyle(
-                                            fontSize: screenWidth * 0.035),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: ListTile(
+                                        selectedTileColor: Colors.grey,
+                                        title: Text(
+                                          '${doctor.fname} ${doctor.lname}',
+                                          style: TextStyle(
+                                              fontSize: screenWidth * 0.035),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ))
+                                  ))
+                            else
+                              Padding(
+                                padding: EdgeInsets.all(screenWidth * 0.1),
+                                child: const Text('No result'),
+                              )
                           else
                             Padding(
-                              padding: EdgeInsets.all(screenWidth * 0.1),
-                              child: const Text('no result'),
+                              padding: EdgeInsets.all(screenHeight * 0.05),
+                              child: SpinKitFadingCircle(
+                                color: Colors.blueAccent,
+                                size: screenWidth * 0.08,
+                              ),
                             )
                         else if (selectedValue == 'Pharmacies')
-                          if (pharmacies.isNotEmpty)
-                            ...displayPharmacies.map((pharmacy) => InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            PharmacyProfile(pharmacy: pharmacy),
+                          if (!isLoading)
+                            if (pharmacies.isNotEmpty)
+                              ...pharmacies.map((pharmacy) => InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PharmacyProfile(
+                                              pharmacy: pharmacy),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: ListTile(
-                                      selectedTileColor: Colors.grey,
-                                      title: Text(
-                                        pharmacy.name,
-                                        style: TextStyle(
-                                            fontSize: screenWidth * 0.035),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: ListTile(
+                                        selectedTileColor: Colors.grey,
+                                        title: Text(
+                                          pharmacy.name,
+                                          style: TextStyle(
+                                              fontSize: screenWidth * 0.035),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ))
+                                  ))
+                            else
+                              Padding(
+                                padding: EdgeInsets.all(screenWidth * 0.1),
+                                child: const Text('No result'),
+                              )
                           else
                             Padding(
-                              padding: EdgeInsets.all(screenWidth * 0.1),
-                              child: const Text('no result'),
+                              padding: EdgeInsets.all(screenHeight * 0.05),
+                              child: SpinKitFadingCircle(
+                                color: Colors.blueAccent,
+                                size: screenWidth * 0.08,
+                              ),
                             )
                         else if (selectedValue == 'Medicine')
                           if (displayMedicine.isNotEmpty)
@@ -399,7 +488,7 @@ class _SearchState extends State<Search> {
                           else
                             Padding(
                               padding: EdgeInsets.all(screenWidth * 0.1),
-                              child: const Text('no result'),
+                              child: const Text('No result'),
                             ),
                       ],
                     ),
@@ -456,74 +545,74 @@ class Category extends StatelessWidget {
   }
 }
 
-class NearbyDoctor extends StatelessWidget {
-  const NearbyDoctor({required this.doctor, super.key});
-  final Doctor doctor;
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => DoctorProfile(doctor: doctor)),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: screenWidth * 0.03),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                blurRadius: 10,
-                offset: const Offset(5, 0)),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Column(
-            children: [
-              Image.asset(
-                'assets/images/doctor.jpg',
-                height: screenHeight * 0.15,
-              ),
-              SizedBox(
-                height: screenHeight * 0.01,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    doctor.name,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: screenWidth * 0.028),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.005,
-                  ),
-                  Text(
-                    doctor.speciality.name,
-                    style: TextStyle(fontSize: screenWidth * 0.025),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: screenHeight * 0.02,
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+// class NearbyDoctor extends StatelessWidget {
+//   const NearbyDoctor({required this.doctor, super.key});
+//   final Doctor doctor;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final double screenWidth = MediaQuery.of(context).size.width;
+//     final double screenHeight = MediaQuery.of(context).size.height;
+//
+//     return InkWell(
+//       onTap: () {
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//               builder: (context) => DoctorProfile(doctor: doctor)),
+//         );
+//       },
+//       child: Container(
+//         margin: EdgeInsets.only(right: screenWidth * 0.03),
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           borderRadius: BorderRadius.circular(20),
+//           boxShadow: [
+//             BoxShadow(
+//                 color: Colors.grey.withOpacity(0.5),
+//                 blurRadius: 10,
+//                 offset: const Offset(5, 0)),
+//           ],
+//         ),
+//         child: ClipRRect(
+//           borderRadius: BorderRadius.circular(20),
+//           child: Column(
+//             children: [
+//               Image.asset(
+//                 'assets/images/doctor.jpg',
+//                 height: screenHeight * 0.15,
+//               ),
+//               SizedBox(
+//                 height: screenHeight * 0.01,
+//               ),
+//               Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     '${doctor.fname} ${doctor.lname}',
+//                     style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: screenWidth * 0.028),
+//                   ),
+//                   SizedBox(
+//                     height: screenHeight * 0.005,
+//                   ),
+//                   Text(
+//                     doctor.specialization,
+//                     style: TextStyle(fontSize: screenWidth * 0.025),
+//                   )
+//                 ],
+//               ),
+//               SizedBox(
+//                 height: screenHeight * 0.02,
+//               )
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class NearbyPharmacy extends StatelessWidget {
   const NearbyPharmacy({required this.pharmacy, super.key});
