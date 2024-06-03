@@ -1,12 +1,12 @@
 import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
-import 'package:MedInvent/features/prescriptions/model/docPrescription.dart';
-import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
-import 'package:MedInvent/features/prescriptions/presentation/DocPrescriptions.dart';
+import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
+import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
+import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
 import 'package:flutter/material.dart';
 
 class PrescriptionDetails extends StatefulWidget {
-  final DocPrescription prescription;
+  final Prescription prescription;
   final VoidCallback updatePrescriptionsScreen;
   const PrescriptionDetails(
       {required this.prescription,
@@ -22,7 +22,7 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
 
   void updateUI(Profile fm) {
     setState(() {
-      widget.prescription.assignedMember = fm;
+      widget.prescription.assignedTo = fm;
     });
   }
 
@@ -78,7 +78,7 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        widget.prescription.assignedMember != null
+                        widget.prescription.assignedTo != null
                             ? Row(
                                 children: [
                                   CircleAvatar(
@@ -93,8 +93,7 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        widget
-                                            .prescription.assignedMember!.name,
+                                        widget.prescription.assignedTo!.name,
                                         style: TextStyle(
                                             fontSize: screenHeight * 0.025,
                                             fontWeight: FontWeight.bold),
@@ -102,10 +101,10 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                       SizedBox(
                                         height: screenHeight * 0.005,
                                       ),
-                                      if (widget.prescription.assignedMember
+                                      if (widget.prescription.assignedTo
                                           is FamilyMember)
                                         Text(
-                                          widget.prescription.assignedMember!
+                                          widget.prescription.assignedTo!
                                               .relationship,
                                           style: TextStyle(
                                               fontSize: screenHeight * 0.015),
@@ -172,7 +171,7 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              widget.prescription.title,
+                              widget.prescription.presName,
                               style: TextStyle(
                                   fontSize: screenHeight * 0.02,
                                   fontWeight: FontWeight.bold),
@@ -205,9 +204,11 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                             SizedBox(
                               height: screenHeight * 0.04,
                             ),
-                            ...widget.prescription.prescribedMedicine
-                                .map((medicine) =>
-                                    DrugTemplate(medicine: medicine))
+                            ...widget.prescription.presMedicine
+                                .map((medicine) => DrugTemplate(
+                                      medicine: medicine,
+                                      prescription: widget.prescription,
+                                    ))
                                 .toList(),
                           ],
                         ),
@@ -233,7 +234,8 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                         width: 10,
                                       ),
                                       Text(
-                                        "Date issued",
+                                        widget.prescription.createdBy == "doctor" ?
+                                        "Date issued" : "Date created",
                                         style: TextStyle(
                                             fontSize: screenWidth * 0.035,
                                             color: Colors.grey),
@@ -242,7 +244,7 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                   ),
                                 ),
                                 Text(
-                                  widget.prescription.dateIssued,
+                                  widget.prescription.createdAt.split('T')[0],
                                   style: TextStyle(
                                       fontSize: screenWidth * 0.035,
                                       fontWeight: FontWeight.bold),
@@ -278,7 +280,7 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    widget.prescription.doctor,
+                                    widget.prescription.doctorName,
                                     style: TextStyle(
                                         fontSize: screenWidth * 0.035,
                                         fontWeight: FontWeight.bold),
@@ -302,22 +304,37 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
 }
 
 class DrugTemplate extends StatefulWidget {
-  final PrescribedMedicine medicine;
+  final PresMedicine medicine;
+  final Prescription prescription;
 
-  const DrugTemplate({Key? key, required this.medicine}) : super(key: key);
+  const DrugTemplate(
+      {Key? key, required this.medicine, required this.prescription})
+      : super(key: key);
 
   @override
   State<DrugTemplate> createState() => _DrugTemplateState();
 }
 
 class _DrugTemplateState extends State<DrugTemplate> {
+  int calculateDaysLeft(String createdAt, int duration) {
+    DateTime createdAtDate = DateTime.parse(createdAt);
+    DateTime today = DateTime.now();
+    int differenceInDays = today.difference(createdAtDate).inDays;
+    int daysLeft = duration - differenceInDays;
+
+    return daysLeft;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    Color daysLeftColor =
-        widget.medicine.daysLeft < 3 ? Colors.red : Colors.green;
+    Color daysLeftColor = calculateDaysLeft(
+                widget.prescription.createdAt, widget.medicine.duration) <
+            3
+        ? Colors.red
+        : Colors.green;
 
     return Column(
       children: [
@@ -358,7 +375,7 @@ class _DrugTemplateState extends State<DrugTemplate> {
                       Text(
                         widget.medicine.name,
                         style: TextStyle(
-                            fontSize: screenHeight * 0.02,
+                            fontSize: screenHeight * 0.018,
                             fontWeight: FontWeight.bold),
                       ),
                       Container(
@@ -371,10 +388,15 @@ class _DrugTemplateState extends State<DrugTemplate> {
                         width: screenWidth * 0.2,
                         child: Center(
                             child: Text(
-                          "${widget.medicine.daysLeft} days left",
+                          calculateDaysLeft(widget.prescription.createdAt,
+                                      widget.medicine.duration) <
+                                  0
+                              ? 'Finished'
+                              : '${calculateDaysLeft(widget.prescription.createdAt, widget.medicine.duration)} days left',
                           style: TextStyle(
-                              fontSize: screenHeight * 0.012,
-                              color: Colors.white),
+                            fontSize: screenHeight * 0.012,
+                            color: Colors.white,
+                          ),
                         )),
                       )
                     ],
@@ -384,13 +406,6 @@ class _DrugTemplateState extends State<DrugTemplate> {
                   height: screenHeight * 0.01,
                 ),
                 Text(
-                  "Dosage : ${widget.medicine.dosage}",
-                  style: TextStyle(fontSize: screenHeight * 0.015),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.003,
-                ),
-                Text(
                   "Quantity : ${widget.medicine.qty}",
                   style: TextStyle(fontSize: screenHeight * 0.015),
                 ),
@@ -398,7 +413,14 @@ class _DrugTemplateState extends State<DrugTemplate> {
                   height: screenHeight * 0.003,
                 ),
                 Text(
-                  "Frequency : ${widget.medicine.frequency}",
+                  "Meal Timing : ${widget.medicine.mealTiming} meals",
+                  style: TextStyle(fontSize: screenHeight * 0.015),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.003,
+                ),
+                Text(
+                  "Frequency : ${widget.medicine.frq}",
                   style: TextStyle(fontSize: screenHeight * 0.015),
                 ),
                 SizedBox(
@@ -411,10 +433,17 @@ class _DrugTemplateState extends State<DrugTemplate> {
                       size: screenHeight * 0.02,
                       color: Colors.black45,
                     ),
-                    ...widget.medicine.reminders
-                        .map((time) => Text(" $time | ",
-                            style: TextStyle(fontSize: screenHeight * 0.015)))
-                        .toList(),
+                    if (widget.medicine.reminders != null)
+                      ...widget.medicine.reminders!
+                          .map((time) => Text(" $time | ",
+                              style: TextStyle(fontSize: screenHeight * 0.015)))
+                          .toList(),
+                    if (widget.medicine.reminders == null)
+                      Text(
+                        "Reminders not set",
+                        style: TextStyle(
+                            fontSize: screenHeight * 0.015, color: Colors.grey),
+                      ),
                   ],
                 )
               ],

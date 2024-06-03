@@ -1,10 +1,10 @@
 import 'package:MedInvent/features/Search/data/medicines.dart';
-import 'package:MedInvent/features/prescriptions/model/newPrescribeMedicine.dart';
+import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
 import 'package:flutter/material.dart';
 
 class SearchMedicine extends StatefulWidget {
   final PageController pageController;
-  final NewPrescribedMedicine newMed;
+  final NewPresMedicine newMed;
 
   const SearchMedicine(
       {super.key, required this.pageController, required this.newMed});

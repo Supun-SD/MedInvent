@@ -1,12 +1,11 @@
-import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
-import 'package:MedInvent/features/prescriptions/model/newPrescribeMedicine.dart';
-import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
+import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Reminders extends StatefulWidget {
   final PageController pageController;
-  final NewPrescribedMedicine newMed;
-  final NewMyPrescription newPrescription;
+  final NewPresMedicine newMed;
+  final NewPrescription newPrescription;
   final VoidCallback updateUI;
 
   const Reminders(
@@ -22,7 +21,23 @@ class Reminders extends StatefulWidget {
 
 class RemindersState extends State<Reminders> {
   TimeOfDay selectedTime = TimeOfDay.now();
-  List<String> reminders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.newMed.reminders = [];
+  }
+
+  String convertTimeTo24HourFormat(String time) {
+    DateFormat inputFormat = DateFormat.jm();
+    DateFormat outputFormat = DateFormat('HH:mm:ss');
+
+    DateTime dateTime = inputFormat.parse(time);
+
+    String formattedTime = outputFormat.format(dateTime);
+
+    return formattedTime;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +63,15 @@ class RemindersState extends State<Reminders> {
               SizedBox(
                 height: screenHeight * 0.05,
               ),
-              if (reminders.isNotEmpty)
-                ...reminders.asMap().entries.map((entry) {
+              if (widget.newMed.reminders.isNotEmpty)
+                ...widget.newMed.reminders.asMap().entries.map((entry) {
                   final index = entry.key;
                   final reminder = entry.value;
                   return RemindersDisplay(
                     time: reminder,
                     onDelete: () {
                       setState(() {
-                        reminders.removeAt(index);
+                        widget.newMed.reminders.removeAt(index);
                       });
                     },
                   );
@@ -75,7 +90,8 @@ class RemindersState extends State<Reminders> {
                           initialEntryMode: TimePickerEntryMode.dial);
                       if (timeOfDay != null) {
                         setState(() {
-                          reminders.add(timeOfDay.format(context));
+                          widget.newMed.reminders.add(convertTimeTo24HourFormat(
+                              timeOfDay.format(context)));
                         });
                       }
                     },
@@ -104,15 +120,10 @@ class RemindersState extends State<Reminders> {
               ),
               TextButton(
                 onPressed: () {
-                  widget.newPrescription.prescribedMedicine.add(
-                      PrescribedMedicine(
-                          widget.newMed.name,
-                          widget.newMed.dosage,
-                          widget.newMed.qty,
-                          widget.newMed.isAfterMeal,
-                          widget.newMed.frequency,
-                          [...reminders],
-                          widget.newMed.daysLeft));
+                  if (widget.newMed.reminders.isEmpty) {
+                    return;
+                  }
+                  widget.newPrescription.presMedicine.add(widget.newMed);
                   widget.updateUI();
                   Navigator.pop(context);
                 },
@@ -151,6 +162,17 @@ class RemindersDisplay extends StatelessWidget {
     required this.onDelete,
   }) : super(key: key);
 
+  String convertTimeTo12HourFormat(String time24) {
+    DateFormat inputFormat = DateFormat('HH:mm:ss');
+    DateFormat outputFormat = DateFormat.jm();
+
+    DateTime dateTime = inputFormat.parse(time24);
+
+    String formattedTime = outputFormat.format(dateTime);
+
+    return formattedTime;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -174,7 +196,7 @@ class RemindersDisplay extends StatelessWidget {
             color: Colors.blue,
           ),
           Text(
-            time,
+            convertTimeTo12HourFormat(time),
             style: TextStyle(fontSize: screenHeight * 0.02),
           ),
           SizedBox(

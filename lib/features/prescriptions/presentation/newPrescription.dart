@@ -1,35 +1,80 @@
-import 'package:MedInvent/features/prescriptions/data/myPrescriptions.dart';
-import 'package:MedInvent/features/prescriptions/model/myPrescription.dart';
-import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
-import 'package:MedInvent/features/prescriptions/model/newPrescribeMedicine.dart';
-import 'package:MedInvent/features/prescriptions/model/prescribedMedicine.dart';
+import 'package:MedInvent/config/api.dart';
+import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_1.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_2.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_3.dart';
-import 'package:MedInvent/providers/myPrescriptionsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class NewPrescription extends ConsumerStatefulWidget {
-  final NewMyPrescription newPrescription;
-  const NewPrescription({super.key, required this.newPrescription});
+import 'dart:convert';
+
+class AddNewPrescription extends ConsumerStatefulWidget {
+  final NewPrescription newPrescription;
+  const AddNewPrescription({super.key, required this.newPrescription});
 
   @override
-  ConsumerState<NewPrescription> createState() => _NewPrescriptionState();
+  ConsumerState<AddNewPrescription> createState() => _AddNewPrescriptionState();
 }
 
-class _NewPrescriptionState extends ConsumerState<NewPrescription> {
+class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
+  TextEditingController title = TextEditingController();
+  bool isLoading = false;
+
+  String userId =  "126b4f01-e486-461e-b20e-311e3c7c0ffb";
+
   void updateUI() {
     setState(() {});
   }
-
-  TextEditingController title = TextEditingController();
 
   @override
   void dispose() {
     title.dispose();
     super.dispose();
+  }
+
+  void showAlert(BuildContext context, String message, bool isError) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+      ),
+    );
+  }
+
+  Future<void> onSubmitClick(NewPrescription prescription, BuildContext context) async {
+
+    if(title.text == "") {
+      showAlert(context, "Prescription title cannot be empty", true);
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+    final url = Uri.parse('${ApiConfig.baseUrl}/prescription/newprescription');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode(
+        prescription.toJson("user",userId));
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        showAlert(context, "Prescription created", false);
+        Navigator.of(context).pop();
+      } else {
+        showAlert(context, "Error creating the prescription", true);
+      }
+    } catch (e) {
+      showAlert(context, "Error creating the prescription", true);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+
   }
 
   @override
@@ -84,13 +129,11 @@ class _NewPrescriptionState extends ConsumerState<NewPrescription> {
                   SizedBox(
                     height: screenHeight * 0.05,
                   ),
-                  ...widget.newPrescription.prescribedMedicine.map((e) {
-                    return Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-                      child: DrugTemplate(medicine: e),
-                    );
-                  }),
+                  ...widget.newPrescription.presMedicine
+                      .map((medicine) => DrugTemplate(
+                            medicine: medicine,
+                          ))
+                      .toList(),
                   SizedBox(
                     height: screenHeight * 0.05,
                   ),
@@ -100,20 +143,17 @@ class _NewPrescriptionState extends ConsumerState<NewPrescription> {
                       TextButton(
                         onPressed: () {
                           showModalBottomSheet(
-                            isScrollControlled: true,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(screenHeight * 0.05)),
-                            ),
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AddNewMedicine(
-                                newPrescription: widget.newPrescription,
-                                updateUI: updateUI,
-                              );
-                            },
-                          );
+                              isScrollControlled: true,
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(screenHeight * 0.05)),
+                              ),
+                              context: context,
+                              builder: (context) => AddNewMedicine(
+                                    newPrescription: widget.newPrescription,
+                                    updateUI: updateUI,
+                                  ));
                         },
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -138,37 +178,36 @@ class _NewPrescriptionState extends ConsumerState<NewPrescription> {
                   SizedBox(
                     height: screenHeight * 0.02,
                   ),
-                  if (widget.newPrescription.prescribedMedicine.isNotEmpty)
-                    TextButton(
-                      onPressed: () {
-                        ref
-                            .read(myPrescriptionsProvider.notifier)
-                            .addNewMyPrescription(MyPrescription(
-                                title.text,
-                                DateFormat('yyyy/MM/dd').format(DateTime.now()),
-                                widget.newPrescription.assignedMember,
-                                widget.newPrescription.prescribedMedicine));
-                        Navigator.pop(context);
-                      },
-                      style: TextButton.styleFrom(
-                        backgroundColor: const Color(0xFF2980B9),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(screenHeight * 0.05),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.08),
-                        child: Text(
-                          "Submit",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenHeight * 0.018,
+                  if (widget.newPrescription.presMedicine.isNotEmpty)
+                    isLoading
+                        ? SpinKitThreeBounce(
+                            color: Colors.blue,
+                            size: 30.0,
+                          )
+                        : TextButton(
+                            onPressed: () {
+                              widget.newPrescription.presName = title.text;
+                              onSubmitClick(widget.newPrescription, context);
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: const Color(0xFF2980B9),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(screenHeight * 0.05),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.08),
+                              child: Text(
+                                "Submit",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: screenHeight * 0.018,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                 ],
               ),
             )),
@@ -178,7 +217,7 @@ class _NewPrescriptionState extends ConsumerState<NewPrescription> {
 }
 
 class AddNewMedicine extends StatefulWidget {
-  final NewMyPrescription newPrescription;
+  final NewPrescription newPrescription;
   final VoidCallback updateUI;
 
   const AddNewMedicine(
@@ -190,7 +229,7 @@ class AddNewMedicine extends StatefulWidget {
 
 class _AddNewMedicineState extends State<AddNewMedicine> {
   final PageController _pageController = PageController(initialPage: 0);
-  final NewPrescribedMedicine newMed = NewPrescribedMedicine();
+  final NewPresMedicine newMed = NewPresMedicine();
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +257,7 @@ class _AddNewMedicineState extends State<AddNewMedicine> {
 }
 
 class DrugTemplate extends StatefulWidget {
-  final PrescribedMedicine medicine;
+  final NewPresMedicine medicine;
 
   const DrugTemplate({Key? key, required this.medicine}) : super(key: key);
 
@@ -227,122 +266,137 @@ class DrugTemplate extends StatefulWidget {
 }
 
 class _DrugTemplateState extends State<DrugTemplate> {
+  String convertTimeTo12HourFormat(String time24) {
+    DateFormat inputFormat = DateFormat('HH:mm:ss');
+    DateFormat outputFormat = DateFormat.jm();
+
+    DateTime dateTime = inputFormat.parse(time24);
+
+    String formattedTime = outputFormat.format(dateTime);
+
+    return formattedTime;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     Color daysLeftColor =
-        widget.medicine.daysLeft < 3 ? Colors.red : Colors.green;
+        widget.medicine.duration < 3 ? Colors.red : Colors.green;
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(screenHeight * 0.02),
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(screenHeight * 0.02),
-                    child: Image.asset(
-                      "assets/images/drugs.png",
-                      width: screenWidth * 0.15,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              width: screenWidth * 0.05,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: screenWidth * 0.55,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.medicine.name,
-                        style: TextStyle(
-                            fontSize: screenHeight * 0.02,
-                            fontWeight: FontWeight.bold),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(screenHeight * 0.02),
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: daysLeftColor,
-                          borderRadius:
-                              BorderRadius.circular(screenHeight * 0.5),
-                        ),
-                        height: screenHeight * 0.023,
-                        width: screenWidth * 0.2,
-                        child: Center(
-                            child: Text(
-                          "${widget.medicine.daysLeft} days left",
-                          style: TextStyle(
-                              fontSize: screenHeight * 0.012,
-                              color: Colors.white),
-                        )),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.01,
-                ),
-                Text(
-                  "Dosage : ${widget.medicine.dosage}",
-                  style: TextStyle(fontSize: screenHeight * 0.015),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.003,
-                ),
-                Text(
-                  "Quantity : ${widget.medicine.qty}",
-                  style: TextStyle(fontSize: screenHeight * 0.015),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.003,
-                ),
-                Text(
-                  "Frequency : ${widget.medicine.frequency}",
-                  style: TextStyle(fontSize: screenHeight * 0.015),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.005,
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.alarm,
-                      size: screenHeight * 0.02,
-                      color: Colors.black45,
                     ),
-                    ...widget.medicine.reminders
-                        .map((time) => Text(" $time | ",
-                            style: TextStyle(fontSize: screenHeight * 0.015)))
-                        .toList(),
-                  ],
-                )
-              ],
-            ),
-          ],
-        ),
-        Divider(
-          color: Colors.grey,
-          thickness: 1,
-          height: screenHeight * 0.05,
-        ),
-      ],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(screenHeight * 0.02),
+                      child: Image.asset(
+                        "assets/images/drugs.png",
+                        width: screenWidth * 0.15,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: screenWidth * 0.05,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: screenWidth * 0.55,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.medicine.name,
+                          style: TextStyle(
+                              fontSize: screenHeight * 0.02,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: daysLeftColor,
+                            borderRadius:
+                                BorderRadius.circular(screenHeight * 0.5),
+                          ),
+                          height: screenHeight * 0.023,
+                          width: screenWidth * 0.2,
+                          child: Center(
+                              child: Text(
+                            "${widget.medicine.duration} days left",
+                            style: TextStyle(
+                                fontSize: screenHeight * 0.012,
+                                color: Colors.white),
+                          )),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
+                  Text(
+                    "Meal timing : ${widget.medicine.mealTiming}",
+                    style: TextStyle(fontSize: screenHeight * 0.015),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.003,
+                  ),
+                  Text(
+                    "Quantity : ${widget.medicine.qty}",
+                    style: TextStyle(fontSize: screenHeight * 0.015),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.003,
+                  ),
+                  Text(
+                    "Frequency : ${widget.medicine.frq}",
+                    style: TextStyle(fontSize: screenHeight * 0.015),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.005,
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.alarm,
+                        size: screenHeight * 0.02,
+                        color: Colors.black45,
+                      ),
+                      ...widget.medicine.reminders
+                          .map((time) => Text(
+                              " ${convertTimeTo12HourFormat(time)} | ",
+                              style: TextStyle(fontSize: screenHeight * 0.015)))
+                          .toList(),
+                    ],
+                  )
+                ],
+              ),
+            ],
+          ),
+          Divider(
+            color: Colors.grey,
+            thickness: 1,
+            height: screenHeight * 0.05,
+          ),
+        ],
+      ),
     );
   }
 }

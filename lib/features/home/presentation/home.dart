@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           ),
           context: context,
           builder: (BuildContext context) {
-            return const AssignPrescription();
+            return const AssignNewPrescription();
           },
         );
       },

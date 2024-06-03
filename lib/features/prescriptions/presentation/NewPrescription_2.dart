@@ -1,11 +1,10 @@
-import 'package:MedInvent/features/prescriptions/model/newMyPrescription.dart';
-import 'package:MedInvent/features/prescriptions/model/newPrescribeMedicine.dart';
+import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
 import 'package:flutter/material.dart';
 
 class MedicineDetails extends StatefulWidget {
   final PageController pageController;
-  final NewPrescribedMedicine newMed;
-  final NewMyPrescription newPres;
+  final NewPresMedicine newMed;
+  final NewPrescription newPres;
 
   const MedicineDetails(
       {super.key,
@@ -21,15 +20,37 @@ class MedicineDetailsState extends State<MedicineDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController dosage = TextEditingController();
 
-  int frq = 0;
-  int amount = 0;
-  int days = 0;
-  String beforeAfter = 'After';
+  String frq = "Once Daily";
+  int qty = 0;
+  int duration = 0;
+  String mealTiming = 'After';
+
+  List<String> frequencies = [
+    "Once Daily",
+    "Twice Daily",
+    "3 Times Daily",
+    "4 Times Daily",
+    "Every 4 Hours",
+    "Every 6 Hours",
+    "Every 8 Hours",
+    "Every 12 Hours",
+    "Once Weekly",
+    "Twice Weekly",
+    "Every Other Day",
+    "At Bedtime",
+    "As Needed"
+  ];
 
   @override
   void dispose() {
     dosage.dispose();
     super.dispose();
+  }
+
+  void showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -81,21 +102,6 @@ class MedicineDetailsState extends State<MedicineDetails> {
                   ),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.03,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                        width: screenWidth * 0.3,
-                        child: Text(
-                          "Dosage",
-                          style: TextStyle(fontSize: screenWidth * 0.037),
-                        )),
-                    Expanded(
-                        child: InputField(label: "Dosage", controller: dosage))
-                  ],
-                ),
-                SizedBox(
                   height: screenHeight * 0.02,
                 ),
                 Row(
@@ -104,162 +110,6 @@ class MedicineDetailsState extends State<MedicineDetails> {
                         width: screenWidth * 0.3,
                         child: Text(
                           "Frequency",
-                          style: TextStyle(fontSize: screenWidth * 0.037),
-                        )),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            frq.toString(),
-                            style: TextStyle(fontSize: screenWidth * 0.045),
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (frq > 0) {
-                                        frq--;
-                                      }
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.remove_circle_outline,
-                                    size: screenWidth * 0.075,
-                                    color: const Color(0xFF2980B9),
-                                  )),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      frq++;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.add_circle_outline,
-                                    size: screenWidth * 0.075,
-                                    color: const Color(0xFF2980B9),
-                                  ))
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight * 0.02,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                        width: screenWidth * 0.3,
-                        child: Text(
-                          "Amount",
-                          style: TextStyle(fontSize: screenWidth * 0.037),
-                        )),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            amount.toString(),
-                            style: TextStyle(fontSize: screenWidth * 0.045),
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (amount > 0) {
-                                        amount--;
-                                      }
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.remove_circle_outline,
-                                    size: screenWidth * 0.075,
-                                    color: const Color(0xFF2980B9),
-                                  )),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      amount++;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.add_circle_outline,
-                                    size: screenWidth * 0.075,
-                                    color: const Color(0xFF2980B9),
-                                  ))
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight * 0.02,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                        width: screenWidth * 0.3,
-                        child: Text(
-                          "Days",
-                          style: TextStyle(fontSize: screenWidth * 0.037),
-                        )),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            days.toString(),
-                            style: TextStyle(fontSize: screenWidth * 0.045),
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (days > 0) {
-                                        days--;
-                                      }
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.remove_circle_outline,
-                                    size: screenWidth * 0.075,
-                                    color: const Color(0xFF2980B9),
-                                  )),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      days++;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.add_circle_outline,
-                                    size: screenWidth * 0.075,
-                                    color: const Color(0xFF2980B9),
-                                  ))
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight * 0.02,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                        width: screenWidth * 0.3,
-                        child: Text(
-                          "Before/After meal",
                           style: TextStyle(fontSize: screenWidth * 0.037),
                         )),
                     Expanded(
@@ -275,7 +125,7 @@ class MedicineDetailsState extends State<MedicineDetails> {
                           isExpanded: true,
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.04),
-                          value: beforeAfter,
+                          value: frq,
                           icon: const Icon(Icons.arrow_drop_down),
                           style: TextStyle(
                               color: Colors.black,
@@ -286,10 +136,164 @@ class MedicineDetailsState extends State<MedicineDetails> {
                           ),
                           onChanged: (String? newValue) {
                             setState(() {
-                              beforeAfter = newValue!;
+                              frq = newValue!;
                             });
                           },
-                          items: <String>['Before', 'After']
+                          items: frequencies
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                        width: screenWidth * 0.3,
+                        child: Text(
+                          "Quantity",
+                          style: TextStyle(fontSize: screenWidth * 0.037),
+                        )),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            qty.toString(),
+                            style: TextStyle(fontSize: screenWidth * 0.045),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (qty > 0) {
+                                        qty--;
+                                      }
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.remove_circle_outline,
+                                    size: screenWidth * 0.075,
+                                    color: const Color(0xFF2980B9),
+                                  )),
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      qty++;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.add_circle_outline,
+                                    size: screenWidth * 0.075,
+                                    color: const Color(0xFF2980B9),
+                                  ))
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                        width: screenWidth * 0.3,
+                        child: Text(
+                          "Duration",
+                          style: TextStyle(fontSize: screenWidth * 0.037),
+                        )),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            duration.toString(),
+                            style: TextStyle(fontSize: screenWidth * 0.045),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (duration > 0) {
+                                        duration--;
+                                      }
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.remove_circle_outline,
+                                    size: screenWidth * 0.075,
+                                    color: const Color(0xFF2980B9),
+                                  )),
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      duration++;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.add_circle_outline,
+                                    size: screenWidth * 0.075,
+                                    color: const Color(0xFF2980B9),
+                                  ))
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                        width: screenWidth * 0.3,
+                        child: Text(
+                          "Meal Timing",
+                          style: TextStyle(fontSize: screenWidth * 0.037),
+                        )),
+                    Expanded(
+                      child: Container(
+                        height: screenHeight * 0.045,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          border: Border.all(color: Colors.grey, width: 1.0),
+                        ),
+                        child: DropdownButton<String>(
+                          borderRadius: BorderRadius.circular(20),
+                          dropdownColor: const Color(0xFFF5F5F5),
+                          isExpanded: true,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.04),
+                          value: mealTiming,
+                          icon: const Icon(Icons.arrow_drop_down),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: screenWidth * 0.035),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.transparent,
+                          ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              mealTiming = newValue!;
+                            });
+                          },
+                          items: <String>['Before', 'After', 'With']
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -306,13 +310,17 @@ class MedicineDetailsState extends State<MedicineDetails> {
                 ),
                 TextButton(
                   onPressed: () {
+                    if (duration == 0) {
+                      return;
+                    }
+                    if (qty == 0) {
+                      return;
+                    }
                     if (_formKey.currentState?.validate() ?? false) {
-                      widget.newMed.dosage = dosage.text;
-                      widget.newMed.frequency = frq.toString();
-                      widget.newMed.qty = int.parse(amount.toString());
-                      widget.newMed.daysLeft = int.parse(days.toString());
-                      widget.newMed.isAfterMeal =
-                          beforeAfter.toLowerCase() == 'before' ? false : true;
+                      widget.newMed.frq = frq.toString();
+                      widget.newMed.qty = int.parse(qty.toString());
+                      widget.newMed.duration = int.parse(duration.toString());
+                      widget.newMed.mealTiming = mealTiming.toString();
                       widget.pageController.animateToPage(2,
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut);
@@ -341,42 +349,6 @@ class MedicineDetailsState extends State<MedicineDetails> {
                 )
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class InputField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-
-  const InputField({Key? key, required this.label, required this.controller})
-      : super(key: key);
-
-  String? _validateInput(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a value';
-    }
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return SizedBox(
-      height: screenHeight * 0.045,
-      child: TextFormField(
-        controller: controller,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: _validateInput,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(left: screenWidth * 0.05),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
           ),
         ),
       ),
