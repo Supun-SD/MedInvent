@@ -1,7 +1,6 @@
 import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
-import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
 import 'package:flutter/material.dart';
 
@@ -234,8 +233,10 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                         width: 10,
                                       ),
                                       Text(
-                                        widget.prescription.createdBy == "doctor" ?
-                                        "Date issued" : "Date created",
+                                        widget.prescription.createdBy ==
+                                                "doctor"
+                                            ? "Date issued"
+                                            : "Date created",
                                         style: TextStyle(
                                             fontSize: screenWidth * 0.035,
                                             color: Colors.grey),
@@ -280,7 +281,9 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    widget.prescription.doctorName,
+                                    (widget.prescription.doctorName == "")
+                                        ? 'N/A'
+                                        : widget.prescription.doctorName,
                                     style: TextStyle(
                                         fontSize: screenWidth * 0.035,
                                         fontWeight: FontWeight.bold),

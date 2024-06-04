@@ -1,26 +1,21 @@
 import 'package:MedInvent/features/Profile/data/datasources/allProfiles.dart';
-import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 import 'package:MedInvent/features/Profile/data/models/myProfile.dart';
 import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
-import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
 import 'package:MedInvent/features/prescriptions/presentation/newPrescription.dart';
+import 'package:MedInvent/providers/prescriptionsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyPresContent extends ConsumerStatefulWidget {
-  final List userPrescriptions;
-  const MyPresContent({required this.userPrescriptions, super.key});
+class MyPresContent extends ConsumerWidget {
 
+  const MyPresContent({super.key});
   @override
-  ConsumerState<MyPresContent> createState() => _MyPresContentState();
-}
-
-class _MyPresContentState extends ConsumerState<MyPresContent> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    
+    final userPrescriptions = ref.watch(prescriptionsProvider).userPrescriptions;
 
     return SingleChildScrollView(
       child: Padding(
@@ -32,7 +27,7 @@ class _MyPresContentState extends ConsumerState<MyPresContent> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
-                children: widget.userPrescriptions.isEmpty
+                children: userPrescriptions.isEmpty
                     ? [
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -47,7 +42,7 @@ class _MyPresContentState extends ConsumerState<MyPresContent> {
                           ),
                         ),
                       ]
-                    : widget.userPrescriptions.map((e) {
+                    : userPrescriptions.map((e) {
                         return PrescriptionTemplate(p: e);
                       }).toList(),
               ),

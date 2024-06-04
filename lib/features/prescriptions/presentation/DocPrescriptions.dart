@@ -1,14 +1,17 @@
 import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
+import 'package:MedInvent/providers/prescriptionsProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DocPresContent extends StatelessWidget {
-  final List docPrescriptions;
-  const DocPresContent({required this.docPrescriptions, super.key});
+class DocPresContent extends ConsumerWidget {
+  const DocPresContent({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    final docPrescriptions = ref.watch(prescriptionsProvider).docPrescriptions;
 
     return SingleChildScrollView(
       child: Padding(

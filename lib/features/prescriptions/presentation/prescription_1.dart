@@ -1,81 +1,35 @@
-import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:MedInvent/providers/prescriptionsProvider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/config/api.dart';
 import 'package:MedInvent/features/prescriptions/presentation/DocPrescriptions.dart';
 import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
 import 'package:MedInvent/components/CustomTabBar.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class Prescriptions extends StatefulWidget {
+class Prescriptions extends ConsumerStatefulWidget {
   const Prescriptions({super.key});
 
   @override
-  State<Prescriptions> createState() => _PrescriptionsState();
+  _PrescriptionsState createState() => _PrescriptionsState();
 }
 
-class _PrescriptionsState extends State<Prescriptions> {
-  List<Prescription> prescriptions = [];
-  List<Prescription> docPrescriptions = [];
-  List<Prescription> userPrescriptions = [];
-  bool isLoading = false;
-
+class _PrescriptionsState extends ConsumerState<Prescriptions> {
   String userID = "126b4f01-e486-461e-b20e-311e3c7c0ffb";
 
   @override
   void initState() {
     super.initState();
-    fetchPrescriptions();
-  }
-
-  Future<void> fetchPrescriptions() async {
-    String apiUrl =
-        '${ApiConfig.baseUrl}/prescription/getAllPrescriptions/$userID';
-    setState(() {
-      isLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(prescriptionsProvider.notifier)
+          .fetchPrescriptions(context, userID);
     });
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-
-        if (jsonResponse['data'] != null) {
-          List<dynamic> prescriptionsJson = jsonResponse['data'];
-
-          docPrescriptions.clear();
-          userPrescriptions.clear();
-
-          for (var json in prescriptionsJson) {
-            Prescription prescription = Prescription.fromJson(json);
-            if (prescription.createdBy == 'doctor') {
-              docPrescriptions.add(prescription);
-            } else if (prescription.createdBy == 'user') {
-              userPrescriptions.add(prescription);
-            }
-          }
-        }
-      } else {
-        throw Exception('Failed to load prescriptions');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to get prescriptions.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final prescriptionsState = ref.watch(prescriptionsProvider);
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -116,7 +70,7 @@ class _PrescriptionsState extends State<Prescriptions> {
           ),
         ],
       ),
-      body: isLoading
+      body: prescriptionsState.isLoading
           ? const Center(
               child: SpinKitWave(
                 color: Colors.blue,
@@ -142,17 +96,9 @@ class _PrescriptionsState extends State<Prescriptions> {
                     )),
                 child: Padding(
                   padding: EdgeInsets.only(top: screenHeight * 0.035),
-                  child: CustomTabBar(tabTitles: const [
-                    "Doctor's Prescriptions",
-                    "My Prescriptions"
-                  ], tabViews: [
-                    DocPresContent(
-                      docPrescriptions: docPrescriptions,
-                    ),
-                    MyPresContent(
-                      userPrescriptions: userPrescriptions,
-                    )
-                  ]),
+                  child: const CustomTabBar(
+                      tabTitles: ["Doctor's Prescriptions", "My Prescriptions"],
+                      tabViews: [DocPresContent(), MyPresContent()]),
                 ),
               ),
             ),

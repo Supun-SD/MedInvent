@@ -1,3 +1,5 @@
+import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
+
 class Prescription {
   String prescriptionId;
   String presName;
@@ -23,18 +25,17 @@ class Prescription {
 
   factory Prescription.fromJson(Map<String, dynamic> json) {
     return Prescription(
-      prescriptionId: json['prescription_id'],
-      presName: json['presName'],
-      createdBy: json['createdBy'],
-      doctorName: json['doctorName'] == null ? "N/A" : json['doctorName'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      userId: json['userID'],
-      presMedicine: (json['presMedicine'] as List)
-          .map((i) => PresMedicine.fromJson(i))
-          .toList(),
-      assignedTo: null
-    );
+        prescriptionId: json['prescription_id'],
+        presName: json['presName'],
+        createdBy: json['createdBy'],
+        doctorName: json['doctorName'] == null ? "N/A" : json['doctorName'],
+        createdAt: json['createdAt'],
+        updatedAt: json['updatedAt'],
+        userId: json['userID'],
+        presMedicine: (json['presMedicine'] as List)
+            .map((i) => PresMedicine.fromJson(i))
+            .toList(),
+        assignedTo: null);
   }
 }
 
@@ -67,8 +68,35 @@ class PresMedicine {
       frq: json['frq'],
       mealTiming: json['mealTiming'],
       duration: json['duration'],
-      reminders: json['reminders'] != null ? List<String>.from(json['reminders']) : null,
+      reminders: json['reminders'] != null
+          ? List<String>.from(json['reminders'])
+          : null,
       prescriptionId: json['prescription_id'],
     );
   }
+}
+
+Prescription mapNewPrescriptionToPrescription(
+    NewPrescription newPrescription, String userId, String prescriptionId, String createdAt, String updatedAt) {
+  List<PresMedicine> presMedicines = newPrescription.presMedicine.map((newMed) {
+    return PresMedicine(
+      name: newMed.name,
+      qty: newMed.qty,
+      frq: newMed.frq,
+      mealTiming: newMed.mealTiming,
+      duration: newMed.duration,
+      reminders: newMed.reminders,
+    );
+  }).toList();
+
+  return Prescription(
+    prescriptionId: prescriptionId,
+    presName: newPrescription.presName,
+    createdBy: 'user',
+    doctorName: '',
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    userId: userId,
+    presMedicine: presMedicines,
+  );
 }

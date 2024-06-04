@@ -1,15 +1,12 @@
-import 'package:MedInvent/config/api.dart';
 import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:http/http.dart' as http;
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_1.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_2.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
-import 'dart:convert';
+import '../../../providers/prescriptionsProvider.dart';
 
 class AddNewPrescription extends ConsumerStatefulWidget {
   final NewPrescription newPrescription;
@@ -23,7 +20,7 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
   TextEditingController title = TextEditingController();
   bool isLoading = false;
 
-  String userId =  "126b4f01-e486-461e-b20e-311e3c7c0ffb";
+  String userId = "126b4f01-e486-461e-b20e-311e3c7c0ffb";
 
   void updateUI() {
     setState(() {});
@@ -44,9 +41,9 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
     );
   }
 
-  Future<void> onSubmitClick(NewPrescription prescription, BuildContext context) async {
-
-    if(title.text == "") {
+  Future<void> onSubmitClick(
+      NewPrescription prescription, BuildContext context) async {
+    if (title.text.isEmpty) {
       showAlert(context, "Prescription title cannot be empty", true);
       return;
     }
@@ -54,27 +51,15 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
     setState(() {
       isLoading = true;
     });
-    final url = Uri.parse('${ApiConfig.baseUrl}/prescription/newprescription');
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode(
-        prescription.toJson("user",userId));
 
-    try {
-      final response = await http.post(url, headers: headers, body: body);
-      if (response.statusCode == 200) {
-        showAlert(context, "Prescription created", false);
-        Navigator.of(context).pop();
-      } else {
-        showAlert(context, "Error creating the prescription", true);
-      }
-    } catch (e) {
-      showAlert(context, "Error creating the prescription", true);
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    prescription.presName = title.text;
+    await ref
+        .read(prescriptionsProvider.notifier)
+        .addUserPrescription(context, prescription, userId);
 
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -180,7 +165,7 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
                   ),
                   if (widget.newPrescription.presMedicine.isNotEmpty)
                     isLoading
-                        ? SpinKitThreeBounce(
+                        ? const SpinKitThreeBounce(
                             color: Colors.blue,
                             size: 30.0,
                           )
@@ -188,6 +173,7 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
                             onPressed: () {
                               widget.newPrescription.presName = title.text;
                               onSubmitClick(widget.newPrescription, context);
+                              Navigator.pop(context);
                             },
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFF2980B9),
