@@ -128,6 +128,45 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
       );
     }
   }
+
+  Future<void> updatePrescription(String presId, String medicineId,
+      List<String> reminders, BuildContext context) async {
+    final String apiUrl = '${ApiConfig.baseUrl}/prescription/update/$presId';
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      'medicineId': medicineId,
+      'reminders': reminders,
+    });
+
+    try {
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Prescription updated successfully.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        throw Exception('Failed to update the prescription');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error updating the prescription.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 }
 
 final prescriptionsProvider =

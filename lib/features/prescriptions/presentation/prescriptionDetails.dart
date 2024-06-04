@@ -2,6 +2,7 @@ import 'package:MedInvent/features/Profile/data/models/Profile.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
+import 'package:MedInvent/features/prescriptions/presentation/ReminersUpdate.dart';
 import 'package:flutter/material.dart';
 
 class PrescriptionDetails extends StatefulWidget {
@@ -328,6 +329,22 @@ class _DrugTemplateState extends State<DrugTemplate> {
     return daysLeft;
   }
 
+  List<String> reminders = [];
+
+  @override
+  void initState() {
+    if (widget.medicine.reminders != null) {
+      reminders = [...widget.medicine.reminders!];
+    }
+    super.initState();
+  }
+
+  void updateReminders(List<String> newReminders) {
+    setState(() {
+      reminders = [...newReminders];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -431,21 +448,49 @@ class _DrugTemplateState extends State<DrugTemplate> {
                 ),
                 Row(
                   children: [
-                    Icon(
-                      Icons.alarm,
-                      size: screenHeight * 0.02,
-                      color: Colors.black45,
-                    ),
                     if (widget.medicine.reminders != null)
-                      ...widget.medicine.reminders!
+                      Icon(
+                        Icons.alarm,
+                        size: screenHeight * 0.02,
+                        color: Colors.black45,
+                      ),
+                    if (reminders.isNotEmpty)
+                      ...reminders
                           .map((time) => Text(" $time | ",
                               style: TextStyle(fontSize: screenHeight * 0.015)))
                           .toList(),
-                    if (widget.medicine.reminders == null)
+                    if (reminders.isEmpty)
                       Text(
                         "Reminders not set",
                         style: TextStyle(
                             fontSize: screenHeight * 0.015, color: Colors.grey),
+                      ),
+                    if (reminders.isEmpty)
+                      IconButton(
+                        iconSize: 20,
+                        icon: const Icon(Icons.add_alarm_rounded),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(screenHeight * 0.05),
+                              ),
+                            ),
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (BuildContext context) {
+                              return SizedBox(
+                                height: screenHeight * 0.75,
+                                child: RemindersUpdate(
+                                    updateReminders: updateReminders,
+                                    reminders: reminders,
+                                    medicineId: widget.medicine.medicineId!,
+                                    presId: widget.prescription.prescriptionId),
+                              );
+                            },
+                          );
+                        },
                       ),
                   ],
                 )
