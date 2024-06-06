@@ -1,6 +1,10 @@
-import 'package:MedInvent/features/Search/appointmentSuccess.dart';
+import 'package:MedInvent/config/api.dart';
+import 'package:MedInvent/features/Search/presentation/appointmentSuccess.dart';
 import 'package:MedInvent/features/Search/models/appointment.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AppointmentConfirmation extends StatefulWidget {
   const AppointmentConfirmation(
@@ -18,12 +22,17 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
 
   String selectedTitle = "Mr";
 
+  String userId = "126b4f01-e486-461e-b20e-311e3c7c0ffb";
+  String sessionId = "255e3e82-0195-4754-b640-ea9a292919a7";
+
   int doctorFee = 2300;
   int clinicFee = 1000;
   int eChanneling = 600;
   int discount = 200;
   int refundableFee = 250;
   bool isRefundable = false;
+
+  bool isLoading = false;
 
   final TextEditingController _patientName = TextEditingController();
   final TextEditingController _mobileNo = TextEditingController();
@@ -39,6 +48,105 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
     _area.dispose();
     _nic.dispose();
     super.dispose();
+  }
+
+  bool _validateEmail(String? value) {
+    const emailPattern =
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    final regex = RegExp(emailPattern);
+    if (value == null || !regex.hasMatch(value)) {
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateMobile(String? value) {
+    const mobilePattern = r'^07[0-9]{8}$';
+    final regex = RegExp(mobilePattern);
+    if (value == null || !regex.hasMatch(value)) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _submitAppointment() async {
+    if (_patientName.text == "" ||
+        _mobileNo.text == "" ||
+        _email.text == "" ||
+        _area.text == "" ||
+        _nic.text == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Fields cannot be empty'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    if(!_validateEmail(_email.text)){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enter a valid email address'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+    
+    if(!_validateMobile(_mobileNo.text)){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enter a valid mobile number'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+    
+    setState(() {
+      isLoading = true;
+    });
+
+    String apiUrl = '${ApiConfig.baseUrl}/appointment/newappointment';
+    try {
+      final response = await http.post(Uri.parse(apiUrl),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json.encode({
+            'user_id': userId,
+            'session_id': sessionId,
+            'patientTitle': selectedTitle,
+            'patientName': _patientName.text,
+            'contactNo': _mobileNo.text,
+            'email': _email.text,
+            'area': _area.text,
+            'nic': _nic.text,
+          }));
+
+      if (response.statusCode == 200) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const AppointmentSuccess()),
+        );
+      } else {
+        throw Exception('Failed booking appointment');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed booking the appointment.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -624,26 +732,28 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                 margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
                 width: double.infinity,
                 height: screenHeight * 0.05,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AppointmentSuccess()),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF2980B9),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                  child: Text(
-                    "Pay",
-                    style: TextStyle(
-                        fontSize: screenWidth * 0.04, color: Colors.white),
-                  ),
-                ),
+                child: isLoading
+                    ? const SpinKitThreeBounce(
+                        color: Colors.blue,
+                        size: 25.0,
+                      )
+                    : TextButton(
+                        onPressed: () {
+                          _submitAppointment();
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFF2980B9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                        child: Text(
+                          "Pay",
+                          style: TextStyle(
+                              fontSize: screenWidth * 0.04,
+                              color: Colors.white),
+                        ),
+                      ),
               ),
               SizedBox(
                 height: screenHeight * 0.07,

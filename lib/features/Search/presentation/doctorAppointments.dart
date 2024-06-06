@@ -1,5 +1,5 @@
-import 'package:MedInvent/features/Search/appointmentConfirmation.dart';
-import 'package:MedInvent/features/Search/doctorProfile.dart';
+import 'package:MedInvent/features/Search/presentation/appointmentConfirmation.dart';
+import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/appointment.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
 import 'package:flutter/material.dart';

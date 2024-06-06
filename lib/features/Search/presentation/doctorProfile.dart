@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/Search/doctorAppointments.dart';
+import 'package:MedInvent/features/Search/presentation/doctorAppointments.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
 

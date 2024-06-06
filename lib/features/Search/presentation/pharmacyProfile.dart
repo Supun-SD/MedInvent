@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/Search/doctorProfile.dart';
+import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:flutter/material.dart';
 

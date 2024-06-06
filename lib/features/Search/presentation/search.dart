@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:MedInvent/config/api.dart';
 import 'package:MedInvent/features/Search/data/medicines.dart';
-import 'package:MedInvent/features/Search/doctorProfile.dart';
-import 'package:MedInvent/features/Search/medicineProfile.dart';
+import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
+import 'package:MedInvent/features/Search/presentation/medicineProfile.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
 import 'package:MedInvent/features/Search/models/Pharmacy.dart';
-import 'package:MedInvent/features/Search/pharmacyProfile.dart';
+import 'package:MedInvent/features/Search/presentation/pharmacyProfile.dart';
 import 'package:flutter/material.dart';
 
 import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/features/Search/advancedSearch.dart';
+import 'package:MedInvent/features/Search/presentation/advancedSearch.dart';
 import 'package:MedInvent/features/Search/models/categories.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
