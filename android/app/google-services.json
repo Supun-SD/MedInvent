@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "141713440329",
+    "project_id": "medinventnew",
+    "storage_bucket": "medinventnew.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:141713440329:android:08380af6572f7986cb4998",
+        "android_client_info": {
+          "package_name": "com.example.medinvent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNHbcMD6ex2flckylP3q06C2nWtEAJOHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,7 +1,12 @@
 // import 'dart:async';
 // import 'dart:math';
+// <<<<<<< Updated upstream
 // import 'package:MedInvent/features/Search/data/doctors.dart';
 // import 'package:MedInvent/features/Search/data/pharmacies.dart';
+// =======
+// import 'package:MedInvent/features/Search/data/doctors.dart';
+// import 'package:MedInvent/features/Search/data/pharmacies.dart';
+// >>>>>>> Stashed changes
 // import 'package:MedInvent/features/Search/doctorProfile.dart';
 // import 'package:MedInvent/features/Search/pharmacyProfile.dart';
 // import 'package:flutter/material.dart';

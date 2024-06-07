@@ -1,9 +1,9 @@
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/presentation/addFamilyMember.dart';
-import 'package:MedInvent/providers/familyMembersProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'FamilyMemberProfile.dart';
+import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 
 class FamilyMembers extends ConsumerStatefulWidget {
   const FamilyMembers({super.key});
@@ -13,12 +13,42 @@ class FamilyMembers extends ConsumerStatefulWidget {
 }
 
 class _FamilyMembersState extends ConsumerState<FamilyMembers> {
+  late Future<List<FamilyMember>> familyMembers;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFamilyMembers();
+  }
+
+  void fetchFamilyMembers() {
+    setState(() {
+      familyMembers = getFamilyMembers();
+    });
+  }
+
+  Future<List<FamilyMember>> getFamilyMembers() async {
+    try {
+      BaseClient baseClient = BaseClient();
+      var response = await baseClient.get(
+        '/DependMember/get/DependMembers/details/126b4f01-e486-461e-b20e-311e3c7c0ffb',
+      );
+      if (response != null) {
+        return FamilyMember.userDependFromJson(response);
+      } else {
+        return [];
+      }
+    } catch (e) {
+      // Handle error
+      print("Error: $e");
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-
-    final familyMembers = ref.watch(familyMembersProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -77,30 +107,40 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                   topRight: Radius.circular(50.0),
                 )),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.18),
               child: Column(
                 children: [
                   SizedBox(
-                    height: screenHeight * 0.05,
+                    height: screenHeight * 0.055,
                   ),
-                  Column(
-                    children: familyMembers.isEmpty
-                        ? [
-                            Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.05,
-                                    vertical: screenHeight * 0.07),
-                                child: Text(
-                                  "You don't have any family member added",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: screenHeight * 0.02,
-                                      color: Colors.grey),
-                                )),
-                          ]
-                        : familyMembers
-                            .map((e) => FamilyMemberCard(familyMember: e))
-                            .toList(),
+                  FutureBuilder<List<FamilyMember>>(
+                    future: familyMembers,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.05,
+                              vertical: screenHeight * 0.07),
+                          child: Text(
+                            "NO family member added yet",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: screenHeight * 0.02,
+                                color: Colors.grey),
+                          ),
+                        );
+                      } else {
+                        return Column(
+                          children: snapshot.data!
+                              .map((e) => FamilyMemberCard(familyMember: e))
+                              .toList(),
+                        );
+                      }
+                    },
                   ),
                   SizedBox(
                     height: screenHeight * 0.04,
@@ -122,13 +162,13 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(screenHeight * 0.05),
+                        BorderRadius.circular(screenHeight * 0.05),
                         side: const BorderSide(color: Color(0xFF2980B9)),
                       ),
                     ),
                     child: Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                      EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                       child: Text(
                         "Add Member",
                         style: TextStyle(
@@ -204,13 +244,13 @@ class FamilyMemberCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    familyMember.name,
+                    familyMember.fname!,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: screenHeight * 0.02),
                   ),
                   Text(
-                    familyMember.relationship,
+                    familyMember.relationship!,
                     style: TextStyle(fontSize: screenHeight * 0.015),
                   )
                 ],

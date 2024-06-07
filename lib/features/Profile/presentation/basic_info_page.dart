@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:MedInvent/components/Savebutton.dart';
 
 class BasicInfo extends StatefulWidget {
   const BasicInfo({super.key});
@@ -164,6 +165,9 @@ class BasicInfoState extends State<BasicInfo> {
                         ),
                       ],
                     ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.09,
                   ),
                 ],
               ),

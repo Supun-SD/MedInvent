@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 
+// create new depend profile page
 class CreateLocalProfile extends ConsumerStatefulWidget {
   const CreateLocalProfile({super.key});
   @override
@@ -219,17 +221,49 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                 height: screenHeight * 0.05,
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate() &&
                       displayText != "Date of Birth") {
-                    ref.read(familyMembersProvider.notifier).addFamilyMember(
-                        FamilyMember(
-                            "${firstName.text} ${lastName.text}",
-                            relationship.text,
-                            nic.text,
-                            selectedGender,
-                            displayText, []));
-                    Navigator.pop(context);
+
+                    // Create a new FamilyMember instance
+                    FamilyMember newMember = FamilyMember(
+                      firstName.text,
+                      lastName.text,
+                      selectedDate,
+                      selectedGender,
+                      _image?.path,
+                      nic.text,
+                      [],
+                      relationship.text,
+                    );
+
+                    // Send the new member data to the backend
+                    try {
+                      BaseClient baseClient = BaseClient();
+                      var response = await baseClient.post(
+                        '/DependMember/add/new/DependMember/126b4f01-e486-461e-b20e-311e3c7c0ffb',
+                        newMember.toRawJson(),
+                      );
+                      if (response != null) {
+                        // Handle successful response
+                        print(response);
+                        Navigator.pop(context);
+                      }
+                    } catch (e) {
+                      // Handle error
+                      print("Error: $e");
+                    }
+
+                    //give code to filll here
+                    // ref.read(familyMembersProvider.notifier).addFamilyMember(
+                    //     FamilyMember(
+                    //         "${firstName.text} ${lastName.text}",
+                    //         relationship.text,
+                    //         nic.text,
+                    //         selectedGender,
+                    //         displayText, []));
+                    // Navigator.pop(context);
+
                   }
                 },
                 style: TextButton.styleFrom(

@@ -18,6 +18,11 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
     String profilePic = "assets/images/pic.png";
     int loyalityPoints = 335;
 
+    String fullName = "${widget.familyMember.fname ?? ""} ${widget.familyMember.lname ?? ""}";
+    String dob = widget.familyMember.dob != null
+        ? "${widget.familyMember.dob!.day}-${widget.familyMember.dob!.month}-${widget.familyMember.dob!.year}"
+        : "N/A";
+
     return Scaffold(
       body: Stack(
         children: [
@@ -44,7 +49,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
             ),
           ),
           Positioned(
-            top: screenHeight * 0.185,
+            top: screenHeight * 0.22,
             right: 0,
             left: 0,
             child: Column(
@@ -69,7 +74,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                           height: screenHeight * 0.075,
                         ),
                         Text(
-                          widget.familyMember.name,
+                          fullName,
                           style: TextStyle(
                               fontSize: screenHeight * 0.02,
                               fontWeight: FontWeight.bold),
@@ -78,7 +83,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                           height: screenHeight * 0.005,
                         ),
                         Text(
-                          widget.familyMember.relationship,
+                          widget.familyMember.relationship ?? "N/A",
                           style: TextStyle(fontSize: screenHeight * 0.015),
                         ),
                         SizedBox(
@@ -122,8 +127,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                       ],
                     ),
                     child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -136,9 +140,9 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                           ),
                           Column(
                             children: [
-                              DataBox(data: widget.familyMember.NIC),
-                              DataBox(data: widget.familyMember.gender),
-                              DataBox(data: widget.familyMember.dob),
+                              DataBox(data: widget.familyMember.nic ?? "N/A"),
+                              DataBox(data: widget.familyMember.gender ?? "N/A"),
+                              DataBox(data: dob),
                             ],
                           )
                         ],
@@ -178,7 +182,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
           Positioned(
             left: 0,
             right: 0,
-            top: screenHeight * 0.13,
+            top: screenHeight * 0.17,
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -254,7 +258,7 @@ class DataBox extends StatelessWidget {
           Text(
             data,
             style:
-                TextStyle(fontSize: screenHeight * 0.016, color: Colors.black),
+            TextStyle(fontSize: screenHeight * 0.016, color: Colors.black),
           ),
         ],
       ),
