@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,9 +6,9 @@ import 'features/Register/presentation/pages/landing_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'features/Notifications/notificationDisplay.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'features/login/presentation/pages/checkLog.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -68,12 +67,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway'),
-      //home: const Landing(),
+      home:  CheckAuth(),
       navigatorKey:navigatorKey,
-      routes: {
-        '/':((context)=> const Landing()),
-        '/push-page':((context)=>const DisplayPage())
-      },
+      // routes: {
+      //   '/':((context)=> const Landing()),
+      //   '/push-page':((context)=>const DisplayPage())
+      // },
     );
   }
 }

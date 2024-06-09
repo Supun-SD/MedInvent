@@ -4,6 +4,7 @@ import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dar
 import 'package:MedInvent/components/input_field.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_1.dart';
 import 'package:MedInvent/components/custom_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -52,8 +53,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //function to authenticate login
-  void loginAuth() {
+  void loginAuth() async{
     if (_emailTEC.text == username && _passwordTEC.text == password) {
+      await _onLoginSuccess(username,password);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -66,6 +68,12 @@ class _LoginPageState extends State<LoginPage> {
       _emailTEC.clear();
       _passwordTEC.clear();
     }
+  }
+
+  Future<void>_onLoginSuccess(String username ,String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+    await prefs.setString('password', password);
   }
 
   @override
