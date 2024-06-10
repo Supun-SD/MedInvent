@@ -26,7 +26,7 @@ void main() async {
         (RemoteMessage message) async{
       print("onMessageOpenedApp : $message");
       Navigator.pushNamed(navigatorKey.currentState!.context,
-        '/push-page',
+        '/',
         arguments: {
           "message":json.encode(message.data)
         },
@@ -36,7 +36,7 @@ void main() async {
 
   FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) =>{
     if(message!=null){
-      Navigator.pushNamed(navigatorKey.currentState!.context, 'push-page',
+      Navigator.pushNamed(navigatorKey.currentState!.context, '/',
         arguments: {
           "message":json.encode(message.data)
         },
@@ -67,12 +67,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway'),
-      home:  CheckAuth(),
+      //home:  CheckAuth(),
       navigatorKey:navigatorKey,
-      // routes: {
-      //   '/':((context)=> const Landing()),
-      //   '/push-page':((context)=>const DisplayPage())
-      // },
+       routes: {
+         '/':((context)=> CheckAuth()),
+         '/notifications':((context)=>const DisplayPage())
+       },
     );
   }
 }

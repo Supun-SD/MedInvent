@@ -11,6 +11,12 @@ class _DisplayPageState extends State<DisplayPage> {
   String message ="";
 
   @override
+  void initState() {
+    super.initState();
+    didChangeDependencies();
+  }
+
+  @override
   void didChangedependencies(){
     super.didChangeDependencies();
     final arguments = ModalRoute.of(context)!.settings.arguments;
@@ -29,6 +35,7 @@ class _DisplayPageState extends State<DisplayPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.deepPurple,
         body: Center(
           child: Text("push message : $message"),
         ),
