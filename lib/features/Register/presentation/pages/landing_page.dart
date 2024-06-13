@@ -1,5 +1,5 @@
+import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:flutter/material.dart';
-import 'language_selection.dart';
 import 'welcome.dart';
 
 class Landing extends StatefulWidget {
@@ -35,34 +35,38 @@ class _WelcomeState extends State<Landing> {
                 _currentPage = page;
               });
             },
+            physics: _currentPage == 1
+                ? const NeverScrollableScrollPhysics()
+                : const AlwaysScrollableScrollPhysics(),
             children: const <Widget>[
               Welcome(),
-              LanguageSelection(),
+              LoginPage(),
             ],
           ),
-          Positioned(
-            bottom: screenHeight * 0.12,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List<Widget>.generate(3, (int index) {
-                  return Container(
-                    width: screenWidth * 0.03,
-                    height: screenHeight * 0.012,
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _currentPage == index
-                          ? const Color(0xFF2980B9)
-                          : Colors.grey,
-                    ),
-                  );
-                }),
+          if (_currentPage < 1)
+            Positioned(
+              bottom: screenHeight * 0.1,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List<Widget>.generate(2, (int index) {
+                    return Container(
+                      width: screenWidth * 0.03,
+                      height: screenHeight * 0.012,
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentPage == index
+                            ? const Color(0xFF2980B9)
+                            : Colors.grey,
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

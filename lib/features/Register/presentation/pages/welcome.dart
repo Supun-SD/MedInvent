@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'language_selection.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
