@@ -1,31 +1,39 @@
+import 'dart:convert';
+
 import 'package:MedInvent/features/home/presentation/mainPage.dart';
+import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dart';
 import 'package:MedInvent/components/input_field.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_1.dart';
 import 'package:MedInvent/components/custom_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   //temporary username ans password
   final String username = "admin";
   final String password = "admin";
 
-  final TextEditingController _emailTEC = TextEditingController();
-  final TextEditingController _passwordTEC = TextEditingController();
+  bool isLoading = false;
+
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
   //function to dispose controllers when not in use
   @override
   void dispose() {
-    _emailTEC.dispose();
-    _passwordTEC.dispose();
+    _email.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -36,7 +44,9 @@ class _LoginPageState extends State<LoginPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Invalid Credentials'),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Invalid login credentials.'),
           content: const Text(
               'Please enter a valid email or mobile number and password.'),
           actions: <Widget>[
@@ -53,27 +63,45 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //function to authenticate login
-  void loginAuth() async{
-    if (_emailTEC.text == username && _passwordTEC.text == password) {
-      await _onLoginSuccess(username,password);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const Home(
-                  sideNavIndex: 2,
-                )),
-      );
+  void loginAuth(BuildContext context) async {
+    if (_email.text.isEmpty || _password.text.isEmpty) return;
+
+    if (_email.text == username && _password.text == password) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        User user = await ref
+            .read(userProvider.notifier)
+            .loginUser(_email.text, _password.text);
+        await _onLoginSuccess(username, password, user);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const Home(
+                    sideNavIndex: 2,
+                  )),
+        );
+      } catch (e) {
+        _invalidCredentials();
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } else {
       _invalidCredentials();
-      _emailTEC.clear();
-      _passwordTEC.clear();
+      _email.clear();
+      _password.clear();
     }
   }
 
-  Future<void>_onLoginSuccess(String username ,String password) async {
+  Future<void> _onLoginSuccess(
+      String username, String password, User user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', username);
     await prefs.setString('password', password);
+    await prefs.setString('user', jsonEncode(user.toJson()));
   }
 
   @override
@@ -112,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: screenHeight * 0.03),
               InputField(
-                controller: _emailTEC,
+                controller: _email,
                 keyboardType: TextInputType.text,
                 prefixIcon: const Icon(Icons.person, color: Colors.grey),
                 hint: 'Email/Phone No',
@@ -120,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: screenHeight * 0.02),
               InputField(
-                controller: _passwordTEC,
+                controller: _password,
                 keyboardType: TextInputType.text,
                 prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                 hint: 'Password',
@@ -149,10 +177,15 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: screenHeight * 0.05,
               ),
-              CustomButton(
-                text: 'Sign In',
-                onPressed: loginAuth,
-              ),
+              isLoading
+                  ? SpinKitThreeBounce(
+                      size: screenWidth * 0.06,
+                      color: const Color(0xFF2980B9),
+                    )
+                  : CustomButton(
+                      text: 'Sign In',
+                      onPressed: () => loginAuth(context),
+                    ),
               SizedBox(height: screenHeight * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -1,3 +1,4 @@
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:MedInvent/providers/prescriptionsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,11 +16,12 @@ class Prescriptions extends ConsumerStatefulWidget {
 }
 
 class _PrescriptionsState extends ConsumerState<Prescriptions> {
-  String userID = "126b4f01-e486-461e-b20e-311e3c7c0ffb";
+  late String userID;
 
   @override
   void initState() {
     super.initState();
+    userID = ref.read(userProvider)!.userId;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(prescriptionsProvider.notifier)
