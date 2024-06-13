@@ -1,15 +1,17 @@
+import 'package:MedInvent/config/api.dart';
+import 'package:MedInvent/features/Register/data/models/user_model.dart';
 import 'package:MedInvent/features/Register/presentation/validations.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/components/user_data.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Register3 extends StatefulWidget {
-  final UserData userData;
-  const Register3({super.key, required this.userData});
+  final User user;
+  const Register3({super.key, required this.user});
 
   @override
   State<Register3> createState() => _Register3State();
@@ -21,6 +23,8 @@ class _Register3State extends State<Register3> {
   final TextEditingController _city = TextEditingController();
   final TextEditingController _postalCode = TextEditingController();
 
+  bool isLoading = false;
+
   //function to dispose controllers when not in use
   @override
   void dispose() {
@@ -31,37 +35,55 @@ class _Register3State extends State<Register3> {
     super.dispose();
   }
 
-  // postData() async {
-  //   var response = await http.post(
-  //     //below i have added my PC IP  address "192.168.1.14" instead of adding localhost
-  //     //since we are using pc emulator for checking purposes.
-  //     //you can change it  to your PC IP address when you are going to work with this post method.
-  //     Uri.parse("http://192.168.1.109:3300/user"),
-  //     headers: {"Content-Type": "application/json"},
-  //     body: jsonEncode({
-  //       'email': widget.userData.email,
-  //       'user_password': widget.userData.password,
-  //       'first_name': widget.userData.firstName,
-  //       'last_name': widget.userData.lastName,
-  //       'nic': widget.userData.nic,
-  //       'gender': widget.userData.gender,
-  //       'birth_date': widget.userData.birthDate,
-  //       'mNumber': widget.userData.mobileNumber,
-  //       'address': {
-  //         'line1': widget.userData.line1,
-  //         'line2': widget.userData.line2,
-  //         'city': widget.userData.city,
-  //         'district': widget.userData.district,
-  //         'postalCode': widget.userData.postalCode,
-  //       }
-  //     }),
-  //   );
-  //   print('Response status: ${response.statusCode}');
-  //   print('Response body: ${response.body}');
-  // }
+  Future<void> postData() async {
+    String apiUrl = '${ApiConfig.baseUrl}/patientuser/add/new/patientuser';
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      var response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          'userDetails': {
+            'Fname': widget.user.fName,
+            'Lname': widget.user.lName,
+            'mobileNo': widget.user.mobileNo,
+            'email': widget.user.email,
+            'nic': widget.user.nic,
+            'gender': widget.user.gender,
+            'dob': widget.user.dob,
+            'patientAddress': {
+              'lineOne': widget.user.lineOne,
+              'lineTwo': widget.user.lineTwo,
+              'city': widget.user.city,
+              'district': widget.user.district,
+              'postalCode': widget.user.postalCode,
+            }
+          },
+          'credentials': {
+            'email': widget.user.email,
+            'mobileNo': widget.user.mobileNo,
+            'password': widget.user.password,
+          }
+        }),
+      );
 
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        _registrationSuccess();
+      } else {
+        _showErrorDialog('Registration failed. Please try again.');
+      }
+    } catch (error) {
+      _showErrorDialog('An error occurred. Please try again.');
+    } finally{
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
-  //registration successful message
+  // Registration successful message
   void _registrationSuccess() {
     showDialog(
       context: context,
@@ -79,6 +101,29 @@ class _Register3State extends State<Register3> {
                   MaterialPageRoute(builder: (context) => const LoginPage()),
                   (route) => false,
                 );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Show error message
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Registration Failed'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
               },
               child: const Text('OK'),
             ),
@@ -118,6 +163,8 @@ class _Register3State extends State<Register3> {
 
   String selectedDistrict = "Colombo";
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -128,6 +175,7 @@ class _Register3State extends State<Register3> {
       body: Center(
         child: SingleChildScrollView(
           child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -195,19 +243,28 @@ class _Register3State extends State<Register3> {
                 InputField(
                     controller: _postalCode,
                     keyboardType: TextInputType.number,
-                    hint: 'Postal Code',
+                    hint: 'Postal Code (Optional)',
                     isPassword: false),
                 SizedBox(height: screenHeight * 0.1),
-                CustomButton(
-                  text: 'Register',
-                  onPressed: () {
-                    widget.userData.line1 = _addressLine1.text;
-                    widget.userData.line2 = _addressLine2.text;
-                    widget.userData.city = _city.text;
-                    widget.userData.district = selectedDistrict;
-                    _registrationSuccess();
-                  },
-                ),
+                isLoading
+                    ? SpinKitThreeBounce(
+                        size: screenWidth * 0.06,
+                        color: const Color(0xFF2980B9),
+                      )
+                    : CustomButton(
+                        text: 'Register',
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() == false) {
+                            return;
+                          }
+                          widget.user.lineOne = _addressLine1.text;
+                          widget.user.lineTwo = _addressLine2.text;
+                          widget.user.city = _city.text;
+                          widget.user.district = selectedDistrict;
+                          widget.user.postalCode = _postalCode.text;
+                          postData();
+                        },
+                      ),
               ],
             ),
           ),

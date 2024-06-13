@@ -1,13 +1,17 @@
-import 'package:MedInvent/components/user_data.dart';
+import 'package:MedInvent/config/api.dart';
+import 'package:MedInvent/features/Register/data/models/user_model.dart';
 import 'package:MedInvent/features/Register/presentation/pages/register_3.dart';
 import 'package:MedInvent/features/Register/presentation/validations.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Register2 extends StatefulWidget {
-  final UserData userData;
-  const Register2({Key? key, required this.userData}) : super(key: key);
+  final User user;
+  const Register2({Key? key, required this.user}) : super(key: key);
 
   @override
   Register2State createState() => Register2State();
@@ -19,20 +23,75 @@ class Register2State extends State<Register2> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _fName = TextEditingController();
   final TextEditingController _lName = TextEditingController();
-  final TextEditingController _NIC = TextEditingController();
+  final TextEditingController _nic = TextEditingController();
+
+  bool isLoading = false;
 
   //function to dispose controllers when not in use
   @override
   void dispose() {
     _fName.dispose();
     _lName.dispose();
-    _NIC.dispose();
+    _nic.dispose();
     super.dispose();
   }
 
   String selectedGender = 'Male';
   DateTime selectedDate = DateTime.now();
 
+  Future<bool> checkNic() async {
+    String apiUrl = '${ApiConfig.baseUrl}/patientuser/check/nic/${_nic.text}';
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['data']['message'] == "Patient not found") {
+          return true;
+        } else {
+          _showErrorDialog("This NIC number is already used");
+        }
+      } else {
+        _showErrorDialog("Failed to check availability");
+      }
+    } catch (e) {
+      _showErrorDialog("Error: $e");
+      return false;
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+    return false;
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Registration Failed'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   //pop up to select the birthdate
   Future<void> _selectDate(BuildContext context) async {
@@ -88,7 +147,7 @@ class Register2State extends State<Register2> {
                 SizedBox(height: screenHeight * 0.02),
                 InputField(
                     validator: (value) => emptyValidation(value, "NIC"),
-                    controller: _NIC,
+                    controller: _nic,
                     keyboardType: TextInputType.text,
                     hint: 'NIC',
                     isPassword: false),
@@ -156,24 +215,37 @@ class Register2State extends State<Register2> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.1),
-                CustomButton(
-                  text: 'Next',
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() == true) {
-                      widget.userData.firstName = _fName.text;
-                      widget.userData.lastName = _lName.text;
-                      widget.userData.nic = _NIC.text;
-                      widget.userData.birthDate = selectedDate;
-                      widget.userData.gender = selectedGender;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                Register3(userData: widget.userData)),
-                      );
-                    }
-                  },
-                ),
+                if (isLoading)
+                  SpinKitThreeBounce(
+                    size: screenWidth * 0.06,
+                    color: const Color(0xFF2980B9),
+                  )
+                else
+                  CustomButton(
+                    text: 'Next',
+                    onPressed: () async {
+                      if (_formKey.currentState?.validate() == true) {
+                        bool isAvailable = await checkNic();
+
+                        if (mounted) {
+                          if (isAvailable) {
+                            widget.user.fName = _fName.text;
+                            widget.user.lName = _lName.text;
+                            widget.user.nic = _nic.text;
+                            widget.user.dob =
+                                selectedDate.toString().split(" ")[0];
+                            widget.user.gender = selectedGender;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Register3(user: widget.user)),
+                            );
+                          }
+                        }
+                      }
+                    },
+                  ),
               ],
             ),
           ),
