@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class DisplayPage extends StatefulWidget {
   const DisplayPage({Key? key}) : super(key: key);
@@ -8,27 +9,32 @@ class DisplayPage extends StatefulWidget {
 }
 
 class _DisplayPageState extends State<DisplayPage> {
-  String message ="";
+  String sendBy = "";
+  String OTP = "";
 
   @override
   void initState() {
     super.initState();
-    didChangeDependencies();
   }
 
   @override
-  void didChangedependencies(){
+  void didChangeDependencies() {
     super.didChangeDependencies();
-    final arguments = ModalRoute.of(context)!.settings.arguments;
+    assignMessage();
+  }
 
-
-    if(arguments != null)
-      {
-        Map? pushArguments =arguments as Map;
+  void assignMessage() {
+    final getarguments = ModalRoute.of(context)?.settings.arguments;
+    if (getarguments != null) {
+      Map? pushArguments = getarguments as Map;
+      if (pushArguments.containsKey("message")) {
+        Map<String, dynamic> messageData = json.decode(pushArguments["message"]);
         setState(() {
-          message= pushArguments["message"];
+          sendBy = messageData["sendBy"];
+          OTP = messageData["OTP"];
         });
       }
+    }
   }
 
   @override
@@ -37,7 +43,15 @@ class _DisplayPageState extends State<DisplayPage> {
       child: Scaffold(
         backgroundColor: Colors.deepPurple,
         body: Center(
-          child: Text("push message : $message"),
+          child: Container(
+            color: Colors.white,
+            width: 500,
+            height: 500,
+            child: Text(
+                'send by value is $sendBy , OTP value is $OTP',
+
+            ),
+          ),
         ),
       ),
     );

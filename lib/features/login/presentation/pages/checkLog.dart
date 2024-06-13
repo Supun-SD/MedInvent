@@ -24,11 +24,11 @@ class _CheckAuthState extends State<CheckAuth> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    checkMessage();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   checkMessage();
+  // }
 
   Future<void> _checkAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,6 +38,8 @@ class _CheckAuthState extends State<CheckAuth> {
       print(username);
       print(password);
       setState(() {
+        this.password=password;
+        this.username=username;
         is_Authenticated = true;
         print(is_Authenticated);
       });
@@ -54,6 +56,10 @@ class _CheckAuthState extends State<CheckAuth> {
         if (pushArguments.containsKey("message")) {
           Map<String, dynamic> messageData = json.decode(pushArguments["message"]);
           final getPassword = messageData["password"];
+          final getOTP = messageData["OTP"];
+          print('get password $getPassword');
+          print('OTP is $getOTP');
+          print('shared preferences password $password');
           if (getPassword == password) {
             print('equal');
             Navigator.pushNamed(
@@ -65,7 +71,7 @@ class _CheckAuthState extends State<CheckAuth> {
             print('not equal');
             Navigator.pushNamed(
               context,
-              '/',
+              '/landing',
               arguments: getarguments,
             );
           }

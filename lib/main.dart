@@ -51,11 +51,11 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async
-{
-  await Firebase.initializeApp();
-  print("_firebaseMessagingBackgroundHandler : $message");
-}
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async
+  {
+    await Firebase.initializeApp();
+    print("_firebaseMessagingBackgroundHandler : $message");
+  }
 
 
 class MyApp extends StatelessWidget {
@@ -71,7 +71,8 @@ class MyApp extends StatelessWidget {
       navigatorKey:navigatorKey,
        routes: {
          '/':((context)=> CheckAuth()),
-         '/notifications':((context)=>const DisplayPage())
+         '/notifications':((context)=>const DisplayPage()),
+         '/landing':((contex)=>const Landing())
        },
     );
   }
