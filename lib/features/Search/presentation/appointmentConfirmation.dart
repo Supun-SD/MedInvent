@@ -1,29 +1,37 @@
+import 'package:MedInvent/components/PatientDetailInput.dart';
+import 'package:MedInvent/components/RadioButtonOption.dart';
+import 'package:MedInvent/components/UserDetail.dart';
 import 'package:MedInvent/config/api.dart';
 import 'package:MedInvent/features/Search/presentation/appointmentSuccess.dart';
 import 'package:MedInvent/features/Search/models/appointment.dart';
+import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class AppointmentConfirmation extends StatefulWidget {
+class AppointmentConfirmation extends ConsumerStatefulWidget {
   const AppointmentConfirmation(
       {required this.appointment, required this.doctor, super.key});
   final Appointment appointment;
   final String doctor;
 
   @override
-  State<AppointmentConfirmation> createState() =>
+  ConsumerState<AppointmentConfirmation> createState() =>
       _AppointmentConfirmationState();
 }
 
-class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
+class _AppointmentConfirmationState
+    extends ConsumerState<AppointmentConfirmation> {
+  
   List<String> titles = ["Mr", "Ms", "Mrs"];
-
   String selectedTitle = "Mr";
 
-  String userId = "126b4f01-e486-461e-b20e-311e3c7c0ffb";
-  String sessionId = "255e3e82-0195-4754-b640-ea9a292919a7";
+  String sessionId = "caf60946-c47b-4686-9f2f-ed373f21a68c";
+
+  String _selectedOption = 'Other';
 
   int doctorFee = 2300;
   int clinicFee = 1000;
@@ -41,6 +49,11 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
   final TextEditingController _nic = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _patientName.dispose();
     _mobileNo.dispose();
@@ -51,8 +64,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
   }
 
   bool _validateEmail(String? value) {
-    const emailPattern =
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    const emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     final regex = RegExp(emailPattern);
     if (value == null || !regex.hasMatch(value)) {
       return false;
@@ -69,12 +81,17 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
     return true;
   }
 
-  Future<void> _submitAppointment() async {
-    if (_patientName.text == "" ||
-        _mobileNo.text == "" ||
-        _email.text == "" ||
-        _area.text == "" ||
-        _nic.text == "") {
+  String convertMobileNumber(String number) {
+    return '+94${number.substring(1)}';
+  }
+
+  Future<void> _submitAppointment(User user) async {
+    if ((_patientName.text == "" ||
+            _mobileNo.text == "" ||
+            _email.text == "" ||
+            _area.text == "" ||
+            _nic.text == "") &&
+        _selectedOption == 'Other') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Fields cannot be empty'),
@@ -84,7 +101,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
       return;
     }
 
-    if(!_validateEmail(_email.text)){
+    if (!_validateEmail(_email.text) && _selectedOption == 'Other') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Enter a valid email address'),
@@ -93,8 +110,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
       );
       return;
     }
-    
-    if(!_validateMobile(_mobileNo.text)){
+
+    if (!_validateMobile(_mobileNo.text) && _selectedOption == 'Other') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Enter a valid mobile number'),
@@ -103,7 +120,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
       );
       return;
     }
-    
+
     setState(() {
       isLoading = true;
     });
@@ -115,22 +132,26 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
             'Content-Type': 'application/json',
           },
           body: json.encode({
-            'user_id': userId,
+            'user_id': user.userId,
             'session_id': sessionId,
             'patientTitle': selectedTitle,
-            'patientName': _patientName.text,
-            'contactNo': _mobileNo.text,
-            'email': _email.text,
-            'area': _area.text,
-            'nic': _nic.text,
+            'patientName': _selectedOption == 'Other'
+                ? _patientName.text
+                : '${user.fname} ${user.lname}',
+            'contactNo': _selectedOption == 'Other'
+                ? convertMobileNumber(_mobileNo.text)
+                : user.mobileNo,
+            'email': _selectedOption == 'Other' ? _email.text : user.email,
+            'area': _selectedOption == 'Other'
+                ? _area.text
+                : user.patientAddress.city,
+            'nic': _selectedOption == 'Other' ? _nic.text : user.nic,
           }));
 
       if (response.statusCode == 200) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-              const AppointmentSuccess()),
+          MaterialPageRoute(builder: (context) => const AppointmentSuccess()),
         );
       } else {
         throw Exception('Failed booking appointment');
@@ -153,6 +174,8 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    User user = ref.watch(userProvider)!;
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -179,7 +202,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                     horizontal: screenWidth * 0.05,
                     vertical: screenHeight * 0.035),
                 margin: EdgeInsets.symmetric(
-                    horizontal: screenHeight * 0.05,
+                    horizontal: screenWidth * 0.05,
                     vertical: screenHeight * 0.03),
                 width: double.infinity,
                 child: Column(
@@ -271,7 +294,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                     horizontal: screenWidth * 0.05,
                     vertical: screenHeight * 0.035),
                 margin: EdgeInsets.symmetric(
-                  horizontal: screenHeight * 0.05,
+                  horizontal: screenWidth * 0.05,
                 ),
                 width: double.infinity,
                 child: Column(
@@ -282,6 +305,35 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                       style: TextStyle(
                           fontSize: screenWidth * 0.04,
                           fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RadioButtonOption(
+                          text: 'For me',
+                          groupValue: _selectedOption,
+                          value: 'For me',
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedOption = value!;
+                            });
+                          },
+                        ),
+                        const SizedBox(width: 16),
+                        RadioButtonOption(
+                          text: 'Other',
+                          groupValue: _selectedOption,
+                          value: 'Other',
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedOption = value!;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
@@ -344,31 +396,10 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              SizedBox(
-                                height: 35,
-                                child: TextField(
-                                  controller: _patientName,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 7.5, horizontal: 15),
-                                  ),
-                                ),
-                              ),
+                              if (_selectedOption == 'For me')
+                                UserDetail(text: '${user.fname} ${user.lname}')
+                              else
+                                PatientDetailInput(controller: _patientName)
                             ],
                           ),
                         )
@@ -384,32 +415,10 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                     const SizedBox(
                       height: 5,
                     ),
-                    SizedBox(
-                      height: 35,
-                      child: TextField(
-                        controller: _mobileNo,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            borderSide:
-                                const BorderSide(color: Colors.grey, width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 7.5, horizontal: 15),
-                        ),
-                      ),
-                    ),
+                    if (_selectedOption == 'For me')
+                      UserDetail(text: user.mobileNo)
+                    else
+                      PatientDetailInput(controller: _mobileNo),
                     const SizedBox(
                       height: 15,
                     ),
@@ -420,32 +429,10 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                     const SizedBox(
                       height: 5,
                     ),
-                    SizedBox(
-                      height: 35,
-                      child: TextField(
-                        controller: _email,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            borderSide:
-                                const BorderSide(color: Colors.grey, width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 7.5, horizontal: 15),
-                        ),
-                      ),
-                    ),
+                    if (_selectedOption == 'For me')
+                      UserDetail(text: user.email)
+                    else
+                      PatientDetailInput(controller: _email),
                     const SizedBox(
                       height: 15,
                     ),
@@ -462,32 +449,10 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              SizedBox(
-                                height: 35,
-                                child: TextField(
-                                  controller: _area,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 7.5, horizontal: 15),
-                                  ),
-                                ),
-                              ),
+                              if (_selectedOption == 'For me')
+                                UserDetail(text: user.patientAddress.city)
+                              else
+                                PatientDetailInput(controller: _area),
                             ],
                           ),
                         ),
@@ -505,32 +470,10 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                             const SizedBox(
                               height: 5,
                             ),
-                            SizedBox(
-                              height: 35,
-                              child: TextField(
-                                controller: _nic,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    borderSide: const BorderSide(
-                                        color: Colors.grey, width: 1),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 7.5, horizontal: 15),
-                                ),
-                              ),
-                            ),
+                            if (_selectedOption == 'For me')
+                              UserDetail(text: user.nic)
+                            else
+                              PatientDetailInput(controller: _nic)
                           ],
                         ))
                       ],
@@ -576,7 +519,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                     horizontal: screenWidth * 0.05,
                     vertical: screenHeight * 0.035),
                 margin: EdgeInsets.symmetric(
-                    horizontal: screenHeight * 0.05,
+                    horizontal: screenWidth * 0.05,
                     vertical: screenHeight * 0.03),
                 width: double.infinity,
                 child: Column(
@@ -729,7 +672,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                 height: screenHeight * 0.01,
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.12),
+                margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.2),
                 width: double.infinity,
                 height: screenHeight * 0.05,
                 child: isLoading
@@ -739,7 +682,7 @@ class _AppointmentConfirmationState extends State<AppointmentConfirmation> {
                       )
                     : TextButton(
                         onPressed: () {
-                          _submitAppointment();
+                          _submitAppointment(user);
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: const Color(0xFF2980B9),

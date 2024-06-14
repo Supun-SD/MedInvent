@@ -33,10 +33,13 @@ class AppointmentSuccess extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text("Check your mail for the receipt",
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.035,
-                  )),
+              Text(
+                "A confirmation sms has been sent to your mobile number",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.035,
+                ),
+              ),
               SizedBox(
                 height: screenHeight * 0.3,
               ),
