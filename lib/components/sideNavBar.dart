@@ -1,22 +1,26 @@
 import 'package:MedInvent/features/Map/map_screen.dart';
 import 'package:MedInvent/features/home/presentation/mainPage.dart';
+import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/presentation/pages/login.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SideNavBar extends StatefulWidget {
+class SideNavBar extends ConsumerStatefulWidget {
   const SideNavBar({super.key});
 
   @override
-  State<SideNavBar> createState() => _SideNavBarState();
+  ConsumerState<SideNavBar> createState() => _SideNavBarState();
 }
 
-class _SideNavBarState extends State<SideNavBar> {
-  String username = "John Doe";
-  String email = "johndoe@gmail.com";
+class _SideNavBarState extends ConsumerState<SideNavBar> {
   Image profilePhoto = Image.asset("assets/images/pic.png");
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    User user = ref.watch(userProvider)!;
 
     return Drawer(
       shape: RoundedRectangleBorder(
@@ -28,11 +32,11 @@ class _SideNavBarState extends State<SideNavBar> {
         children: [
           UserAccountsDrawerHeader(
             accountName: Text(
-              username,
+              '${user.fname} ${user.lname}',
               style: TextStyle(fontSize: screenHeight * 0.025),
             ),
             accountEmail: Text(
-              email,
+              user.email,
               style: TextStyle(fontSize: screenHeight * 0.012),
             ),
             currentAccountPicture: Container(
@@ -148,7 +152,14 @@ class _SideNavBarState extends State<SideNavBar> {
               'Logout',
               style: TextStyle(fontSize: screenHeight * 0.018),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (Route<dynamic> route) => false,
+              );
+              ref.watch(userProvider.notifier).logoutUser();
+            },
           ),
         ],
       ),

@@ -2,20 +2,22 @@ import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Appointments/data/upcomingAppointments.dart';
 import 'package:MedInvent/features/Appointments/model/appointment.dart';
 import 'package:MedInvent/features/Map/map_screen.dart';
+import 'package:MedInvent/features/login/data/models/user_model.dart';
 import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/medication_card.dart';
 import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  String username = "John Doe";
+class _HomePageState extends ConsumerState<HomePage> {
   late String greeting;
   String medication1 = "Fever";
   String medication2 = "Diabetes";
@@ -47,14 +49,13 @@ class _HomePageState extends State<HomePage> {
     "assets/widgetIcons/doctor.png",
     "assets/widgetIcons/checkout.png",
     "assets/widgetIcons/chat.png",
-    ];
+  ];
 
   List<String> widgetTexts = [
     "Find Pharmacy",
     "Find Doctor",
     "Add prescription",
     "Forum",
-
   ];
 
   List<IconData> background = [
@@ -68,9 +69,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // getting the screen height and width
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    User user = ref.watch(userProvider)!;
 
     List shortcutActions = [
       () {
@@ -187,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                                     TextStyle(fontSize: screenHeight * 0.014),
                               ),
                               Text(
-                                "Hi $username!",
+                                "Hi ${user.fname}!",
                                 style: TextStyle(
                                     fontSize: screenHeight * 0.03,
                                     fontWeight: FontWeight.bold),
@@ -218,14 +220,13 @@ class _HomePageState extends State<HomePage> {
                           screenWidth: screenWidth,
                           medication1: medication1,
                           medication2: medication2,
-                          User: username,
+                          User: "${user.fname} ${user.lname}",
                           color: Colors.white,
                         ),
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => DailyMed()),
+                            MaterialPageRoute(builder: (context) => DailyMed()),
                           );
                         },
                       ),
@@ -240,8 +241,7 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => DailyMed()),
+                            MaterialPageRoute(builder: (context) => DailyMed()),
                           );
                         },
                       )
@@ -372,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                   height: screenHeight * 0.28,
                   child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount:4 ,
+                    itemCount: 4,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,

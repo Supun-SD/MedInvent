@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 final userProvider = StateNotifierProvider<UserStateNotifier, User?>(
     (ref) => UserStateNotifier());
 
@@ -11,7 +13,7 @@ class UserStateNotifier extends StateNotifier<User?> {
   UserStateNotifier() : super(null);
 
   Future<User> loginUser(String emailOrMobileNo, String password) async {
-    const String userId = "10722b9d-590e-4454-b453-7c72a7388a88";
+    const String userId = "b77565de-75a7-49c6-9335-0478a5d2ff75";
 
     const String apiURL =
         '${ApiConfig.baseUrl}/patientuser/get/patientuser/details/byuserid/$userId';
@@ -31,7 +33,11 @@ class UserStateNotifier extends StateNotifier<User?> {
     state = user;
   }
 
-  void logoutUser() {
+  void logoutUser() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     state = null;
   }
 }

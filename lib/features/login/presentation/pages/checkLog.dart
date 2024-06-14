@@ -39,15 +39,12 @@ class _CheckAuthState extends ConsumerState<CheckAuth> {
     String? username = prefs.getString('username');
     String? password = prefs.getString('password');
     String? userJson = prefs.getString('user');
+
     late User user;
-    if (userJson != null) {
+
+    if (username != null && password != null && userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
-    }
-
-    if (username != null && password != null) {
-      print(username);
-      print(password);
       setState(() {
         this.password = password;
         this.username = username;

@@ -75,12 +75,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             .read(userProvider.notifier)
             .loginUser(_email.text, _password.text);
         await _onLoginSuccess(username, password, user);
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => const Home(
-                    sideNavIndex: 2,
-                  )),
+            builder: (context) => const Home(
+              sideNavIndex: 2,
+            ),
+          ),
+          (Route<dynamic> route) => false,
         );
       } catch (e) {
         _invalidCredentials();
