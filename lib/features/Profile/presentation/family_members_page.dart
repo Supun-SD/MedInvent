@@ -45,6 +45,16 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
     }
   }
 
+  Future<void> deleteFamilyMember(String id) async {
+    try {
+      BaseClient baseClient = BaseClient();
+      await baseClient.delete('/DependMember/delete/DependMember/$id');
+      fetchFamilyMembers(); // Refresh the list after
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -136,7 +146,10 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                       } else {
                         return Column(
                           children: snapshot.data!
-                              .map((e) => FamilyMemberCard(familyMember: e))
+                              .map((e) => FamilyMemberCard(
+                              familyMember: e,
+                              onDelete: () => deleteFamilyMember(e.dID!),
+                          ))
                               .toList(),
                         );
                       }
@@ -192,9 +205,13 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
 
 class FamilyMemberCard extends StatelessWidget {
   final FamilyMember familyMember;
+  final VoidCallback onDelete;
 
-  const FamilyMemberCard({Key? key, required this.familyMember})
-      : super(key: key);
+  const FamilyMemberCard({
+    Key? key,
+    required this.familyMember,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -228,33 +245,38 @@ class FamilyMemberCard extends StatelessWidget {
             ],
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                width: screenWidth * 0.05,
-              ),
-              Image.asset(
-                "assets/images/pic.png",
-                height: screenWidth * 0.15,
-              ),
-              SizedBox(
-                width: screenWidth * 0.05,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(
-                    familyMember.fname!,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: screenHeight * 0.02),
+                  SizedBox(width: screenWidth * 0.05),
+                  Image.asset(
+                    "assets/images/pic.png",
+                    height: screenWidth * 0.15,
                   ),
-                  Text(
-                    familyMember.relationship!,
-                    style: TextStyle(fontSize: screenHeight * 0.015),
-                  )
+                  SizedBox(width: screenWidth * 0.05),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        familyMember.fname!,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: screenHeight * 0.02),
+                      ),
+                      Text(
+                        familyMember.relationship!,
+                        style: TextStyle(fontSize: screenHeight * 0.015),
+                      ),
+                    ],
+                  ),
                 ],
-              )
+              ),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: onDelete,
+              ),
             ],
           ),
         ),
@@ -262,3 +284,4 @@ class FamilyMemberCard extends StatelessWidget {
     );
   }
 }
+
