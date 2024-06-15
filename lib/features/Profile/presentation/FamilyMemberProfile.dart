@@ -101,11 +101,12 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
               ),
             ),
           ),
-          Positioned(
-            top: screenHeight * 0.3,
-            right: 0,
-            left: 0,
-            child: Column(
+          Container(
+            margin:EdgeInsets.only(top: 240.0),
+            padding: EdgeInsets.only(top:10.0),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child:Column(
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
@@ -127,40 +128,23 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                           height: screenHeight * 0.075,
                         ),
                         InfoField(
-                          title: "First Name",
+                          title: "First Name -:",
                           controller: _fnameController,
                           onUpdate: _updateDatabase,
                         ),
                         InfoField(
-                          title: "Last Name",
+                          title: "Last Name -:",
                           controller: _lnameController,
                           onUpdate: _updateDatabase,
                         ),
                         InfoField(
-                          title: "Relationship",
+                          title: "Relationship -:",
                           controller: _relationshipController,
                           onUpdate: _updateDatabase,
                         ),
                         SizedBox(
                           height: screenHeight * 0.008,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.diamond_rounded,
-                              size: screenHeight * 0.02,
-                              color: Colors.red,
-                            ),
-                            SizedBox(
-                              width: screenWidth * 0.01,
-                            ),
-                            Text(
-                              loyalityPoints.toString(),
-                              style: TextStyle(fontSize: screenWidth * 0.035),
-                            ),
-                          ],
-                        )
                       ],
                     ),
                   ),
@@ -233,6 +217,29 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                   ),
                 )
               ],
+             ),
+            ),
+          ),
+          Positioned(
+            left: screenWidth*0.1,
+            right: screenWidth*0.1,
+            top: screenHeight * 0.22,
+            child: Container(
+              height: 60.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(screenHeight * 0.04),
+                  bottomRight: Radius.circular(screenHeight * 0.04),
+                ),
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.topRight,
+                  colors: [
+                    Color(0xFF474CA0),
+                    Color(0xFF468FA0),
+                  ],
+                ),
+              ),
             ),
           ),
           Positioned(
@@ -357,15 +364,6 @@ class _InfoFieldState extends State<InfoField> {
               setState(() {
                 isEditing = true;
               });
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              setState(() {
-                widget.controller.clear();
-              });
-              widget.onUpdate();
             },
           ),
         ],
