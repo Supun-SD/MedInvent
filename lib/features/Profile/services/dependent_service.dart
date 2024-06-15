@@ -29,7 +29,6 @@ class BaseClient {
       var url = Uri.parse(baseUrl + api);
       var _headers = {"Content-Type": "application/json"};
       var response = await client.post(url, headers: _headers, body: body);
-      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.body;
       } else {

@@ -235,6 +235,7 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                       nic.text,
                       [],
                       relationship.text,
+                      ""
                     );
 
                     // Send the new member data to the backend

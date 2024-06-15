@@ -1,5 +1,9 @@
-import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:flutter/material.dart';
+import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/features/Profile/services/dependent_service.dart';
+import 'dart:convert';
+import 'package:intl/intl.dart';
+
 
 class FamilyMemberProfile extends StatefulWidget {
   final FamilyMember familyMember;
@@ -10,6 +14,60 @@ class FamilyMemberProfile extends StatefulWidget {
 }
 
 class FamilyMemberProfileState extends State<FamilyMemberProfile> {
+  final TextEditingController _nicController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _fnameController = TextEditingController();
+  final TextEditingController _lnameController = TextEditingController();
+  final TextEditingController _relationshipController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nicController.text = widget.familyMember.nic ?? "N/A";
+    _genderController.text = widget.familyMember.gender ?? "N/A";
+    _dobController.text = widget.familyMember.dob != null
+        ? DateFormat('dd-MM-yyyy').format(widget.familyMember.dob!)
+        : "N/A";
+    _fnameController.text = widget.familyMember.fname ?? "";
+    _lnameController.text = widget.familyMember.lname ?? "";
+    _relationshipController.text = widget.familyMember.relationship ?? "N/A";
+  }
+
+  void _updateDatabase() async {
+    // Add your database update logic here
+    print("Database updated with NIC: ${_nicController.text}, Gender: ${_genderController.text}, DOB: ${_dobController.text}, First Name: ${_fnameController.text}, Last Name: ${_lnameController.text}, Relationship: ${_relationshipController.text}");
+
+    try {
+      widget.familyMember.nic = _nicController.text;
+      widget.familyMember.gender = _genderController.text ?? "N/A";
+      widget.familyMember.dob = _dobController.text != "N/A"
+          ? DateFormat('dd-MM-yyyy').parse(_dobController.text)
+          : null;
+      widget.familyMember.fname = _fnameController.text ?? "";
+      widget.familyMember.lname = _lnameController.text ?? "";
+      widget.familyMember.relationship = _relationshipController.text ?? "N/A";
+
+      BaseClient baseClient = BaseClient();
+      var response = await baseClient.put(
+          '/DependMember/update/DependMember/126b4f01-e486-461e-b20e-311e3c7c0ffb',
+          widget.familyMember.toRawJson()
+      );
+      if (response != null) {
+        // Handle successful response
+        print(response);
+        Map<String, dynamic> decodedJson = json.decode(response);
+        //newDepend.receiverID=decodedJson ['data']['userID'];
+        //print(newDepend.receiverID);
+      } else {
+        print('not success');
+      }
+    } catch (e) {
+      // Handle error
+      print("Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -17,11 +75,6 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
 
     String profilePic = "assets/images/pic.png";
     int loyalityPoints = 335;
-
-    String fullName = "${widget.familyMember.fname ?? ""} ${widget.familyMember.lname ?? ""}";
-    String dob = widget.familyMember.dob != null
-        ? "${widget.familyMember.dob!.day}-${widget.familyMember.dob!.month}-${widget.familyMember.dob!.year}"
-        : "N/A";
 
     return Scaffold(
       body: Stack(
@@ -49,7 +102,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
             ),
           ),
           Positioned(
-            top: screenHeight * 0.22,
+            top: screenHeight * 0.3,
             right: 0,
             left: 0,
             child: Column(
@@ -57,7 +110,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: Container(
-                    height: screenHeight * 0.18,
+                    height: screenHeight * 0.38,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(screenWidth * 0.07),
@@ -73,18 +126,20 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                         SizedBox(
                           height: screenHeight * 0.075,
                         ),
-                        Text(
-                          fullName,
-                          style: TextStyle(
-                              fontSize: screenHeight * 0.02,
-                              fontWeight: FontWeight.bold),
+                        InfoField(
+                          title: "First Name",
+                          controller: _fnameController,
+                          onUpdate: _updateDatabase,
                         ),
-                        SizedBox(
-                          height: screenHeight * 0.005,
+                        InfoField(
+                          title: "Last Name",
+                          controller: _lnameController,
+                          onUpdate: _updateDatabase,
                         ),
-                        Text(
-                          widget.familyMember.relationship ?? "N/A",
-                          style: TextStyle(fontSize: screenHeight * 0.015),
+                        InfoField(
+                          title: "Relationship",
+                          controller: _relationshipController,
+                          onUpdate: _updateDatabase,
                         ),
                         SizedBox(
                           height: screenHeight * 0.008,
@@ -128,23 +183,24 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
                         children: [
-                          const Column(
-                            children: [
-                              TitleBox(title: "NIC"),
-                              TitleBox(title: "Gender"),
-                              TitleBox(title: "Date of Birth"),
-                            ],
+                          InfoField(
+                            title: "NIC",
+                            controller: _nicController,
+                            onUpdate: _updateDatabase,
                           ),
-                          Column(
-                            children: [
-                              DataBox(data: widget.familyMember.nic ?? "N/A"),
-                              DataBox(data: widget.familyMember.gender ?? "N/A"),
-                              DataBox(data: dob),
-                            ],
-                          )
+                          InfoField(
+                            title: "Gender",
+                            controller: _genderController,
+                            onUpdate: _updateDatabase,
+                          ),
+                          InfoField(
+                            title: "Date of Birth",
+                            controller: _dobController,
+                            onUpdate: _updateDatabase,
+                            isDob: true,
+                          ),
                         ],
                       ),
                     ),
@@ -214,51 +270,103 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
   }
 }
 
-class TitleBox extends StatelessWidget {
+class InfoField extends StatefulWidget {
   final String title;
+  final TextEditingController controller;
+  final VoidCallback onUpdate;
+  final bool isDob;
 
-  const TitleBox({Key? key, required this.title}) : super(key: key);
+  const InfoField({
+    Key? key,
+    required this.title,
+    required this.controller,
+    required this.onUpdate,
+    this.isDob = false,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return SizedBox(
-      width: screenWidth * 0.3,
-      height: screenHeight * 0.032,
-      child: Row(
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-                fontSize: screenHeight * 0.016, color: Colors.black45),
-          ),
-        ],
-      ),
-    );
-  }
+  _InfoFieldState createState() => _InfoFieldState();
 }
 
-class DataBox extends StatelessWidget {
-  final String data;
+class _InfoFieldState extends State<InfoField> {
+  bool isEditing = false;
 
-  const DataBox({Key? key, required this.data}) : super(key: key);
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        widget.controller.text = DateFormat('dd-MM-yyyy').format(picked);
+        isEditing = false;
+      });
+      widget.onUpdate();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return SizedBox(
-      width: screenWidth * 0.35,
-      height: screenHeight * 0.032,
+    return Padding(
+      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            data,
-            style:
-            TextStyle(fontSize: screenHeight * 0.016, color: Colors.black),
+            widget.title,
+            style: TextStyle(fontSize: screenHeight * 0.02, color: Colors.blue[900]),
+          ),
+          SizedBox(
+            width: screenWidth * 0.29,
+            child: isEditing
+                ? widget.isDob
+                ? TextButton(
+              onPressed: () => _selectDate(context),
+              child: Text(
+                widget.controller.text,
+                style: TextStyle(fontSize: screenHeight * 0.02, color: Colors.black),
+              ),
+            )
+                : TextField(
+              controller: widget.controller,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.check),
+                  onPressed: () {
+                    setState(() {
+                      isEditing = false;
+                    });
+                    widget.onUpdate();
+                  },
+                ),
+              ),
+            )
+                : Text(
+              widget.controller.text,
+              style: TextStyle(fontSize: screenHeight * 0.02, color: Colors.black),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              setState(() {
+                isEditing = true;
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              setState(() {
+                widget.controller.clear();
+              });
+              widget.onUpdate();
+            },
           ),
         ],
       ),

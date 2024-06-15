@@ -3,6 +3,7 @@ import 'dart:convert';
 
 class FamilyMember extends Profile {
   String? relationship;
+  String? dID;
 
   FamilyMember(
       String? fname,
@@ -12,8 +13,10 @@ class FamilyMember extends Profile {
       String? picPath,
       String? nic,
       List? prescriptionsAssigned,
-      this.relationship
+      this.relationship,
+      this.dID
       ) : super(fname, lname, dob, gender, picPath, nic, prescriptionsAssigned);
+
 
   factory FamilyMember.fromRawJson(String str) => FamilyMember.fromJson(json.decode(str));
 
@@ -34,7 +37,8 @@ class FamilyMember extends Profile {
       json["picPath"],
       json["nic"],
       json["prescriptionsAssigned"] != null ? List.from(json["prescriptionsAssigned"]) : null,
-      json["relationship"]
+      json["relationship"],
+      json["dID"]
   );
 
   @override
@@ -47,5 +51,8 @@ class FamilyMember extends Profile {
     "nic": nic,
    // "prescriptionsAssigned": prescriptionsAssigned,
     "relationship": relationship,
+    "dID":dID
   };
+
+
 }
