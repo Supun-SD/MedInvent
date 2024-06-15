@@ -39,6 +39,7 @@ class _CheckAuthState extends ConsumerState<CheckAuth> {
     String? username = prefs.getString('username');
     String? password = prefs.getString('password');
     String? userJson = prefs.getString('user');
+    String? receiverToken = prefs.getString('FcmToken') ?? "";
 
     late User user;
 

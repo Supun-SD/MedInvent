@@ -16,9 +16,9 @@ class OTP {
 
 
 
- // static String userDependToJson(List<OTP> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+   //static String userDependToJson(List<OTP> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-  //factory OTP.fromRawJson(String str) => OTP.fromJson(json.decode(str));
+   factory OTP.fromRawJson(String str) => OTP.fromJson(json.decode(str));
 //
 
   static List<OTP> otpFromJson(String str) {
@@ -26,9 +26,10 @@ class OTP {
     return List<OTP>.from(jsonData["data"].map((x) => OTP.fromJson(x)));
   }
 
+
   factory OTP.fromJson(Map<String, dynamic> json) => OTP(
       json["OTPNumber"],
-      json["sendBy"],
+      json["senderName"],
       json["receiverNic"],
       json["OTP_id"]
   );

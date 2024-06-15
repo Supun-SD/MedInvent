@@ -69,8 +69,8 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     print("heloo");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
-    String? receiverToken = prefs.getString('FcmToken');
-    if (userJson != null && receiverToken != null) {
+    String? receiverToken = prefs.getString('FcmToken') ?? "";
+    if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
       otp.receiverToken = receiverToken;
