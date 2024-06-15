@@ -96,13 +96,32 @@ class _LinkProfileState extends State<LinkProfile> {
                                '/Notification/send/OTP/link/user',
                                newDepend.toRawJsonForThirdRequest()
                            );
+                           if(response==null)
+                           {
+                               return false;
+                           }
                        }
+                     else{
+                       return false;
+                     }
+                 }
+                 else{
+                   return false;
                  }
 
               }
+              else{
+                return false;
+              }
               //print(response);
           }
+          else{
+            return false;
+          }
           return true;
+        }
+        else{
+          return false;
         }
       } catch (e) {
         // Handle error

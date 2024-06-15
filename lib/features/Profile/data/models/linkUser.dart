@@ -72,15 +72,15 @@ class LinkUser {
   Future<bool> assignLoggedUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     LoggedUserID = prefs.getString('userID') ?? "";
-    senderName = prefs.getString('fName') ?? "";
+    senderName = prefs.getString('Fname') ?? "";
     FcmToken = prefs.getString('FcmToken') ?? "";
     return true;
   }
 
   Future<bool> temporary() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('FcmToken', "fUzCfCVYSEOQTsJ4r03rWn:APA91bHXuK79O_D-SyPQUKC5PGPeD2IcQADY7DZJF5AcxJEVyjOashxpEOwzjHvMklv-Nor98n8tdUcHVINj98L3ZUNlPZsh7gerMi5bxlKpR_iCbi9cWFeA50WNYhXHSidxTIwCa-_H");
-    await prefs.setString('fName', "Jane");
+    await prefs.setString('FcmToken', "cK8Aj-QcRRaf-C_6I9m27H:APA91bF7xsjFWF8t7X-10vAHsDao1rfvBvfTVdTRJXVIx-r99j5N1uruLGAkcUkf-fj8lUQp7ZoN5eNhqYRLc9HaqvdgtMu4-1M10xnivkokwO614dDahYMyVtNKR3CgXY-EqyjiPh6K");
+    await prefs.setString('Fname', "Jane");
     await prefs.setString('userID',"550e8400-e29b-41d4-a716-446655440000");
     return true;
   }

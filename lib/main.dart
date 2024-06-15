@@ -9,6 +9,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'features/Notifications/notificationDisplay.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'features/login/presentation/pages/checkLog.dart';
+import 'features/Notifications/otpNotification.dart';
+
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -71,7 +73,7 @@ class MyApp extends StatelessWidget {
       navigatorKey:navigatorKey,
        routes: {
          '/':((context)=> CheckAuth()),
-         '/notifications':((context)=>const DisplayPage()),
+         '/notifications':((context)=>const OTPNotification()),
          '/landing':((contex)=>const Landing())
        },
     );
