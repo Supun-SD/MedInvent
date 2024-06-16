@@ -1,14 +1,15 @@
 import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/features/Appointments/data/upcomingAppointments.dart';
 import 'package:MedInvent/features/Appointments/model/appointment.dart';
 import 'package:MedInvent/features/Map/map_screen.dart';
 import 'package:MedInvent/features/login/data/models/user_model.dart';
 import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
+import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/medication_card.dart';
 import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -25,6 +26,19 @@ class _HomePageState extends ConsumerState<HomePage> {
   final _controller = PageController();
   String username1 = "Amali";
 
+  @override
+  void initState() {
+    setGreeting();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      String userID = ref.watch(userProvider)!.userId;
+      ref
+          .read(appointmentsProvider.notifier)
+          .fetchAppointments(context, userID);
+    });
+
+    super.initState();
+  }
+
   void setGreeting() {
     DateTime now = DateTime.now();
     int hour = now.hour;
@@ -38,33 +52,22 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
   }
 
-  @override
-  void initState() {
-    setGreeting();
-    super.initState();
-  }
-
   List<String> widgetIcons = [
     "assets/widgetIcons/pharmacy.png",
     "assets/widgetIcons/doctor.png",
     "assets/widgetIcons/checkout.png",
-    "assets/widgetIcons/chat.png",
   ];
 
   List<String> widgetTexts = [
     "Find Pharmacy",
     "Find Doctor",
     "Add prescription",
-    "Forum",
   ];
 
   List<IconData> background = [
     Icons.local_pharmacy_rounded,
     Icons.health_and_safety,
     Icons.edit_document,
-    Icons.shopping_cart,
-    Icons.forum,
-    Icons.local_shipping
   ];
 
   @override
@@ -72,7 +75,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
+    bool isAppointmentsLoading = ref.watch(appointmentsProvider).isLoading;
     User user = ref.watch(userProvider)!;
+    List<Appointment> upcomingAppointments =
+        ref.watch(appointmentsProvider).upcomingAppointments;
 
     List shortcutActions = [
       () {
@@ -103,9 +109,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           },
         );
       },
-      () {},
-      () {},
-      () {}
     ];
 
     return Scaffold(
@@ -309,12 +312,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ],
                                 ),
                                 child: Center(
-                                  child: Text(
-                                    "You don't have any upcoming appointments",
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        TextStyle(fontSize: screenWidth * 0.03),
-                                  ),
+                                  child: isAppointmentsLoading
+                                      ? const SpinKitCircle(
+                                          size: 25,
+                                          color: Colors.indigoAccent,
+                                        )
+                                      : Text(
+                                          "You don't have any upcoming appointments",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: screenWidth * 0.03),
+                                        ),
                                 ),
                               ),
                             )
@@ -372,7 +380,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   height: screenHeight * 0.28,
                   child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 4,
+                    itemCount: 3,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
@@ -521,13 +529,13 @@ class UpcomingWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Dr ${appointment.doctor}",
+                      "Dr ${appointment.session.doctor.fname} ${appointment.session.doctor.lname}",
                       style: TextStyle(
                           fontSize: screenWidth * 0.04,
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      appointment.speciality,
+                      appointment.session.doctor.specialization,
                       style: TextStyle(fontSize: screenWidth * 0.03),
                     )
                   ],
@@ -571,7 +579,7 @@ class UpcomingWidget extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        appointment.hospital,
+                        appointment.session.clinic.name,
                         style: TextStyle(
                             color: Colors.white, fontSize: screenWidth * 0.028),
                       ),
@@ -588,7 +596,7 @@ class UpcomingWidget extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        appointment.date,
+                        appointment.session.date,
                         style: TextStyle(
                             color: Colors.white, fontSize: screenWidth * 0.028),
                       ),
@@ -605,7 +613,7 @@ class UpcomingWidget extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        appointment.time,
+                        appointment.session.timeFrom,
                         style: TextStyle(
                             color: Colors.white, fontSize: screenWidth * 0.028),
                       ),

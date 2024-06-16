@@ -1,13 +1,18 @@
-import 'package:MedInvent/features/Appointments/data/upcomingAppointments.dart';
+import 'package:MedInvent/features/Appointments/model/appointment.dart';
 import 'package:MedInvent/features/Appointments/presentation/upcomingTemplate.dart';
+import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Upcoming extends StatelessWidget {
+class Upcoming extends ConsumerWidget {
   const Upcoming({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    List<Appointment> upcomingAppointments =
+        ref.watch(appointmentsProvider).upcomingAppointments;
 
     return upcomingAppointments.isNotEmpty
         ? SingleChildScrollView(
@@ -19,13 +24,7 @@ class Upcoming extends StatelessWidget {
                 Column(
                   children: upcomingAppointments.map((appointment) {
                     return UpcomingTemplate(
-                      doctor: appointment.doctor,
-                      speciality: appointment.speciality,
-                      hospital: appointment.hospital,
-                      date: appointment.date,
-                      time: appointment.time,
-                      isRefundable: appointment.isRefundable,
-                      cancelled: appointment.cancelled,
+                      appointment: appointment,
                     );
                   }).toList(),
                 ),

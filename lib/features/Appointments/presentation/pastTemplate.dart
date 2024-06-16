@@ -1,23 +1,20 @@
+import 'package:MedInvent/features/Appointments/model/appointment.dart';
+import 'package:MedInvent/features/Appointments/presentation/appointmentDetails.dart';
+import 'package:MedInvent/features/Appointments/presentation/upcomingTemplate.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PastTemplate extends StatelessWidget {
-  PastTemplate(
-      {required this.doctor,
-      required this.speciality,
-      required this.hospital,
-      required this.date,
-      required this.time,
-      required this.isRefundable,
-      required this.cancelled,
-      super.key});
+  PastTemplate({required this.appointment, super.key});
 
-  String doctor;
-  String speciality;
-  String hospital;
-  String date;
-  String time;
-  bool isRefundable;
-  bool cancelled;
+  Appointment appointment;
+
+  String convertTime(String time) {
+    DateTime dateTime = DateTime.parse('1970-01-01 $time');
+    String formattedTime = DateFormat('h:mm a').format(dateTime);
+
+    return formattedTime;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,19 +37,19 @@ class PastTemplate extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            doctor,
+            "${appointment.session.doctor.fname} ${appointment.session.doctor.lname}",
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: screenHeight * 0.023),
           ),
           Text(
-            speciality,
+            appointment.session.doctor.specialization,
             style: TextStyle(
                 fontSize: screenHeight * 0.015, color: const Color(0xFF6B6B6B)),
           ),
           SizedBox(
             height: screenHeight * 0.02,
           ),
-          Text(hospital),
+          Text(appointment.session.clinic.name),
           const Divider(
             color: Color(0xFFB5B5B5),
             thickness: 1,
@@ -62,11 +59,11 @@ class PastTemplate extends StatelessWidget {
           ),
           Row(
             children: [
-              Text(date),
+              Text(appointment.session.date),
               SizedBox(
                 width: screenWidth * 0.1,
               ),
-              Text(time),
+              Text(convertTime(appointment.session.timeFrom)),
             ],
           ),
           SizedBox(
@@ -79,7 +76,7 @@ class PastTemplate extends StatelessWidget {
           SizedBox(
             height: screenHeight * 0.01,
           ),
-          if (cancelled)
+          if (appointment.isCancelled)
             const Row(
               children: [
                 Icon(
@@ -93,7 +90,7 @@ class PastTemplate extends StatelessWidget {
                 Text("Cancelled")
               ],
             )
-          else
+          else if (appointment.isAttended)
             const Row(
               children: [
                 Icon(
@@ -107,6 +104,36 @@ class PastTemplate extends StatelessWidget {
                 Text("Attended")
               ],
             )
+          else
+            const Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.red,
+                  size: 15,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text("Not attended")
+              ],
+            ),
+          SizedBox(
+            height: screenHeight * 0.02,
+          ),
+          Center(
+              child: Button(
+                  text: "More details",
+                  onPressed: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AppointmentDetails(
+                                    appointment: appointment,
+                                    type: "past",
+                                  )),
+                        )
+                      }))
         ],
       ),
     );

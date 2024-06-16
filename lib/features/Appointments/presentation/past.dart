@@ -1,15 +1,20 @@
-import 'package:MedInvent/features/Appointments/data/pastAppointments.dart';
+import 'package:MedInvent/features/Appointments/model/appointment.dart';
 import 'package:MedInvent/features/Appointments/presentation/pastTemplate.dart';
+import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Past extends StatelessWidget {
+class Past extends ConsumerWidget {
   const Past({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     //getting the screen size
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    List<Appointment> pastAppointments =
+        ref.watch(appointmentsProvider).pastAppointments;
 
     return pastAppointments.isNotEmpty
         ? SingleChildScrollView(
@@ -21,13 +26,7 @@ class Past extends StatelessWidget {
                 Column(
                   children: pastAppointments.map((appointment) {
                     return PastTemplate(
-                      doctor: appointment.doctor,
-                      speciality: appointment.speciality,
-                      hospital: appointment.hospital,
-                      date: appointment.date,
-                      time: appointment.time,
-                      isRefundable: appointment.isRefundable,
-                      cancelled: appointment.cancelled,
+                      appointment: appointment,
                     );
                   }).toList(),
                 ),

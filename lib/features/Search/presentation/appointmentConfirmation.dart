@@ -1,16 +1,13 @@
 import 'package:MedInvent/components/PatientDetailInput.dart';
 import 'package:MedInvent/components/RadioButtonOption.dart';
 import 'package:MedInvent/components/UserDetail.dart';
-import 'package:MedInvent/config/api.dart';
-import 'package:MedInvent/features/Search/presentation/appointmentSuccess.dart';
 import 'package:MedInvent/features/Search/models/appointment.dart';
 import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class AppointmentConfirmation extends ConsumerStatefulWidget {
   const AppointmentConfirmation(
@@ -25,7 +22,6 @@ class AppointmentConfirmation extends ConsumerStatefulWidget {
 
 class _AppointmentConfirmationState
     extends ConsumerState<AppointmentConfirmation> {
-  
   List<String> titles = ["Mr", "Ms", "Mrs"];
   String selectedTitle = "Mr";
 
@@ -39,8 +35,6 @@ class _AppointmentConfirmationState
   int discount = 200;
   int refundableFee = 250;
   bool isRefundable = false;
-
-  bool isLoading = false;
 
   final TextEditingController _patientName = TextEditingController();
   final TextEditingController _mobileNo = TextEditingController();
@@ -121,53 +115,17 @@ class _AppointmentConfirmationState
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
-
-    String apiUrl = '${ApiConfig.baseUrl}/appointment/newappointment';
-    try {
-      final response = await http.post(Uri.parse(apiUrl),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: json.encode({
-            'user_id': user.userId,
-            'session_id': sessionId,
-            'patientTitle': selectedTitle,
-            'patientName': _selectedOption == 'Other'
-                ? _patientName.text
-                : '${user.fname} ${user.lname}',
-            'contactNo': _selectedOption == 'Other'
-                ? convertMobileNumber(_mobileNo.text)
-                : user.mobileNo,
-            'email': _selectedOption == 'Other' ? _email.text : user.email,
-            'area': _selectedOption == 'Other'
-                ? _area.text
-                : user.patientAddress.city,
-            'nic': _selectedOption == 'Other' ? _nic.text : user.nic,
-          }));
-
-      if (response.statusCode == 200) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AppointmentSuccess()),
-        );
-      } else {
-        throw Exception('Failed booking appointment');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed booking the appointment.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    await ref.read(appointmentsProvider.notifier).createAppointment(
+        context,
+        sessionId,
+        _patientName.text,
+        _mobileNo.text,
+        _email.text,
+        selectedTitle,
+        _nic.text,
+        _area.text,
+        user,
+        _selectedOption);
   }
 
   @override
@@ -176,6 +134,7 @@ class _AppointmentConfirmationState
     final double screenHeight = MediaQuery.of(context).size.height;
 
     User user = ref.watch(userProvider)!;
+    bool isLoading = ref.watch(appointmentsProvider).isLoading;
 
     return Scaffold(
         backgroundColor: Colors.white,
