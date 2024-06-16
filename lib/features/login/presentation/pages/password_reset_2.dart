@@ -22,9 +22,14 @@ class _PasswordReset2State extends State<PasswordReset2> {
     super.dispose();
   }
 
-  void _submit() {
+  String? _getOtp() {
+    for (var controller in controllers) {
+      if (controller.text.isEmpty) {
+        return null;
+      }
+    }
     String otp = controllers.map((controller) => controller.text).join();
-    print('Entered OTP is: $otp');
+    return otp;
   }
 
   @override
@@ -76,12 +81,11 @@ class _PasswordReset2State extends State<PasswordReset2> {
                 CustomButton(
                     text: 'Submit',
                     onPressed: () => {
-                          _submit()
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => PasswordReset3()),
-                          // )
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PasswordReset3()),
+                          )
                         }),
               ],
             ),

@@ -195,7 +195,12 @@ class _OtpVerifyState extends State<OtpVerify> {
     super.dispose();
   }
 
-  String _getOtp() {
+  String? _getOtp() {
+    for (var controller in controllers) {
+      if (controller.text.isEmpty) {
+        return null;
+      }
+    }
     String otp = controllers.map((controller) => controller.text).join();
     return otp;
   }
