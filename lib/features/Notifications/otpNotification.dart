@@ -21,6 +21,11 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
   @override
   void initState() {
     super.initState();
+    _initialize();
+  }
+
+  void _initialize() async {
+    await _getNic();
     fetchOTPNotifications();
   }
 
