@@ -40,8 +40,12 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     _selectedCategory = widget.selectedCategory;
+    initialization();
+  }
+
+  void initialization() async {
+    await _loadCustomMarkerIcons();
     _checkLocationPermission();
-    _loadCustomMarkerIcons();
   }
 
   Future<void> fetchNearbyPharmacies() async {
@@ -164,6 +168,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void myLocationClick() async {
+    getLocation();
     mapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: currentLocation, zoom: 15.0)));
   }
@@ -447,8 +452,7 @@ class _MapPageState extends State<MapPage> {
               left: 0,
               right: 0,
               child: Container(
-                margin:
-                EdgeInsets.symmetric(horizontal: screenWidth * 0.3),
+                margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.3),
                 padding: const EdgeInsets.only(left: 20),
                 decoration: BoxDecoration(
                   color: Colors.white,
