@@ -1,9 +1,7 @@
 import 'package:MedInvent/components/CustomTabBar.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/features/Appointments/model/appointment.dart';
 import 'package:MedInvent/features/Appointments/presentation/past.dart';
 import 'package:MedInvent/features/Appointments/presentation/upcoming.dart';
-import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,11 +10,7 @@ class Appointments extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-
-    List<Appointment> upcomingAppointments =
-        ref.watch(appointmentsProvider).upcomingAppointments;
 
     return Scaffold(
         backgroundColor: Colors.white,
