@@ -21,6 +21,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
   @override
   void initState() {
     super.initState();
+    otpList = Future.value([]);
     _initialize();
   }
 
@@ -31,7 +32,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
 
   void fetchOTPNotifications() async {
     setState(() {
-      otpList= getOTPObjectList();
+      otpList = getOTPObjectList();
     });
 
     // Print the OTP list to the console
@@ -55,9 +56,8 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     try {
       otp = OTP(0, "no", "987654321", "");
       BaseClient baseClient = BaseClient();
-      var response = await baseClient.post(
-          '/Notification/get/All/OTP', otp.toRawJson()
-      );
+      var response =
+          await baseClient.post('/Notification/get/All/OTP', otp.toRawJson());
       if (response != null) {
         print(response);
         return OTP.otpFromJson(response);
@@ -141,15 +141,13 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
                         return Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.05,
-                              vertical: screenHeight * 0.07
-                          ),
+                              vertical: screenHeight * 0.07),
                           child: Text(
                             "NO any OTP messages in your history",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: screenHeight * 0.02,
-                                color: Colors.grey
-                            ),
+                                color: Colors.grey),
                           ),
                         );
                       } else {
@@ -219,8 +217,7 @@ class OtpCard extends StatelessWidget {
                   otp.sendBy!,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: screenHeight * 0.02
-                  ),
+                      fontSize: screenHeight * 0.02),
                 ),
                 Text(
                   '${otp.OTPNumber}',
