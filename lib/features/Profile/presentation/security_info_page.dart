@@ -1,20 +1,24 @@
 import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/input_field_edit.dart';
 import 'package:MedInvent/components/Savebutton.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SecurityInfo extends StatefulWidget {
+class SecurityInfo extends ConsumerStatefulWidget {
   const SecurityInfo({super.key});
 
   @override
-  State<SecurityInfo> createState() => SecurityInfoState();
+  ConsumerState<SecurityInfo> createState() => SecurityInfoState();
 }
 
-class SecurityInfoState extends State<SecurityInfo> {
+class SecurityInfoState extends ConsumerState<SecurityInfo> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+
+    var user = ref.watch(userProvider)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,16 +81,16 @@ class SecurityInfoState extends State<SecurityInfo> {
                           ),
                         ],
                       ),
-                      child: const Column(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Info(
                             label: "Email",
-                            data: "sample@gmail.com",
+                            data: user.email,
                           ),
                           Info(
                             label: "Mobile Number",
-                            data: "0778646255",
+                            data: user.mobileNo,
                           ),
                         ],
                       ),
@@ -96,21 +100,17 @@ class SecurityInfoState extends State<SecurityInfo> {
                       topValue: 41.8,
                     ),
                     Container(
-                      width: 356,
-                      height: 267,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.02),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
                         color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 30.0,
-                            offset: Offset(0, 3),
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0,
+                            blurRadius: 70,
                           ),
                         ],
                       ),
@@ -137,7 +137,7 @@ class SecurityInfoState extends State<SecurityInfo> {
                     ),
                     SaveButton(
                       onTap: () {},
-                      save: 'Save',
+                      save: 'Update',
                     ),
                     SizedBox(height: screenHeight * 0.07),
                   ],

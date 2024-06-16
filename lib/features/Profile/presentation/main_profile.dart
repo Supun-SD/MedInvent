@@ -2,18 +2,15 @@ import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
 import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
 import 'package:MedInvent/features/Profile/presentation/security_info_page.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => ProfilePageState();
-}
-
-class ProfilePageState extends State<ProfilePage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
@@ -76,12 +73,26 @@ class ProfilePageState extends State<ProfilePage> {
                   ),
                   child: Column(
                     children: [
-                      const MyProfiletab(
-                        iconprofile: Icons.facebook,
-                        buttonTextMain1: 'Dhanushka',
-                        buttonTextMain2: 'danu@test.com',
-                        iconDiamond: Icons.diamond,
-                        number: '335',
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.05,
+                            vertical: screenHeight * 0.02),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/pic.png',
+                              height: screenHeight * 0.07,
+                            ),
+                            const SizedBox(
+                              width: 25,
+                            ),
+                            Text(
+                              '${ref.watch(userProvider)!.fname} ${ref.watch(userProvider)!.lname}',
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
                       ),
                       Container(
                         color: Colors.black12,
@@ -109,7 +120,7 @@ class ProfilePageState extends State<ProfilePage> {
                       Mybutton(
                         iconData1: Icons.verified_user_outlined,
                         buttonText1: 'Security Information',
-                        buttonText2: 'Email Address,Telephone,Password',
+                        buttonText2: 'Email,Mobile,Password',
                         iconData2: Icons.navigate_next,
                         onTap: () {
                           Navigator.push(
@@ -221,6 +232,9 @@ class Mybutton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return InkWell(
       onTap: onTap,
       child: SizedBox(
@@ -235,8 +249,6 @@ class Mybutton extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
-                  height: 62,
-                  margin: const EdgeInsets.only(right: 15, top: 5),
                   width: 200,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,81 +274,6 @@ class Mybutton extends StatelessWidget {
             Icon(
               iconData2,
               color: Colors.blue,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MyProfiletab extends StatelessWidget {
-  const MyProfiletab({
-    super.key,
-    required this.iconprofile,
-    required this.buttonTextMain1,
-    required this.buttonTextMain2,
-    required this.iconDiamond,
-    required this.number,
-  });
-
-  final IconData iconprofile;
-  final String buttonTextMain1;
-  final String buttonTextMain2;
-  final IconData iconDiamond;
-  final String number;
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Container(
-        height: 75,
-        width: 310,
-        margin: const EdgeInsets.only(top: 30.0, left: 3.0, right: 0.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/pic.png',
-                  width: 54.0,
-                  height: 54.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Container(
-              height: 46,
-              margin: const EdgeInsets.only(left: 15.0, right: 40.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      buttonTextMain1,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      buttonTextMain2,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black45,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ]),
-            ),
-            Icon(
-              iconDiamond,
-              color: Colors.red,
-            ),
-            Text(
-              number,
             ),
           ],
         ),

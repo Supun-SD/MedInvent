@@ -1,18 +1,18 @@
+import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/Savebutton.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BasicInfo extends StatefulWidget {
+class BasicInfo extends ConsumerWidget {
   const BasicInfo({super.key});
 
   @override
-  State<BasicInfo> createState() => BasicInfoState();
-}
-
-class BasicInfoState extends State<BasicInfo> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+
+    var user = ref.watch(userProvider)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -90,28 +90,28 @@ class BasicInfoState extends State<BasicInfo> {
                         ),
                       ],
                     ),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Info(
                           label: "First Name",
-                          data: "Dhanushka",
+                          data: user.fname,
                         ),
                         Info(
                           label: "Last Name",
-                          data: "Fernando",
+                          data: user.lname,
                         ),
                         Info(
                           label: "NIC",
-                          data: "20001256675",
+                          data: user.nic,
                         ),
                         Info(
                           label: "Date of Birth",
-                          data: "2000-12-12",
+                          data: user.dob,
                         ),
                         Info(
                           label: "Gender",
-                          data: "Male",
+                          data: user.gender,
                         ),
                       ],
                     ),
@@ -144,24 +144,26 @@ class BasicInfoState extends State<BasicInfo> {
                         ),
                       ],
                     ),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Info(
                           label: "Address Line 1",
-                          data: "27/1",
+                          data: user.patientAddress.lineOne,
                         ),
                         Info(
                           label: "Address Line 2",
-                          data: "abc",
+                          data: user.patientAddress.lineTwo == null
+                              ? user.patientAddress.lineTwo!
+                              : "-",
                         ),
                         Info(
                           label: "City",
-                          data: "Moratuwa",
+                          data: user.patientAddress.city,
                         ),
                         Info(
                           label: "District",
-                          data: "Colombo",
+                          data: user.patientAddress.district,
                         ),
                       ],
                     ),
