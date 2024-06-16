@@ -50,85 +50,72 @@ class _LinkProfileState extends State<LinkProfile> {
 
   TextEditingController nic = TextEditingController();
 
-
   Future<bool> checkUserAvailabe() async {
-     LinkUser newDepend = LinkUser(
-        mobileNo.text,
-        "",
-        nic.text,
-        relationship.text,
-      );
-      // Send the new member data to the backend
-      try {
-        BaseClient baseClient = BaseClient();
-        var response = await baseClient.postCheckuserdata(
-          '/Notification/check/user/available',
-          newDepend.toRawJson()
-        );
-        if (response != null) {
-          // Handle successful response
-          //print(response);
-          Map<String, dynamic> decodedJson  = json.decode(response);
-          newDepend.receiverID=decodedJson ['data']['userID'];
-          //print(newDepend.receiverID);
-          if(newDepend.receiverID != null) {
-              baseClient = BaseClient();
-              var response = await baseClient.post(
-                  '/Notification/get/tokens/to/send/OTP',
-                  newDepend.toRawJsonForSecondRequest()
-              );
-              if(response != null) {
-                 Map<String, dynamic> decodedJson = json.decode(response);
-                 List<dynamic> data = decodedJson['data'];
+    LinkUser newDepend = LinkUser(
+      mobileNo.text,
+      "",
+      nic.text,
+      relationship.text,
+    );
+    // Send the new member data to the backend
+    try {
+      BaseClient baseClient = BaseClient();
+      var response = await baseClient.postCheckuserdata(
+          '/Notification/check/user/available', newDepend.toRawJson());
+      if (response != null) {
+        // Handle successful response
+        //print(response);
+        Map<String, dynamic> decodedJson = json.decode(response);
+        newDepend.receiverID = decodedJson['data']['userID'];
+        //print(newDepend.receiverID);
+        if (newDepend.receiverID != null) {
+          baseClient = BaseClient();
+          var response = await baseClient.post(
+              '/Notification/get/tokens/to/send/OTP',
+              newDepend.toRawJsonForSecondRequest());
+          if (response != null) {
+            Map<String, dynamic> decodedJson = json.decode(response);
+            List<dynamic> data = decodedJson['data'];
 
-                 for (var item in data) {
-                   for (var tokenStore in item['TokenStores']) {
-                     newDepend.FcmTokens.add(tokenStore['fcm_token']);
-                   }
-                 }
-                 if(newDepend.FcmTokens.length>0) {
-                     bool A =await newDepend.temporary();
-                     bool B =await newDepend.assignLoggedUserID();
-                     if(A && B)
-                       {
-                           baseClient = BaseClient();
-                           var response = await baseClient.post(
-                               '/Notification/send/OTP/link/user',
-                               newDepend.toRawJsonForThirdRequest()
-                           );
-                           if(response==null)
-                           {
-                               return false;
-                           }
-                       }
-                     else{
-                       return false;
-                     }
-                 }
-                 else{
-                   return false;
-                 }
-
+            for (var item in data) {
+              for (var tokenStore in item['TokenStores']) {
+                newDepend.FcmTokens.add(tokenStore['fcm_token']);
               }
-              else{
+            }
+            if (newDepend.FcmTokens.length > 0) {
+              bool A = await newDepend.temporary();
+              bool B = await newDepend.assignLoggedUserID();
+              if (A && B) {
+                baseClient = BaseClient();
+                var response = await baseClient.post(
+                    '/Notification/send/OTP/link/user',
+                    newDepend.toRawJsonForThirdRequest());
+                if (response == null) {
+                  return false;
+                }
+              } else {
                 return false;
               }
-              //print(response);
-          }
-          else{
+            } else {
+              return false;
+            }
+          } else {
             return false;
           }
-          return true;
-        }
-        else{
+          //print(response);
+        } else {
           return false;
         }
-      } catch (e) {
-        // Handle error
-        print("Error: $e");
+        return true;
+      } else {
         return false;
       }
-     return false;
+    } catch (e) {
+      // Handle error
+      print("Error: $e");
+      return false;
+    }
+    return false;
   }
 
   @override
@@ -156,15 +143,14 @@ class _LinkProfileState extends State<LinkProfile> {
           height: screenHeight * 0.02,
         ),
         TextButton(
-          onPressed: () async{
+          onPressed: () async {
             //have to do validation before send backend
             var is_available = await checkUserAvailabe();
-            if(is_available)
-              {
-                widget.pageController.animateToPage(2,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut);
-              }
+            if (is_available) {
+              widget.pageController.animateToPage(2,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut);
+            }
           },
           style: TextButton.styleFrom(
             backgroundColor: const Color(0xFF2980B9),
@@ -188,10 +174,32 @@ class _LinkProfileState extends State<LinkProfile> {
   }
 }
 
-class OtpVerify extends StatelessWidget {
+class OtpVerify extends StatefulWidget {
   final PageController pageController;
 
   const OtpVerify({super.key, required this.pageController});
+
+  @override
+  State<OtpVerify> createState() => _OtpVerifyState();
+}
+
+class _OtpVerifyState extends State<OtpVerify> {
+  final List<TextEditingController> controllers =
+      List.generate(4, (index) => TextEditingController());
+
+  @override
+  void dispose() {
+    for (var controller in controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  String _getOtp() {
+    String otp = controllers.map((controller) => controller.text).join();
+    return otp;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -223,7 +231,9 @@ class OtpVerify extends StatelessWidget {
         ),
         Padding(
             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.2),
-            child: const OTPInput()),
+            child: OTPInput(
+              controllers: controllers,
+            )),
         SizedBox(
           height: screenHeight * 0.05,
         ),

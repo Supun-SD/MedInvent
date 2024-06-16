@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class OTPInput extends StatelessWidget {
-  const OTPInput({super.key});
+  final List<TextEditingController> controllers;
+
+  const OTPInput({Key? key, required this.controllers}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -9,82 +11,29 @@ class OTPInput extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Form(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          height: screenHeight * 0.04,
-          width: screenWidth * 0.13,
-          child: TextFormField(
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            decoration: const InputDecoration(counterText: ""),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-            onSaved: (pin1) {},
-            onChanged: (value) {
-              if (value.length == 1) {
-                FocusScope.of(context).nextFocus();
-              }
-            },
-          ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.04,
-          width: screenWidth * 0.13,
-          child: TextFormField(
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            decoration: const InputDecoration(counterText: ""),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-            onSaved: (pin2) {},
-            onChanged: (value) {
-              if (value.length == 1) {
-                FocusScope.of(context).nextFocus();
-              }
-            },
-          ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.04,
-          width: screenWidth * 0.13,
-          child: TextFormField(
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            decoration: const InputDecoration(counterText: ""),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-            onSaved: (pin3) {},
-            onChanged: (value) {
-              if (value.length == 1) {
-                FocusScope.of(context).nextFocus();
-              }
-            },
-          ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.04,
-          width: screenWidth * 0.13,
-          child: TextFormField(
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            decoration: const InputDecoration(counterText: ""),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-            onSaved: (pin4) {},
-            onChanged: (value) {
-              if (value.length == 1) {
-                FocusScope.of(context).nextFocus();
-              }
-            },
-          ),
-        ),
-      ],
-    ));
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(controllers.length, (index) {
+          return SizedBox(
+            height: screenHeight * 0.04,
+            width: screenWidth * 0.13,
+            child: TextFormField(
+              controller: controllers[index],
+              autofocus: index == 0,
+              keyboardType: TextInputType.number,
+              maxLength: 1,
+              decoration: const InputDecoration(counterText: ""),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge,
+              onChanged: (value) {
+                if (value.length == 1) {
+                  FocusScope.of(context).nextFocus();
+                }
+              },
+            ),
+          );
+        }),
+      ),
+    );
   }
 }
