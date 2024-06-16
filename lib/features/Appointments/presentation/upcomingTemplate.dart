@@ -42,7 +42,7 @@ class _UpcomingTemplateState extends State<UpcomingTemplate> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "${widget.appointment.session.doctor.fname} ${widget.appointment.session.doctor.lname}",
+            "Dr ${widget.appointment.session.doctor.fname} ${widget.appointment.session.doctor.lname}",
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: screenHeight * 0.023),
           ),

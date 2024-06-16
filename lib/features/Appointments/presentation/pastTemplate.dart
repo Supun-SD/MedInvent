@@ -37,7 +37,7 @@ class PastTemplate extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "${appointment.session.doctor.fname} ${appointment.session.doctor.lname}",
+            "Dr ${appointment.session.doctor.fname} ${appointment.session.doctor.lname}",
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: screenHeight * 0.023),
           ),
