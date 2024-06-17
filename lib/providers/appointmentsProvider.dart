@@ -112,7 +112,7 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
         fname: session.doctor.fname,
         mname: session.doctor.mname,
         lname: session.doctor.lname,
-        specialization: session.doctor.specialization);
+        specialization: session.doctor.specialization!);
     Clinic clinic = Clinic(name: session.clinic);
     ApSession apSession = ApSession(
         date: session.date,

@@ -1,21 +1,11 @@
 import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PharmacyProfile extends StatelessWidget {
   const PharmacyProfile({required this.pharmacy, super.key});
   final Pharmacy pharmacy;
-
-  // //function to calculate average review for the pharmacy
-  // double reviewCal(Pharmacy p) {
-  //   int tot = 0;
-  //   double review;
-  //   for (int i = 0; i < p.reviews.length; i++) {
-  //     tot = tot + p.reviews[i].stars;
-  //   }
-  //   review = tot / p.reviews.length;
-  //   return review;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,26 +80,7 @@ class PharmacyProfile extends StatelessWidget {
                                       fontSize: screenWidth * 0.055),
                                 ),
                                 SizedBox(
-                                  height: screenHeight * 0.005,
-                                ),
-                                const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.star,
-                                      color: Color(0xFFFFBF00),
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    // Text(reviewCal(pharmacy).toString()),
-                                    // Text(
-                                    //     '(${pharmacy.reviews.length} reviews)'),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: screenHeight * 0.015,
+                                  height: screenHeight * 0.025,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -266,8 +237,11 @@ class Details extends StatelessWidget {
   const Details({required this.pharmacy, super.key});
   final Pharmacy pharmacy;
 
-  String formatTimeOfDay(TimeOfDay time) {
-    return '${time.hourOfPeriod}:${time.minute.toString().padLeft(2, '0')} ${time.period == DayPeriod.am ? 'AM' : 'PM'}';
+  String convertTime(String time) {
+    DateTime dateTime = DateTime.parse('1970-01-01 $time');
+    String formattedTime = DateFormat('h:mm a').format(dateTime);
+
+    return formattedTime;
   }
 
   @override
@@ -308,7 +282,7 @@ class Details extends StatelessWidget {
                   style: TextStyle(fontSize: screenWidth * 0.035),
                 )),
             Text(
-              "${formatTimeOfDay(pharmacy.openHoursFrom as TimeOfDay)} to ${formatTimeOfDay(pharmacy.openHoursTo as TimeOfDay)} ",
+              "${convertTime(pharmacy.openHoursFrom)} to ${convertTime(pharmacy.openHoursTo)} ",
               style: TextStyle(
                   fontSize: screenWidth * 0.035, fontWeight: FontWeight.bold),
             ),

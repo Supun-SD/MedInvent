@@ -424,7 +424,7 @@ class SearchResult extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Text(session.doctor.specialization),
+                Text(session.doctor.specialization!),
                 const SizedBox(
                   height: 3,
                 ),

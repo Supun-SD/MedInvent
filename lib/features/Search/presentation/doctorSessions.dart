@@ -1,55 +1,57 @@
+import 'package:MedInvent/features/Search/models/session.dart';
+import 'package:MedInvent/features/Search/presentation/appointmentConfirmation.dart';
 import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
-import 'package:MedInvent/features/Search/models/appointment.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class DoctorAppointments extends StatefulWidget {
-  const DoctorAppointments({required this.doctor, super.key});
+class DoctorSessions extends StatefulWidget {
+  const DoctorSessions(
+      {required this.sessions, required this.doctor, super.key});
 
+  final List<Session> sessions;
   final Doctor doctor;
-
   @override
-  State<DoctorAppointments> createState() => _DoctorAppointmentsState();
+  State<DoctorSessions> createState() => _DoctorSessionsState();
 }
 
-class _DoctorAppointmentsState extends State<DoctorAppointments> {
-  String selectedValue = 'Select a clinic';
+class _DoctorSessionsState extends State<DoctorSessions> {
+  String selectedValue = 'All Clinics';
   DateTime selectedDate = DateTime.now();
 
-  List<String> clinics = [
-    'Select a clinic',
-    'Clinic 1',
-    'Clinic 2',
-    'Clinic 3',
-    'Clinic 4'
-  ];
+  List<String> clinics = [];
 
-  List<Appointment> appointments1 = [
-    Appointment("Medical Clinic - Katubedda", "Monday, 15th Jan 2024",
-        "5.30 PM", 10, 20, 2500.00, null),
-    Appointment("Medical Clinic - Katubedda", "Tuesday, 16th Jan 2024",
-        "10.00 AM", 5, 15, 3000.00, null),
-    Appointment("Medical Clinic - Katubedda", "Wednesday, 17th Jan 2024",
-        "2.45 PM", 8, 22, 2800.00, "Bring medical reports"),
-    Appointment("Medical Clinic - Katubedda", "Thursday, 18th Jan 2024",
-        "4.15 PM", 12, 18, 2600.00, null),
-  ];
+  late List<Session> filteredSessions;
 
-  List<Appointment> appointments2 = [
-    Appointment("Unity Health Center - Kandy", "Monday, 15th Jan 2024",
-        "11.30 AM", 19, 19, 2700.00, "Vaccination needed"),
-    Appointment("Unity Health Center - Kandy", "Tuesday, 16th Jan 2024",
-        "3.00 PM", 7, 21, 2900.00, null),
-    Appointment("Unity Health Center - Kandy", "Wednesday, 17th Jan 2024",
-        "1.00 PM", 9, 17, 2550.00, "Follow-up checkup"),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    initClinicsSelectList();
+    filteredSessions = [...widget.sessions];
+  }
 
-  List<Appointment> appointments3 = [
-    Appointment("Maple Leaf Clinic - Kurunegala", "Friday, 19th Jan 2024",
-        "1.00 PM", 15, 17, 2550.00, "Follow-up checkup"),
-    Appointment("Maple Leaf Clinic - Kurunegala", "Sunday, 21th Jan 2024",
-        "1.00 PM", 17, 17, 2550.00, "Follow-up checkup"),
-  ];
+  void initClinicsSelectList() {
+    final uniqueClinics = <String>{};
+    for (final session in widget.sessions) {
+      final clinicName = session.clinic;
+      if (clinicName != null) {
+        uniqueClinics.add(clinicName);
+      }
+    }
+
+    clinics = ['All Clinics', ...uniqueClinics.toList()];
+  }
+
+  void filterSessions() {
+    setState(() {
+      filteredSessions = widget.sessions
+          .where((session) =>
+              selectedValue == 'All Clinics' || session.clinic == selectedValue)
+          .where((session) =>
+              session.date == DateFormat('yyyy-MM-dd').format(selectedDate))
+          .toList();
+    });
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -62,6 +64,7 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
     if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
         selectedDate = pickedDate;
+        filterSessions();
       });
     }
   }
@@ -141,7 +144,7 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
                                       fontSize: screenWidth * 0.05),
                                 ),
                                 Text(
-                                  widget.doctor.specialization,
+                                  widget.doctor.specialization!,
                                   style:
                                       TextStyle(fontSize: screenWidth * 0.035),
                                 ),
@@ -194,6 +197,7 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
                           onChanged: (String? newValue) {
                             setState(() {
                               selectedValue = newValue!;
+                              filterSessions();
                             });
                           },
                           dropdownColor: Colors.grey[200],
@@ -237,18 +241,18 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.025),
-                AppointmentPageView(
-                  appointments: appointments1,
-                  doctor: "${widget.doctor.fname} ${widget.doctor.lname}",
-                ),
-                AppointmentPageView(
-                  appointments: appointments2,
-                  doctor: "${widget.doctor.fname} ${widget.doctor.lname}",
-                ),
-                AppointmentPageView(
-                  appointments: appointments3,
-                  doctor: "${widget.doctor.fname} ${widget.doctor.lname}",
-                ),
+                if (filteredSessions.isEmpty)
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.1,
+                        horizontal: screenWidth * 0.1),
+                    child: const Text(
+                      "No sessions for selected date or clinic",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                ...filteredSessions
+                    .map((session) => SessionTemplate(session: session))
               ],
             ),
           ],
@@ -258,12 +262,42 @@ class _DoctorAppointmentsState extends State<DoctorAppointments> {
   }
 }
 
-class AppointmentTemplate extends StatelessWidget {
-  const AppointmentTemplate(
-      {required this.appointment, required this.doctor, super.key});
+class SessionTemplate extends StatelessWidget {
+  const SessionTemplate({required this.session, super.key});
 
-  final Appointment appointment;
-  final String doctor;
+  final Session session;
+
+  String formatDate(String dateStr) {
+    DateTime dateTime = DateTime.parse(dateStr);
+    String daySuffix(int day) {
+      if (day >= 11 && day <= 13) {
+        return 'th';
+      }
+      switch (day % 10) {
+        case 1:
+          return 'st';
+        case 2:
+          return 'nd';
+        case 3:
+          return 'rd';
+        default:
+          return 'th';
+      }
+    }
+
+    String weekday = DateFormat('EEE').format(dateTime);
+    int day = dateTime.day;
+    String month = DateFormat('MMMM').format(dateTime);
+
+    return '$weekday, $day${daySuffix(day)} of $month';
+  }
+
+  String convertTime(String time) {
+    DateTime dateTime = DateTime.parse('1970-01-01 $time');
+    String formattedTime = DateFormat('h:mm a').format(dateTime);
+
+    return formattedTime;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +307,10 @@ class AppointmentTemplate extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+          margin: EdgeInsets.only(
+              left: screenWidth * 0.08,
+              right: screenWidth * 0.08,
+              bottom: screenHeight * 0.025),
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -299,7 +336,7 @@ class AppointmentTemplate extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    appointment.date,
+                    formatDate(session.date),
                     style: TextStyle(
                         color: Colors.white, fontSize: screenWidth * 0.04),
                   ),
@@ -312,7 +349,7 @@ class AppointmentTemplate extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      appointment.clinic,
+                      session.clinic,
                       style: TextStyle(
                           fontSize: screenWidth * 0.034,
                           fontWeight: FontWeight.bold),
@@ -321,34 +358,26 @@ class AppointmentTemplate extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      "5.30 PM",
+                      "${convertTime(session.timeFrom)} - ${convertTime(session.timeTo)}",
                       style: TextStyle(fontSize: screenWidth * 0.034),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Active Patients : ${appointment.activePatients}",
+                      "Active Patients : ${session.activePatients}",
                       style: TextStyle(fontSize: screenWidth * 0.034),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     Text(
-                      "Channeling Fee : ${appointment.channelingFee} + Booking fee",
+                      "Channeling Fee : ${session.docFee + session.clinicFee}",
                       style: TextStyle(fontSize: screenWidth * 0.034),
                     ),
                     const SizedBox(
                       height: 10,
-                    ),
-                    Text(
-                      "Special Note : ${appointment.specialNote ?? "Not available"}",
-                      style: TextStyle(fontSize: screenWidth * 0.034),
-                    ),
-                    const SizedBox(
-                      height: 20,
                     ),
                     Center(
-                        child: appointment.maximumPatients ==
-                                appointment.activePatients
+                        child: session.noOfPatients == session.activePatients
                             ? Text(
                                 "The session is full",
                                 style: TextStyle(
@@ -359,14 +388,14 @@ class AppointmentTemplate extends StatelessWidget {
                                 width: double.infinity,
                                 child: TextButton(
                                   onPressed: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) =>
-                                    //           AppointmentConfirmation(
-                                    //             session: session,
-                                    //           )),
-                                    // );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AppointmentConfirmation(
+                                                session: session,
+                                              )),
+                                    );
                                   },
                                   style: TextButton.styleFrom(
                                     backgroundColor: const Color(0xFF2980B9),
@@ -390,78 +419,6 @@ class AppointmentTemplate extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class AppointmentPageView extends StatefulWidget {
-  const AppointmentPageView(
-      {required this.appointments, required this.doctor, super.key});
-
-  final List<Appointment> appointments;
-  final String doctor;
-
-  @override
-  State<AppointmentPageView> createState() => _AppointmentPageViewState();
-}
-
-class _AppointmentPageViewState extends State<AppointmentPageView> {
-  int currentPage = 0;
-  final _controller = PageController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() {
-        currentPage = _controller.page!.round();
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return Container(
-      margin: EdgeInsets.only(bottom: screenHeight * 0.02),
-      height: screenHeight * 0.35,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          PageView.builder(
-            controller: _controller,
-            itemCount: widget.appointments.length,
-            itemBuilder: (BuildContext context, int index) {
-              return AppointmentTemplate(
-                key: UniqueKey(),
-                appointment: widget.appointments[index],
-                doctor: widget.doctor,
-              );
-            },
-          ),
-          Positioned(
-            bottom: screenHeight * 0.01,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                widget.appointments.length,
-                (int index) => Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 2.0),
-                  width: 7.0,
-                  height: 7.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: currentPage == index
-                        ? const Color(0xFF2980B9)
-                        : Colors.grey,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

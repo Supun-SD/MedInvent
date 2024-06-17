@@ -1,44 +1,44 @@
 class Doctor {
-  String id;
+  String? id;
   String fname;
   String mname;
   String lname;
-  String email;
-  String gender;
-  String nic;
-  String contactNo;
-  String dob;
-  String medicalLicenseNo;
-  String specialization;
-  String note;
+  String? email;
+  String? gender;
+  String? nic;
+  String? contactNo;
+  String? dob;
+  String? medicalLicenseNo;
+  String? specialization;
+  String? note;
 
   Doctor(
-      {required this.id,
+      {this.id,
       required this.fname,
       required this.mname,
       required this.lname,
-      required this.email,
-      required this.gender,
-      required this.nic,
-      required this.contactNo,
-      required this.dob,
-      required this.medicalLicenseNo,
-      required this.specialization,
-      required this.note});
+      this.email,
+      this.gender,
+      this.nic,
+      this.contactNo,
+      this.dob,
+      this.medicalLicenseNo,
+      this.specialization,
+      this.note});
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
-        id: json['doctor_id'],
+        id: json['doctor_id'] ?? null,
         fname: json['fname'],
         mname: json['mname'],
         lname: json['lname'],
-        email: json['email'],
-        gender: json['gender'],
-        nic: json['nic'],
-        contactNo: json['contactNo'],
-        dob: json['dob'],
-        medicalLicenseNo: json['medical_license_no'],
-        specialization: json['specialization'],
-        note: json['note']);
+        email: json['email'] ?? null,
+        gender: json['gender'] ?? null,
+        nic: json['nic'] ?? null,
+        contactNo: json['contactNo'] ?? null,
+        dob: json['dob'] ?? null,
+        medicalLicenseNo: json['medical_license_no'] ?? null,
+        specialization: json['specialization'] ?? null,
+        note: json['note'] ?? null);
   }
 }

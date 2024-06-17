@@ -1,11 +1,76 @@
-import 'package:MedInvent/features/Search/presentation/doctorAppointments.dart';
+import 'package:MedInvent/config/api.dart';
+import 'package:MedInvent/features/Search/models/session.dart';
+import 'package:MedInvent/features/Search/presentation/appointmentConfirmation.dart';
+import 'package:MedInvent/features/Search/presentation/doctorSessions.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class DoctorProfile extends StatelessWidget {
+class DoctorProfile extends StatefulWidget {
   const DoctorProfile({required this.doctor, Key? key}) : super(key: key);
 
   final Doctor doctor;
+
+  @override
+  State<DoctorProfile> createState() => _DoctorProfileState();
+}
+
+class _DoctorProfileState extends State<DoctorProfile> {
+  List<Session> todaySessions = [];
+  List<Session> allSessions = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSessions();
+  }
+
+  Future<void> fetchSessions() async {
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(now);
+
+    String apiUrl =
+        '${ApiConfig.baseUrl}/session/get/doctor/upcoming/${widget.doctor.id}';
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['data'] != null) {
+          List<dynamic> sessions = jsonResponse['data'];
+
+          for (var session in sessions) {
+            Session newSession = Session.fromJson(session);
+            allSessions.add(newSession);
+            if (session['date'] == formattedDate &&
+                (session['activePatients'] < session['noOfPatients'])) {
+              todaySessions.add(newSession);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed loading today's sessions"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +98,10 @@ class DoctorProfile extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => DoctorAppointments(doctor: doctor)),
+                  builder: (context) => DoctorSessions(
+                        doctor: widget.doctor,
+                        sessions: allSessions,
+                      )),
             );
           },
           style: TextButton.styleFrom(
@@ -99,7 +167,7 @@ class DoctorProfile extends StatelessWidget {
                                 height: screenHeight * 0.08,
                               ),
                               Text(
-                                "Dr ${doctor.fname} ${doctor.mname} ${doctor.lname}",
+                                "Dr ${widget.doctor.fname} ${widget.doctor.mname} ${widget.doctor.lname}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: screenWidth * 0.055),
@@ -108,7 +176,7 @@ class DoctorProfile extends StatelessWidget {
                                 height: 5,
                               ),
                               Text(
-                                doctor.specialization,
+                                widget.doctor.specialization!,
                                 style: TextStyle(fontSize: screenWidth * 0.04),
                               ),
                               const SizedBox(
@@ -270,7 +338,20 @@ class DoctorProfile extends StatelessWidget {
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.05,
                               vertical: screenHeight * 0.025),
-                          child: SessionTemplate(),
+                          child: isLoading
+                              ? const SpinKitCircle(
+                                  size: 25,
+                                  color: Colors.blue,
+                                )
+                              : todaySessions.isEmpty
+                                  ? const Center(
+                                      child: Text("No session for today"))
+                                  : Column(
+                                      children: [
+                                        ...todaySessions.map((session) =>
+                                            SessionTemplate(session: session))
+                                      ],
+                                    ),
                         )
                       ],
                     ),
@@ -326,8 +407,8 @@ class DoctorProfile extends StatelessWidget {
                               horizontal: screenWidth * 0.08,
                               vertical: screenHeight * 0.025),
                           child: Text(
-                            doctor.note,
-                            style: TextStyle(fontSize: 15),
+                            widget.doctor.note!,
+                            style: const TextStyle(fontSize: 15),
                           ),
                         )
                       ],
@@ -344,34 +425,58 @@ class DoctorProfile extends StatelessWidget {
 }
 
 class SessionTemplate extends StatelessWidget {
-  const SessionTemplate({super.key});
+  const SessionTemplate({required this.session, super.key});
+  final Session session;
+
+  String convertTime(String time) {
+    DateTime dateTime = DateTime.parse('1970-01-01 $time');
+    String formattedTime = DateFormat('h:mm a').format(dateTime);
+
+    return formattedTime;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFFEDEDED),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Health care clinic", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-              Text("5:30 PM")
-            ],
-          ),
-          Text("12/20", style: TextStyle(fontSize: 17),)
-        ],
+    return InkWell(
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AppointmentConfirmation(session: session)),
+        )
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(15),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: const Color(0xFFEDEDED),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  session.clinic,
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                Text(convertTime(session.timeFrom))
+              ],
+            ),
+            Text(
+              "${session.activePatients}/${session.noOfPatients}",
+              style: const TextStyle(fontSize: 17),
+            )
+          ],
+        ),
       ),
     );
   }
 }
-
 
 class HalfCirclePainter extends CustomPainter {
   @override
