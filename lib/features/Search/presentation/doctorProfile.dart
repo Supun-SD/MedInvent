@@ -74,7 +74,7 @@ class DoctorProfile extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: screenWidth,
-                        height: screenHeight * 0.45,
+                        height: screenHeight * 0.33,
                       ),
                       Positioned(
                         left: screenWidth * 0.08,
@@ -82,7 +82,7 @@ class DoctorProfile extends StatelessWidget {
                         top: screenHeight * 0.065,
                         child: Container(
                           width: screenWidth * 0.8,
-                          height: screenHeight * 0.37,
+                          height: screenHeight * 0.25,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(30),
@@ -188,61 +188,6 @@ class DoctorProfile extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF2980B9),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    height: screenWidth * 0.18,
-                                    width: screenWidth * 0.18,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text("162",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: screenWidth * 0.07)),
-                                        Text("Patients",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: screenWidth * 0.03)),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF2980B9),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    height: screenWidth * 0.18,
-                                    width: screenWidth * 0.18,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text("4+",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: screenWidth * 0.07)),
-                                        Text("Years",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: screenWidth * 0.03)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
                             ],
                           ),
                         ),
@@ -278,99 +223,115 @@ class DoctorProfile extends StatelessWidget {
                   SizedBox(
                     height: screenHeight * 0.01,
                   ),
-                  Padding(
-                    padding:
+                  Container(
+                    margin:
                         EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-                    child: Stack(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          blurRadius: 20,
+                        ),
+                      ],
+                      color: Colors.white,
+                    ),
+                    width: screenWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2980B9),
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(30),
+                                topRight: Radius.circular(30)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.4),
                                 blurRadius: 20,
                               ),
                             ],
+                            color: const Color(0xFF2980B9),
                           ),
-                          height: 200,
-                          width: screenWidth,
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 25, top: 10),
-                              child: Text(
-                                "Available slots for today",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: screenWidth * 0.04,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
+                          width: double.infinity,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              "Available slots for today",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            height: 160,
-                            width: screenWidth,
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.05,
+                              vertical: screenHeight * 0.025),
+                          child: SessionTemplate(),
+                        )
                       ],
                     ),
                   ),
                   SizedBox(
-                    height: screenHeight * 0.02,
+                    height: screenHeight * 0.025,
                   ),
-                  Padding(
-                    padding:
+                  Container(
+                    margin:
                         EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-                    child: Stack(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          blurRadius: 20,
+                        ),
+                      ],
+                      color: Colors.white,
+                    ),
+                    width: screenWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2980B9),
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(30),
+                                topRight: Radius.circular(30)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.4),
                                 blurRadius: 20,
                               ),
                             ],
+                            color: const Color(0xFF2980B9),
                           ),
-                          height: 150,
-                          width: screenWidth,
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 25, top: 10),
-                              child: Text(
-                                "Qualifications",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: screenWidth * 0.04,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
+                          width: double.infinity,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              "Special notes",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            height: 110,
-                            width: screenWidth,
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.08,
+                              vertical: screenHeight * 0.025),
+                          child: Text(
+                            doctor.note,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.15,
                   ),
                 ],
               ),
@@ -381,6 +342,36 @@ class DoctorProfile extends StatelessWidget {
     );
   }
 }
+
+class SessionTemplate extends StatelessWidget {
+  const SessionTemplate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: const Color(0xFFEDEDED),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Health care clinic", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+              Text("5:30 PM")
+            ],
+          ),
+          Text("12/20", style: TextStyle(fontSize: 17),)
+        ],
+      ),
+    );
+  }
+}
+
 
 class HalfCirclePainter extends CustomPainter {
   @override

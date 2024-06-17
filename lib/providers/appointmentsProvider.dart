@@ -1,4 +1,6 @@
 import 'package:MedInvent/features/Appointments/model/appointment.dart';
+import 'package:MedInvent/features/Search/models/session.dart';
+import 'package:MedInvent/features/Search/presentation/appointmentSuccess.dart';
 import 'package:MedInvent/features/login/data/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -89,7 +91,6 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
 
   Future<void> createAppointment(
       BuildContext context,
-      String sessionId,
       String patientName,
       String mobileNo,
       String email,
@@ -97,21 +98,28 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
       String nic,
       String area,
       User user,
+      Session session,
       String forWhom) async {
     String apiUrl = '${ApiConfig.baseUrl}/appointment/newappointment';
 
+    state = AppointmentsState(
+      upcomingAppointments: state.upcomingAppointments,
+      pastAppointments: state.pastAppointments,
+      isLoading: true,
+    );
+
     Doctor doctor = Doctor(
-        fname: "Stephen",
-        mname: "Alexander",
-        lname: "Strange",
-        specialization: "Physician");
-    Clinic clinic = Clinic(name: "Health Care Clinic");
-    Session session = Session(
-        date: "2024-12-12",
-        timeFrom: "14:00:00",
-        timeTo: "16:30:00",
-        docFee: 2200.00,
-        clinicFee: 850.00,
+        fname: session.doctor.fname,
+        mname: session.doctor.mname,
+        lname: session.doctor.lname,
+        specialization: session.doctor.specialization);
+    Clinic clinic = Clinic(name: session.clinic);
+    ApSession apSession = ApSession(
+        date: session.date,
+        timeFrom: session.timeFrom,
+        timeTo: session.timeTo,
+        docFee: session.docFee,
+        clinicFee: session.clinicFee,
         doctor: doctor,
         clinic: clinic);
 
@@ -122,7 +130,7 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
           },
           body: json.encode({
             'user_id': user.userId,
-            'session_id': sessionId,
+            'session_id': session.sessionId,
             'patientTitle': title,
             'patientName': forWhom == 'Other'
                 ? patientName
@@ -151,15 +159,24 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
                 patientTitle: data['patientTitle'],
                 patientName: data['patientName'],
                 contactNo: data['contactNo'],
-                email: email,
+                email: data['email'],
                 area: area,
-                nic: nic,
+                nic: data['nic'],
                 appointmentNo: data['appointmentNo'],
-                session: session),
+                session: apSession),
             ...state.upcomingAppointments
           ],
           isLoading: false,
         );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Appointment booked successfully.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AppointmentSuccess()));
       } else {
         throw Exception('Failed booking the appointment');
       }

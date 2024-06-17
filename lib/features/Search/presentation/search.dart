@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Search/presentation/advancedSearch.dart';
-import 'package:MedInvent/features/Search/models/categories.dart';
+import 'package:MedInvent/features/Search/data/categories.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
@@ -294,9 +294,9 @@ class _SearchState extends State<Search> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: Categories.values.map((category) {
+                          children: importantCategories.map((category) {
                             return Category(
-                                category: category.toString().split('.').last);
+                                category: category);
                           }).toList(),
                         ),
                       ),

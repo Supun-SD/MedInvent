@@ -1,7 +1,14 @@
-import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
-import 'package:MedInvent/features/Search/models/categories.dart';
+import 'package:MedInvent/config/api.dart';
+import 'package:MedInvent/features/Search/models/session.dart';
+import 'package:MedInvent/features/Search/data/categories.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
+import 'package:MedInvent/features/Search/presentation/appointmentConfirmation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
 
 class AdvancedSearch extends StatefulWidget {
   const AdvancedSearch({required this.category, super.key});
@@ -13,10 +20,14 @@ class AdvancedSearch extends StatefulWidget {
 }
 
 class _AdvancedSearchState extends State<AdvancedSearch> {
-  String selectedSpec = 'Select the specialization';
-  String selectedClinic = 'Select a clinic';
+  String selectedSpec = '';
 
   final TextEditingController _doctor = TextEditingController();
+  final TextEditingController _clinic = TextEditingController();
+
+  bool isLoading = false;
+
+  List<Session> searchResults = [];
 
   @override
   void dispose() {
@@ -24,24 +35,75 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
     super.dispose();
   }
 
-  final List<String> categories = [
-    'Select the specialization',
-    ...Categories.values.map((category) => category.name).toList(),
-  ];
-
-  final List<String> clinics = [
-    'Select a clinic',
-    'Clinic 1',
-    'Clinic 2',
-    'Clinic 3',
-    'Clinic 4',
-    'Clinic 5',
-  ];
-
   @override
   void initState() {
     selectedSpec = widget.category;
     super.initState();
+  }
+
+  Future<void> onSearch() async {
+    String formattedDate = selectedDate.toString().split(" ")[0];
+
+    String apiUrl =
+        '${ApiConfig.baseUrl}/session/get/advancedSearch?date=$formattedDate&';
+
+    if (_doctor.text.isNotEmpty) {
+      apiUrl += 'doctor=${_doctor.text}&';
+    }
+
+    if (_clinic.text.isNotEmpty) {
+      apiUrl += 'clinic=${_clinic.text}&';
+    }
+
+    if (selectedSpec != "- Any specialization -") {
+      apiUrl += 'specialization=$selectedSpec';
+    }
+
+    if (apiUrl.endsWith('&')) {
+      apiUrl = apiUrl.substring(0, apiUrl.length - 1);
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['data'] != null) {
+          List<dynamic> resultsJson = jsonResponse['data'];
+          if (resultsJson.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('No sessions available'),
+                backgroundColor: Colors.redAccent,
+              ),
+            );
+          }
+          searchResults.clear();
+
+          for (var resultJson in resultsJson) {
+            Session session = Session.fromJson(resultJson);
+            searchResults.add(session);
+          }
+        }
+      } else {
+        throw Exception('Failed to load results');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed getting session'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   DateTime selectedDate = DateTime.now();
@@ -159,7 +221,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: DropdownButton<String>(
-                          items: categories
+                          items: ["- Any specialization -", ...categories]
                               .map((String item) => DropdownMenuItem<String>(
                                     value: item,
                                     child: Text(item),
@@ -190,33 +252,29 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                           style: TextStyle(fontSize: screenWidth * 0.035),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                      SizedBox(
                         height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: DropdownButton<String>(
-                          items: clinics
-                              .map((String item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(item),
-                                  ))
-                              .toList(),
-                          underline: const SizedBox(),
-                          icon: const Icon(Icons.arrow_drop_down,
-                              color: Colors.grey),
-                          style: const TextStyle(color: Colors.black),
-                          dropdownColor: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(20.0),
-                          value: selectedClinic,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedClinic = newValue!;
-                            });
-                          },
-                          isExpanded: true,
+                        child: TextField(
+                          controller: _clinic,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.grey, width: 1),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 7.5, horizontal: 15),
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -259,7 +317,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                       ),
                       Center(
                           child: TextButton(
-                        onPressed: () {},
+                        onPressed: onSearch,
                         style: TextButton.styleFrom(
                           backgroundColor: const Color(0xFF2980B9),
                           padding: const EdgeInsets.symmetric(
@@ -280,12 +338,24 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                 SizedBox(
                   height: screenHeight * 0.025,
                 ),
-                ...suggestedDoctors
-                    .map((e) => SuggestedDoctors(doctor: e))
-                    .toList(),
-                SizedBox(
-                  height: screenHeight * 0.025,
-                ),
+                Container(
+                  child: isLoading
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.05),
+                          child: const SpinKitCircle(
+                            size: 40,
+                            color: Colors.blue,
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            ...searchResults.map((result) => SearchResult(
+                                  session: result,
+                                ))
+                          ],
+                        ),
+                )
               ],
             ),
           ),
@@ -293,90 +363,123 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   }
 }
 
-class SuggestedDoctors extends StatelessWidget {
-  const SuggestedDoctors({required this.doctor, super.key});
-  final Doctor doctor;
+class SearchResult extends StatelessWidget {
+  const SearchResult({required this.session, super.key});
+  final Session session;
+
+  String formatDate(String dateStr) {
+    DateTime dateTime = DateTime.parse(dateStr);
+    String daySuffix(int day) {
+      if (day >= 11 && day <= 13) {
+        return 'th';
+      }
+      switch (day % 10) {
+        case 1:
+          return 'st';
+        case 2:
+          return 'nd';
+        case 3:
+          return 'rd';
+        default:
+          return 'th';
+      }
+    }
+
+    String weekday = DateFormat('EEE').format(dateTime);
+    int day = dateTime.day;
+    String month = DateFormat('MMMM').format(dateTime);
+
+    return '$weekday, $day${daySuffix(day)} of $month';
+  }
+
+  String convertTime(String time) {
+    DateTime dateTime = DateTime.parse('1970-01-01 $time');
+    String formattedTime = DateFormat('h:mm a').format(dateTime);
+
+    return formattedTime;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-        margin: EdgeInsets.only(bottom: screenHeight * 0.015),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
-              blurRadius: 20,
-            ),
-          ],
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(20),
         ),
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.08, vertical: screenHeight * 0.02),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset(
-              'assets/images/pic.png',
-              width: screenWidth * 0.12,
-            ),
-            const SizedBox(
-              width: 20,
-            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Dr ${doctor.fname} ${doctor.lname}',
+                  "Dr ${session.doctor.fname} ${session.doctor.lname}",
                   style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.bold),
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Text(session.doctor.specialization),
+                const SizedBox(
+                  height: 3,
+                ),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  height: 3,
                 ),
                 Text(
-                  doctor.specialization,
-                  style: const TextStyle(
-                    fontSize: 12,
-                  ),
-                )
+                  session.clinic,
+                  style: const TextStyle(fontSize: 15),
+                ),
+                const SizedBox(
+                  height: 3,
+                ),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  height: 3,
+                ),
+                Text(
+                  "${formatDate(session.date)} | ${convertTime(session.timeFrom)}",
+                  style: const TextStyle(fontSize: 15),
+                ),
+                const SizedBox(
+                  height: 3,
+                ),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  height: 3,
+                ),
+                Text(
+                  "Active patients : ${session.activePatients}",
+                  style: const TextStyle(fontSize: 15),
+                ),
               ],
             ),
-            const Spacer(),
-            Container(
-              width: 36.0,
-              height: 36.0,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xFF2980B9),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DoctorProfile(doctor: doctor)),
-                  );
-                },
-                icon: const Icon(Icons.person_2_outlined,
-                    color: Colors.white, size: 18),
-                padding: const EdgeInsets.all(8.0),
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Container(
-              width: 36.0,
-              height: 36.0,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xFF2980B9),
-              ),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.calendar_month,
-                    color: Colors.white, size: 18),
-                padding: const EdgeInsets.all(8.0),
-              ),
-            ),
+            IconButton(
+              onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AppointmentConfirmation(session: session)),
+                )
+              },
+              icon: const Icon(Icons.arrow_forward, color: Colors.grey),
+            )
           ],
         ));
   }

@@ -1,3 +1,4 @@
+import 'package:MedInvent/features/Search/presentation/advancedSearch.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentSuccess extends StatelessWidget {
@@ -47,7 +48,8 @@ class AppointmentSuccess extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: const Color(0xFF2980B9),

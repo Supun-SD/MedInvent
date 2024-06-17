@@ -1,4 +1,3 @@
-import 'package:MedInvent/features/Search/presentation/appointmentConfirmation.dart';
 import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/appointment.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
@@ -360,15 +359,14 @@ class AppointmentTemplate extends StatelessWidget {
                                 width: double.infinity,
                                 child: TextButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AppointmentConfirmation(
-                                                appointment: appointment,
-                                                doctor: doctor,
-                                              )),
-                                    );
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) =>
+                                    //           AppointmentConfirmation(
+                                    //             session: session,
+                                    //           )),
+                                    // );
                                   },
                                   style: TextButton.styleFrom(
                                     backgroundColor: const Color(0xFF2980B9),

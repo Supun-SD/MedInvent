@@ -13,7 +13,7 @@ class Appointment {
   String area;
   String nic;
   int appointmentNo;
-  Session session;
+  ApSession session;
 
   Appointment({
     required this.appointmentId,
@@ -49,12 +49,12 @@ class Appointment {
       area: json['area'],
       nic: json['nic'],
       appointmentNo: json['appointmentNo'],
-      session: Session.fromJson(json['session']),
+      session: ApSession.fromJson(json['session']),
     );
   }
 }
 
-class Session {
+class ApSession {
   String date;
   String timeFrom;
   String timeTo;
@@ -63,7 +63,7 @@ class Session {
   Doctor doctor;
   Clinic clinic;
 
-  Session({
+  ApSession({
     required this.date,
     required this.timeFrom,
     required this.timeTo,
@@ -73,8 +73,8 @@ class Session {
     required this.clinic,
   });
 
-  factory Session.fromJson(Map<String, dynamic> json) {
-    return Session(
+  factory ApSession.fromJson(Map<String, dynamic> json) {
+    return ApSession(
       date: json['date'],
       timeFrom: json['timeFrom'],
       timeTo: json['timeTo'],
