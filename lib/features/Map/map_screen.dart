@@ -1,40 +1,40 @@
 import 'dart:async';
-import 'package:MedInvent/config/api.dart';
 import 'package:MedInvent/features/Search/models/Pharmacy.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:MedInvent/features/Search/models/session.dart';
+import 'package:MedInvent/features/Search/presentation/appointmentConfirmation.dart';
+import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
+import 'package:MedInvent/features/Search/presentation/pharmacyProfile.dart';
+import 'package:MedInvent/providers/nearbyPharmaciesAndDoctorsProvider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
 
-class MapPage extends StatefulWidget {
+import '../../providers/models/nearbyClinic.dart';
+
+class MapPage extends ConsumerStatefulWidget {
   final String selectedCategory;
   const MapPage({super.key, required this.selectedCategory});
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  ConsumerState<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapPageState extends ConsumerState<MapPage> {
   String? _selectedCategory;
 
   late GoogleMapController mapController;
-  Location location = Location();
-  LatLng currentLocation = const LatLng(6.927079, 79.861243);
-  bool isLoading = false;
 
   late BitmapDescriptor myLocationIcon;
   late BitmapDescriptor doctorIcon;
   late BitmapDescriptor openPharmacyIcon;
   late BitmapDescriptor closePharmacyIcon;
 
-  List<Pharmacy> nearbyPharmacies = [];
-
   Set<Marker> pharmacyMarkers = {};
-  Set<Marker> doctorMarkers = {};
+  Set<Marker> clinicsMarkers = {};
+  Set<Marker> allMarkers = {};
 
   @override
   void initState() {
@@ -45,53 +45,13 @@ class _MapPageState extends State<MapPage> {
 
   void initialization() async {
     await _loadCustomMarkerIcons();
-    _checkLocationPermission();
-  }
-
-  Future<void> fetchNearbyPharmacies() async {
-    String apiUrl =
-        '${ApiConfig.baseUrl}/pharmacy/getnearby?lat=${currentLocation.latitude.toString()}&long=${currentLocation.longitude.toString()}';
-
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-
-        if (jsonResponse['data'] != null) {
-          List<dynamic> pharmaciesJson = jsonResponse['data'];
-
-          nearbyPharmacies.clear();
-          pharmacyMarkers.clear();
-
-          for (var pharmacyJson in pharmaciesJson) {
-            Pharmacy pharmacy = Pharmacy.fromJson(pharmacyJson);
-            nearbyPharmacies.add(pharmacy);
-
-            Marker marker = Marker(
-                markerId: MarkerId(pharmacy.id),
-                position: LatLng(pharmacy.lat, pharmacy.long),
-                icon:
-                    isPharmacyOpen(pharmacy.openHoursFrom, pharmacy.openHoursTo)
-                        ? openPharmacyIcon
-                        : closePharmacyIcon,
-                onTap: () {
-                  _showPopupPharmacy(context, pharmacy);
-                });
-            pharmacyMarkers.add(marker);
-          }
-        }
-      } else {
-        throw Exception('Failed to load nearby pharmacies');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to get nearby pharmacies.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    await ref
+        .read(pharmaciesAndDoctorsProvider.notifier)
+        .checkLocationPermission();
+    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
+        zoom: 13.8)));
+    addMarkers();
   }
 
   Future<void> _loadCustomMarkerIcons() async {
@@ -110,67 +70,52 @@ class _MapPageState extends State<MapPage> {
     return BitmapDescriptor.fromBytes(byteList);
   }
 
-  Future<void> _checkLocationPermission() async {
-    setState(() {
-      isLoading = true;
-    });
+  Future<void> addMarkers() async {
+    pharmacyMarkers.clear();
+    clinicsMarkers.clear();
+    allMarkers.clear();
 
-    bool serviceEnabled = await location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-      if (!serviceEnabled) {
-        setState(() {
-          isLoading = false;
-        });
-        return;
-      }
+    List<Pharmacy> nearbyPharmacies =
+        ref.watch(pharmaciesAndDoctorsProvider).nearbyPharmacies;
+    List<NearByClinic> nearbyClinics =
+        ref.watch(pharmaciesAndDoctorsProvider).nearbyDoctors;
+
+    for (Pharmacy pharmacy in nearbyPharmacies) {
+      Marker marker = Marker(
+          markerId: MarkerId(pharmacy.id),
+          position: LatLng(pharmacy.lat, pharmacy.long),
+          icon: isPharmacyOpen(pharmacy.openHoursFrom, pharmacy.openHoursTo)
+              ? openPharmacyIcon
+              : closePharmacyIcon,
+          onTap: () {
+            _showPopupPharmacy(context, pharmacy);
+          });
+      pharmacyMarkers.add(marker);
+      allMarkers.add(marker);
     }
 
-    PermissionStatus permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        setState(() {
-          isLoading = false;
-        });
-        return;
-      }
+    for (NearByClinic clinic in nearbyClinics) {
+      Marker marker = Marker(
+          markerId: MarkerId(clinic.clinicId),
+          position: LatLng(clinic.location.lat, clinic.location.long),
+          icon: doctorIcon,
+          onTap: () {
+            _showPopupClinic(context, clinic);
+          });
+      clinicsMarkers.add(marker);
+      allMarkers.add(marker);
     }
-
-    getLocation();
-  }
-
-  void getLocation() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      LocationData locationData = await location.getLocation();
-      setState(() {
-        currentLocation =
-            LatLng(locationData.latitude!, locationData.longitude!);
-        mapController.animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(target: currentLocation, zoom: 15.0)));
-      });
-      await fetchNearbyPharmacies();
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error getting location data.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    setState(() {});
   }
 
   void myLocationClick() async {
-    getLocation();
-    mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: currentLocation, zoom: 15.0)));
+    await ref
+        .read(pharmaciesAndDoctorsProvider.notifier)
+        .checkLocationPermission();
+    addMarkers();
+    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
+        zoom: 13.8)));
   }
 
   void showLegend() {
@@ -319,12 +264,12 @@ class _MapPageState extends State<MapPage> {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) =>
-                    //           PharmacyProfile(pharmacy: pharmacy)),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PharmacyProfile(pharmacy: pharmacy)),
+                    );
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: const Color(0xFF2980B9),
@@ -342,6 +287,59 @@ class _MapPageState extends State<MapPage> {
                 ),
               )
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPopupClinic(BuildContext context, NearByClinic clinic) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return SizedBox(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(clinic.name,
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10.0),
+                  Text(
+                    clinic.contactNo,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 20.0),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFbae8ff),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      "Today sessions",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  Column(
+                    children: clinic.sessions
+                        .map((session) => SessionTemp(session: session))
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -390,6 +388,17 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
+    LatLng myLocation = ref.watch(pharmaciesAndDoctorsProvider).myLocation;
+
+    Set<Marker> displayedMarkers;
+    if (_selectedCategory == 'all') {
+      displayedMarkers = allMarkers;
+    } else if (_selectedCategory == 'doctors') {
+      displayedMarkers = clinicsMarkers;
+    } else {
+      displayedMarkers = pharmacyMarkers;
+    }
+
     return Scaffold(
       drawer: const SideNavBar(),
       appBar: AppBar(
@@ -432,19 +441,19 @@ class _MapPageState extends State<MapPage> {
               mapController = controller;
             },
             initialCameraPosition: CameraPosition(
-              target: currentLocation,
-              zoom: 15.0,
+              target: myLocation,
+              zoom: 13.8,
             ),
             myLocationEnabled: false,
-            zoomControlsEnabled: false,
+            zoomControlsEnabled: true,
             markers: {
               Marker(
                 markerId: const MarkerId('currentLocation'),
-                position: currentLocation,
+                position: myLocation,
                 icon: myLocationIcon,
                 infoWindow: const InfoWindow(title: 'My Location'),
               ),
-              ...pharmacyMarkers
+              ...displayedMarkers
             },
           ),
           Positioned(
@@ -494,17 +503,160 @@ class _MapPageState extends State<MapPage> {
                   ),
                 ),
               )),
-          isLoading
+          ref.watch(pharmaciesAndDoctorsProvider).isLoading
               ? Container(
                   color: Colors.black.withOpacity(0.5),
                   child: const Center(
-                    child: SpinKitWave(
+                    child: SpinKitPulsingGrid(
                       color: Colors.white,
                       size: 50.0,
                     ),
                   ),
                 )
               : const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
+}
+
+class SessionTemp extends StatelessWidget {
+  const SessionTemp({required this.session, super.key});
+  final Session session;
+
+  String formatTime(String timeString) {
+    List<String> parts = timeString.split(':');
+    int hours = int.parse(parts[0]);
+
+    String period = hours < 12 ? 'AM' : 'PM';
+
+    if (hours > 12) {
+      hours -= 12;
+    } else if (hours == 0) {
+      hours = 12;
+    }
+
+    return '$hours:${parts[1]} $period';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: const Color(0xFFe3e3e3),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Dr ${session.doctor.fname} ${session.doctor.lname}  (${session.doctor.specialization})",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const Divider(
+            color: Colors.black,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                formatTime(session.timeFrom),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              (session.activePatients < session.noOfPatients)
+                  ? Text(
+                      "${session.activePatients} patients",
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    )
+                  : const Text(
+                      "Session is full",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.redAccent),
+                    ),
+            ],
+          ),
+          const Divider(
+            color: Colors.black,
+          ),
+          session.isArrived
+              ? const Text(
+                  "Doctor has arrived",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green),
+                )
+              : const Text(
+                  "The doctor has not arrived yet.",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.redAccent),
+                ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DoctorProfile(
+                              doctor: session.doctor,
+                            )),
+                  )
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Color(0xff2980b9), width: 1),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  backgroundColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                ),
+                child: const Text(
+                  "View Doctor",
+                  style: TextStyle(
+                    color: Color(0xff2980b9),
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AppointmentConfirmation(session: session)),
+                  )
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Color(0xff2980b9), width: 1),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  backgroundColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                ),
+                child: const Text(
+                  "Book appointment",
+                  style: TextStyle(
+                    color: Color(0xff2980b9),
+                  ),
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );

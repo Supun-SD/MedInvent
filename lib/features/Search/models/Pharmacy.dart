@@ -8,8 +8,6 @@ class Pharmacy{
   String email;
   double lat;
   double long;
-  String createdAt;
-  String updatedAt;
   String addressLineOne;
   String addressLineTwo;
   String city;
@@ -25,8 +23,6 @@ class Pharmacy{
     required this.email,
     required this.lat,
     required this.long,
-    required this.createdAt,
-    required this.updatedAt,
     required this.addressLineOne,
     required this.addressLineTwo,
     required this.city,
@@ -44,8 +40,6 @@ class Pharmacy{
       email: json['email'],
       lat: json['location']['coordinates'][1],
       long: json['location']['coordinates'][0],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
       addressLineOne: json['pharmacyAddress']['lineOne'],
       addressLineTwo: json['pharmacyAddress']['lineTwo'],
       city: json['pharmacyAddress']['city'],
