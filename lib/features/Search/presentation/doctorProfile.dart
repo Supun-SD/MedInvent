@@ -105,7 +105,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
             );
           },
           style: TextButton.styleFrom(
-            backgroundColor: const Color(0xFF4749A0),
+            backgroundColor: const Color(0xFF186394),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50),
             ),
@@ -142,7 +142,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                     children: [
                       SizedBox(
                         width: screenWidth,
-                        height: screenHeight * 0.33,
+                        height: screenHeight * 0.28,
                       ),
                       Positioned(
                         left: screenWidth * 0.08,
@@ -150,7 +150,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         top: screenHeight * 0.065,
                         child: Container(
                           width: screenWidth * 0.8,
-                          height: screenHeight * 0.25,
+                          height: screenHeight * 0.2,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(30),
@@ -181,80 +181,6 @@ class _DoctorProfileState extends State<DoctorProfile> {
                               ),
                               const SizedBox(
                                 height: 20,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 45.0,
-                                    height: 45.0,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFF2980B9),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                          Icons.mail_outline_rounded,
-                                          color: Colors.white,
-                                          size: 20),
-                                      padding: const EdgeInsets.all(8.0),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    width: 45.0,
-                                    height: 45.0,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFF2980B9),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.link,
-                                          color: Colors.white, size: 20),
-                                      padding: const EdgeInsets.all(8.0),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    width: 45.0,
-                                    height: 45.0,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFF2980B9),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.message_outlined,
-                                          color: Colors.white, size: 20),
-                                      padding: const EdgeInsets.all(8.0),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    width: 45.0,
-                                    height: 45.0,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFF2980B9),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                          Icons.location_on_outlined,
-                                          color: Colors.white,
-                                          size: 20),
-                                      padding: const EdgeInsets.all(8.0),
-                                    ),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
@@ -345,7 +271,11 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                 )
                               : todaySessions.isEmpty
                                   ? const Center(
-                                      child: Text("No session for today"))
+                                      child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 25),
+                                      child: Text("No session for today"),
+                                    ))
                                   : Column(
                                       children: [
                                         ...todaySessions.map((session) =>
@@ -405,11 +335,13 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.08,
-                              vertical: screenHeight * 0.025),
-                          child: Text(
-                            widget.doctor.note!,
-                            style: const TextStyle(fontSize: 15),
-                          ),
+                              vertical: screenHeight * 0.04),
+                          child: widget.doctor.note == null
+                              ? const Text("No special notes for this doctor")
+                              : Text(
+                                  widget.doctor.note!,
+                                  style: const TextStyle(fontSize: 15),
+                                ),
                         )
                       ],
                     ),

@@ -5,11 +5,11 @@ class Pharmacy{
   String openHoursFrom;
   String openHoursTo;
   List<String> openDays;
-  String email;
+  String? email;
   double lat;
   double long;
   String addressLineOne;
-  String addressLineTwo;
+  String? addressLineTwo;
   String city;
   String district;
 
