@@ -1,7 +1,13 @@
+import 'package:MedInvent/config/api.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/password_reset_2.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../../../../providers/nearbyPharmaciesAndDoctorsProvider.dart';
 
 class PasswordReset1 extends StatefulWidget {
   const PasswordReset1({super.key});
@@ -15,6 +21,8 @@ class _PasswordReset1State extends State<PasswordReset1> {
   final TextEditingController _NIC = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  bool isLoading = false;
+
   //function to dispose controllers when not in use
   @override
   void dispose() {
@@ -23,21 +31,16 @@ class _PasswordReset1State extends State<PasswordReset1> {
     super.dispose();
   }
 
-  final String userEmail = "123@gmail.com";
-  final String userMobile = "0771234567";
-  final String userNIC = "123456789";
-
-  //pop up to display if incorrect details are entered
-  Future<void> _credentialsMismatch() async {
-    return showDialog<void>(
+  void _showErrorDialog(String message) {
+    showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Invalid Credentials'),
-          content: const Text(
-              'Entered Mobile Number or email address and NIC number doesn\'t match'),
-          actions: <Widget>[
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Registration Failed'),
+          content: Text(message),
+          actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -50,18 +53,68 @@ class _PasswordReset1State extends State<PasswordReset1> {
     );
   }
 
+  //function to check if email and nic is matching
+  Future<bool?> checkEmailAndNic() async {
+    String apiUrl =
+        '${ApiConfig.baseUrl}/patientuser/check/emailandnic?email=${_email.text}&nic=${_NIC.text}';
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['data']['success'] == false) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   //function to verify details
-  void verification() {
-    if ((_email.text == userEmail || _email.text == userMobile) &&
-        _NIC.text == userNIC) {
+  Future<void> verification() async {
+    if (_NIC.text.isEmpty || _email.text.isEmpty) {
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text("Email or NIC cannot be empty"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    var isValid = await checkEmailAndNic();
+
+    if (isValid == true) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const PasswordReset2()),
       );
+    } else if (isValid == null) {
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text("Fail to validate"),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
     } else {
-      _credentialsMismatch();
-      _email.clear();
-      _NIC.clear();
+      _showErrorDialog("Entered email and NIC does not match");
     }
   }
 
@@ -107,7 +160,13 @@ class _PasswordReset1State extends State<PasswordReset1> {
                       hint: 'NIC',
                       isPassword: false),
                   SizedBox(height: screenHeight * 0.07),
-                  CustomButton(text: 'Reset Password', onPressed: verification),
+                  isLoading
+                      ? const SpinKitCircle(
+                          size: 35,
+                          color: Colors.blue,
+                        )
+                      : CustomButton(
+                          text: 'Reset Password', onPressed: verification),
                 ],
               ),
             ),
