@@ -50,7 +50,7 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
 
       BaseClient baseClient = BaseClient();
       var response = await baseClient.put(
-          '/DependMember/update/DependMember/126b4f01-e486-461e-b20e-311e3c7c0ffb',
+          '/DependMember/update/DependMember/550e8400-e29b-41d4-a716-446655440000',
           widget.familyMember.toRawJson()
       );
       if (response != null) {
@@ -74,7 +74,6 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     String profilePic = "assets/images/pic.png";
-    int loyalityPoints = 335;
 
     return Scaffold(
       body: Stack(

@@ -1,14 +1,13 @@
 import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
-import 'package:MedInvent/features/Profile/presentation/family_members_page.dart';
-import 'package:MedInvent/features/Profile/presentation/security_info_page.dart';
-import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
+import 'package:MedInvent/features/Notifications/otpNotification.dart';
+import 'package:MedInvent/features/Notifications/cancelSessionNotification.dart';
+import 'package:MedInvent/features/Notifications/doctorArriveNotification.dart';
 
-class ProfilePage extends ConsumerWidget {
-  const ProfilePage({super.key});
+
+class NotificationCategory extends ConsumerWidget {
+  const NotificationCategory({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +15,6 @@ class ProfilePage extends ConsumerWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      drawer: const SideNavBar(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -30,7 +28,7 @@ class ProfilePage extends ConsumerWidget {
             ),
           ),
         ),
-        title: const Text("Profile"),
+        title: const Text("Notification Categories"),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -43,7 +41,7 @@ class ProfilePage extends ConsumerWidget {
         ),
         child: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.only(top: screenHeight * 0.025),
+            margin: EdgeInsets.only(top: screenHeight * 0.04),
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -56,7 +54,7 @@ class ProfilePage extends ConsumerWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.08,
-                      vertical: screenHeight * 0.05),
+                      vertical: screenHeight * 0.08),
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
@@ -75,41 +73,20 @@ class ProfilePage extends ConsumerWidget {
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.05,
-                            vertical: screenHeight * 0.02),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/pic.png',
-                              height: screenHeight * 0.07,
-                            ),
-                            const SizedBox(
-                              width: 25,
-                            ),
-                            Text(
-                              '${ref.watch(userProvider)!.fname} ${ref.watch(userProvider)!.lname}',
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
                         color: Colors.black12,
                         width: 290.0,
                         height: 1,
                       ),
                       Mybutton(
-                        iconData1: Icons.perm_identity,
-                        buttonText1: 'Basic Information',
-                        buttonText2: 'Name,NIC,Gender,DOB..',
+                        iconData1: Icons.notifications_active_outlined,
+                        buttonText1: 'Cancel Session Notifications',
+                        buttonText2: 'Tap to view All',
                         iconData2: Icons.navigate_next,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BasicInfo()),
+                                builder: (context) => const CancelNotification()),
                           );
                         },
                       ),
@@ -119,15 +96,15 @@ class ProfilePage extends ConsumerWidget {
                         height: 1,
                       ),
                       Mybutton(
-                        iconData1: Icons.verified_user_outlined,
-                        buttonText1: 'Security Information',
-                        buttonText2: 'Email,Mobile,Password',
+                        iconData1: Icons.notifications_active_outlined,
+                        buttonText1: 'Doctor Arrive Notifications',
+                        buttonText2: 'Tap to view',
                         iconData2: Icons.navigate_next,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const SecurityInfo()),
+                                builder: (context) => const ArriveNotification()),
                           );
                         },
                       ),
@@ -137,15 +114,15 @@ class ProfilePage extends ConsumerWidget {
                         height: 1,
                       ),
                       Mybutton(
-                        iconData1: Icons.diversity_1_outlined,
-                        buttonText1: 'Family Members',
-                        buttonText2: 'Edit,Add Profiles',
+                        iconData1: Icons.notifications_active_outlined,
+                        buttonText1: 'Link Device Notification',
+                        buttonText2: 'Tap to view',
                         iconData2: Icons.navigate_next,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const FamilyMembers()),
+                                builder: (context) => const OTPNotification()),
                           );
                         },
                       ),
@@ -158,39 +135,6 @@ class ProfilePage extends ConsumerWidget {
                         height: screenHeight * 0.05,
                       )
                     ],
-                  ),
-                ),
-                Container(
-                  height: 80,
-                  width: 358,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 40.0,
-                      ),
-                    ],
-                  ),
-                  child: Mybutton(
-                    iconData1: Icons.notifications_active_outlined,
-                    buttonText1: 'Notifications',
-                    buttonText2: 'tap to view all Notifications',
-                    iconData2: Icons.navigate_next,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const NotificationCategory()),
-                      );
-                    },
                   ),
                 ),
               ],
@@ -241,6 +185,9 @@ class Mybutton extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(
+                          height: screenHeight * 0.014,
+                        ),
                         Text(
                           buttonText1,
                           style: const TextStyle(

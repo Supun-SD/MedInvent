@@ -3,59 +3,62 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:MedInvent/features/login/data/models/user_model.dart';
-import 'package:MedInvent/features/Profile/data/models/otp.dart';
+import 'package:MedInvent/features/Notifications/models/doctorArrive.dart';
 import 'dart:convert';
 
-class OTPNotification extends ConsumerStatefulWidget {
-  const OTPNotification({super.key});
+class ArriveNotification extends ConsumerStatefulWidget {
+  const ArriveNotification({super.key});
 
   @override
-  ConsumerState<OTPNotification> createState() => _OTPNotificationState();
+  ConsumerState<ArriveNotification> createState() => _ArriveNotificationState();
 }
 
-class _OTPNotificationState extends ConsumerState<OTPNotification> {
-  late Future<List<OTP>> otpList;
+class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
+  late Future<List<DoctorArrival>> arrivelList;
   late User user;
-  late OTP otp;
+  late DoctorArrival arriveReference;
 
   @override
   void initState() {
     super.initState();
-    fetchOTPNotifications();
+    arrivelList = Future.value([]);
+    _initialize();
   }
 
-  void fetchOTPNotifications() async {
+  void _initialize() async {
+    await _getUserID();
+    fetchArriveNotifications();
+  }
+
+  void fetchArriveNotifications() async {
     setState(() {
-      otpList= getOTPObjectList();
+      arrivelList = getArriveObjectList();
     });
 
     // Print the OTP list to the console
-    printOtpList();
+    //printOtpList();
   }
 
-  Future<void> printOtpList() async {
-    try {
-      List<OTP> otps = await otpList;
-      for (OTP otp in otps) {
-        print(otp.OTPNumber);
-        print(otp.sendBy);
-        print(otp.OTP_id);
-      }
-    } catch (e) {
-      print("Error printing OTP list: $e");
-    }
-  }
+  // Future<void> printOtpList() async {
+  //   try {
+  //     List<OTP> otps = await otpList;
+  //     for (OTP otp in otps) {
+  //       print(otp.OTPNumber);
+  //       print(otp.sendBy);
+  //       print(otp.OTP_id);
+  //     }
+  //   } catch (e) {
+  //     print("Error printing OTP list: $e");
+  //   }
+  // }
 
-  Future<List<OTP>> getOTPObjectList() async {
+  Future<List<DoctorArrival>> getArriveObjectList() async {
     try {
-      otp = OTP(0, "no", "987654321", "");
       BaseClient baseClient = BaseClient();
-      var response = await baseClient.post(
-          '/Notification/get/All/OTP', otp.toRawJson()
-      );
+      var response = await baseClient.get('/Session/get/All/arrive/messages/${user.userId}');
       if (response != null) {
         print(response);
-        return OTP.otpFromJson(response);
+        return DoctorArrival.otpFromJson(response);
       } else {
         return [];
       }
@@ -65,15 +68,23 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     }
   }
 
-  Future<void> _getNic() async {
-    print("heloo");
+  Future<void> _getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
-    String? receiverToken = prefs.getString('FcmToken') ?? "";
-    if (userJson != null) {
+    if (userJson != null ) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
-      otp.receiverToken = receiverToken;
+    }
+  }
+
+  Future<void> deleteArriveMessage(String id) async {
+    try {
+      BaseClient baseClient = BaseClient();
+      await baseClient.delete('/Session/delete/arrive/message/$id');
+      // Refresh the list after
+      fetchArriveNotifications();
+    } catch (e) {
+      print("Error: $e");
     }
   }
 
@@ -97,7 +108,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
             ),
           ),
         ),
-        title: const Text("OTP Messages"),
+        title: const Text("Doctor Arrived Messages"),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -119,14 +130,14 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.18),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Column(
                 children: [
                   SizedBox(
                     height: screenHeight * 0.055,
                   ),
-                  FutureBuilder<List<OTP>>(
-                    future: otpList,
+                  FutureBuilder<List<DoctorArrival>>(
+                    future: arrivelList,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
@@ -136,21 +147,22 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
                         return Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.05,
-                              vertical: screenHeight * 0.07
-                          ),
+                              vertical: screenHeight * 0.07),
                           child: Text(
-                            "NO any OTP messages in your history",
+                            "NO any  messages in your history",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: screenHeight * 0.02,
-                                color: Colors.grey
-                            ),
+                                color: Colors.grey),
                           ),
                         );
                       } else {
                         return Column(
                           children: snapshot.data!
-                              .map((e) => OtpCard(otp: e))
+                              .map((e) => OtpCard(
+                            arriveRef: e,
+                            onDelete: () => deleteArriveMessage(e.arrive_id!),
+                          ))
                               .toList(),
                         );
                       }
@@ -170,9 +182,10 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
 }
 
 class OtpCard extends StatelessWidget {
-  final OTP otp;
+  final DoctorArrival arriveRef;
+  final VoidCallback onDelete;
 
-  const OtpCard({Key? key, required this.otp}) : super(key: key);
+  const OtpCard({Key? key, required this.arriveRef,required this.onDelete}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +196,7 @@ class OtpCard extends StatelessWidget {
       padding: EdgeInsets.only(bottom: screenHeight * 0.02),
       child: Container(
         width: double.infinity,
-        height: screenHeight * 0.1,
+        height: screenHeight * 0.2,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(screenWidth * 0.07),
@@ -195,6 +208,7 @@ class OtpCard extends StatelessWidget {
           ],
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(
               width: screenWidth * 0.05,
@@ -204,24 +218,69 @@ class OtpCard extends StatelessWidget {
               height: screenWidth * 0.15,
             ),
             SizedBox(
-              width: screenWidth * 0.05,
+              width: screenWidth * 0.04,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  otp.sendBy!,
+                  "Doctor Arrived",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: screenHeight * 0.02
+                      fontSize: screenHeight * 0.02,
+                      color: Colors.blue[900]
                   ),
                 ),
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
                 Text(
-                  '${otp.OTPNumber}',
-                  style: TextStyle(fontSize: screenHeight * 0.015),
+                  arriveRef.clinicName!,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenHeight * 0.02),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.01,
+                ),
+                Text(
+                  arriveRef.doctorFullName!,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenHeight * 0.02),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.01,
+                ),
+                Text(
+                  '${arriveRef.date}',
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.02,
+                      fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.01,
+                ),
+                Text(
+                  'Visit your doctor !',
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.02,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.01,
                 )
               ],
+            ),
+            SizedBox(
+              width: screenWidth * 0.05,
+            ),
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.blue),
+              onPressed: onDelete,
             ),
           ],
         ),

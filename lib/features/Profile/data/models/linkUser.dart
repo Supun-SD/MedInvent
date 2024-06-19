@@ -53,7 +53,7 @@ class LinkUser {
     "receiverNic":receiverNic
   };
 
-  //eck entered OTP
+  //check entered OTP
   Map<String, dynamic> toJsonForFourthRequest() => {
     "FcmToken":FcmToken,
     "OTPNumber":OTPNumber,
@@ -66,6 +66,7 @@ class LinkUser {
     "mobileNo": mobileNo,
     "nic": receiverNic,
     "relationship":relationship,
+    "userID":LoggedUserID
   };
 
   //get logged data from shared preferences
