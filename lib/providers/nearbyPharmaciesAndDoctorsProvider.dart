@@ -69,7 +69,6 @@ class PharmaciesAndDoctorsNotifier
         throw Exception('Failed to load nearby pharmacies and clinics');
       }
     } catch (e) {
-      print(e);
       if (mounted) {
         _showErrorSnackBar('Failed to load nearby pharmacies and clinics.');
       }
