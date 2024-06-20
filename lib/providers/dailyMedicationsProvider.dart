@@ -71,6 +71,9 @@ class DailyMedicationNotifier extends StateNotifier<DailyMedicationState> {
       dailyMedications: state.dailyMedications,
       isLoading: true,
     );
+    final body = jsonEncode({
+      'currentStatus': medicationIntake.taken,
+    });
 
     try {
       final response = await http.put(
@@ -79,11 +82,11 @@ class DailyMedicationNotifier extends StateNotifier<DailyMedicationState> {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
+        body: body
       );
 
       if (response.statusCode == 200) {
-        medicationIntake.taken = true;
-        _showSnackBar("Medication marked as taken", "success");
+        medicationIntake.taken = !medicationIntake.taken;
       } else {
         throw Exception('Failed to mark the medicine as taken');
       }

@@ -196,41 +196,34 @@ class _MarkerState extends ConsumerState<Marker> {
               ),
             )
           else
-            widget.medicationIntake.taken
-                ? const Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                    ))
-                : Checkbox(
-                    value: widget.medicationIntake.taken,
-                    onChanged: (bool? value) async {
-                      setState(() {
-                        isLoading = true;
-                      });
-
-                      try {
-                        await ref
-                            .read(dailyMedicationsProvider.notifier)
-                            .updateDailyMedication(widget.medicationIntake.id,
-                                widget.medicationIntake);
-                        setState(() {
-                          widget.medicationIntake.taken = value ?? false;
-                          isLoading = false;
-                        });
-                      } catch (e) {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }
-                    },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.standard,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
+            Checkbox(
+              value: widget.medicationIntake.taken,
+              activeColor: Colors.green,
+              onChanged: (bool? value) async {
+                setState(() {
+                  isLoading = true;
+                });
+                try {
+                  await ref
+                      .read(dailyMedicationsProvider.notifier)
+                      .updateDailyMedication(
+                          widget.medicationIntake.id, widget.medicationIntake);
+                  setState(() {
+                    widget.medicationIntake.taken = value ?? false;
+                    isLoading = false;
+                  });
+                } catch (e) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                }
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.standard,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
           Text(formatTime(widget.medicationIntake.time)),
         ],
       ),
