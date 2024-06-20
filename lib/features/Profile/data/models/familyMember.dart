@@ -21,6 +21,7 @@ class FamilyMember extends Profile {
   factory FamilyMember.fromRawJson(String str) => FamilyMember.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
+  String toRawJsonCreate() => json.encode(toJsonCreate());
 
   static List<FamilyMember> userDependFromJson(String str) {
     final jsonData = json.decode(str);
@@ -52,6 +53,17 @@ class FamilyMember extends Profile {
    // "prescriptionsAssigned": prescriptionsAssigned,
     "relationship": relationship,
     "dID":dID
+  };
+
+  Map<String, dynamic> toJsonCreate() => {
+    "Fname": fname,
+    "Lname": lname,
+    "dob": dob?.toIso8601String(),
+    "gender": gender,
+    "picPath": picPath,
+    "nic": nic,
+    // "prescriptionsAssigned": prescriptionsAssigned,
+    "relationship": relationship,
   };
 
 

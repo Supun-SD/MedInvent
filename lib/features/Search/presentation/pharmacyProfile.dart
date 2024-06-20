@@ -2,10 +2,101 @@ import 'package:MedInvent/features/Search/presentation/doctorProfile.dart';
 import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../providers/nearbyPharmaciesAndDoctorsProvider.dart';
 
 class PharmacyProfile extends StatelessWidget {
   const PharmacyProfile({required this.pharmacy, super.key});
   final Pharmacy pharmacy;
+
+  void openDialer() async {
+    const String telNumber = '+94773841819';
+    final Uri dialNumber = Uri(
+      scheme: 'tel',
+      path: telNumber,
+    );
+    try {
+      if (await canLaunchUrl(dialNumber)) {
+        await launchUrl(dialNumber);
+      } else {
+        throw 'Could not launch $dialNumber';
+      }
+    } catch (e) {
+      _showError("Error");
+    }
+  }
+
+  void openGmail() async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: pharmacy.email,
+    );
+
+    if (pharmacy.email == null) {
+      _showError("No email for this pharmacy");
+      return;
+    }
+
+    try {
+      if (await canLaunchUrl(emailLaunchUri)) {
+        await launchUrl(emailLaunchUri);
+      } else {
+        throw 'Could not launch $emailLaunchUri';
+      }
+    } catch (e) {
+      _showError("Error");
+    }
+  }
+
+  void openMessageApp() async {
+    String phoneNumber = pharmacy.contactNo;
+    final Uri smsUri = Uri(
+      scheme: 'sms',
+      path: phoneNumber,
+    );
+
+    try {
+      if (await canLaunchUrl(smsUri)) {
+        await launchUrl(smsUri);
+      } else {
+        throw 'Could not launch $smsUri';
+      }
+    } catch (e) {
+      _showError("Error");
+    }
+  }
+
+  void openGoogleMaps() async {
+    final Uri googleMapsUri = Uri(
+      scheme: 'https',
+      host: 'www.google.com',
+      path: '/maps',
+      queryParameters: {
+        'q': '${pharmacy.lat},${pharmacy.long}(${pharmacy.name})',
+        'z': '15',
+      },
+    );
+    try {
+      if (await canLaunchUrl(googleMapsUri)) {
+        await launchUrl(googleMapsUri);
+      } else {
+        throw 'Could not launch $googleMapsUri';
+      }
+    } catch (e) {
+      _showError("Error");
+    }
+  }
+
+  void _showError(String text) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +184,24 @@ class PharmacyProfile extends StatelessWidget {
                                         color: Color(0xFF2980B9),
                                       ),
                                       child: IconButton(
-                                        onPressed: () {},
+                                        onPressed: openDialer,
+                                        icon: const Icon(Icons.call,
+                                            color: Colors.white, size: 20),
+                                        padding: const EdgeInsets.all(8.0),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Container(
+                                      width: 45.0,
+                                      height: 45.0,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0xFF2980B9),
+                                      ),
+                                      child: IconButton(
+                                        onPressed: openGmail,
                                         icon: const Icon(
                                             Icons.mail_outline_rounded,
                                             color: Colors.white,
@@ -112,24 +220,7 @@ class PharmacyProfile extends StatelessWidget {
                                         color: Color(0xFF2980B9),
                                       ),
                                       child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.link,
-                                            color: Colors.white, size: 20),
-                                        padding: const EdgeInsets.all(8.0),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      width: 45.0,
-                                      height: 45.0,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xFF2980B9),
-                                      ),
-                                      child: IconButton(
-                                        onPressed: () {},
+                                        onPressed: openMessageApp,
                                         icon: const Icon(Icons.message_outlined,
                                             color: Colors.white, size: 20),
                                         padding: const EdgeInsets.all(8.0),
@@ -146,7 +237,7 @@ class PharmacyProfile extends StatelessWidget {
                                         color: Color(0xFF2980B9),
                                       ),
                                       child: IconButton(
-                                        onPressed: () {},
+                                        onPressed: openGoogleMaps,
                                         icon: const Icon(
                                             Icons.location_on_outlined,
                                             color: Colors.white,
@@ -327,26 +418,6 @@ class Details extends StatelessWidget {
             )
           ],
         ),
-        SizedBox(
-          height: screenHeight * 0.05,
-        ),
-        TextButton(
-          onPressed: () {},
-          style: ButtonStyle(
-            side: MaterialStateProperty.all(
-                const BorderSide(color: Color(0xFF2980B9), width: 1.0)),
-            foregroundColor: MaterialStateProperty.all(const Color(0xFF2980B9)),
-            padding: MaterialStateProperty.all(
-                EdgeInsets.symmetric(horizontal: screenWidth * 0.1)),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: const BorderSide(color: Color(0xFF2980B9), width: 1.0),
-              ),
-            ),
-          ),
-          child: const Text("Provide feedback"),
-        )
       ],
     );
   }

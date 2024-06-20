@@ -320,14 +320,6 @@ class DrugTemplate extends StatefulWidget {
 }
 
 class _DrugTemplateState extends State<DrugTemplate> {
-  int calculateDaysLeft(String createdAt, int duration) {
-    DateTime createdAtDate = DateTime.parse(createdAt);
-    DateTime today = DateTime.now();
-    int differenceInDays = today.difference(createdAtDate).inDays;
-    int daysLeft = duration - differenceInDays;
-
-    return daysLeft;
-  }
 
   List<String> reminders = [];
 
@@ -350,8 +342,7 @@ class _DrugTemplateState extends State<DrugTemplate> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    Color daysLeftColor = calculateDaysLeft(
-                widget.prescription.createdAt, widget.medicine.duration) <
+    Color daysLeftColor = widget.medicine.remainingDays <
             3
         ? Colors.red
         : Colors.green;
@@ -408,11 +399,10 @@ class _DrugTemplateState extends State<DrugTemplate> {
                         width: screenWidth * 0.2,
                         child: Center(
                             child: Text(
-                          calculateDaysLeft(widget.prescription.createdAt,
-                                      widget.medicine.duration) <
+                          widget.medicine.remainingDays <
                                   0
                               ? 'Finished'
-                              : '${calculateDaysLeft(widget.prescription.createdAt, widget.medicine.duration)} days left',
+                              : '${widget.medicine.remainingDays} days left',
                           style: TextStyle(
                             fontSize: screenHeight * 0.012,
                             color: Colors.white,

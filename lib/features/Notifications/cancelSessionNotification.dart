@@ -3,36 +3,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:MedInvent/features/login/data/models/user_model.dart';
-import 'package:MedInvent/features/Profile/data/models/otp.dart';
+import 'package:MedInvent/features/Notifications/models/cancelsession.dart';
 import 'dart:convert';
 
-class OTPNotification extends ConsumerStatefulWidget {
-  const OTPNotification({super.key});
+class CancelNotification extends ConsumerStatefulWidget {
+  const CancelNotification({super.key});
 
   @override
-  ConsumerState<OTPNotification> createState() => _OTPNotificationState();
+  ConsumerState<CancelNotification> createState() => _CancelNotificationState();
 }
 
-class _OTPNotificationState extends ConsumerState<OTPNotification> {
-  late Future<List<OTP>> otpList;
+class _CancelNotificationState extends ConsumerState<CancelNotification> {
+  late Future<List<CancelSession>> cancelList;
   late User user;
-  late OTP otp;
+  late CancelSession cancelSession;
 
   @override
   void initState() {
     super.initState();
-    otpList = Future.value([]);
+    cancelList = Future.value([]);
     _initialize();
   }
 
   void _initialize() async {
-    await _getNic();
-    fetchOTPNotifications();
+    await _getUserID();
+    fetchCancelNotifications();
   }
 
-  void fetchOTPNotifications() async {
+  void fetchCancelNotifications() async {
     setState(() {
-      otpList = getOTPObjectList();
+      cancelList = getCancelObjectList();
     });
 
     // Print the OTP list to the console
@@ -52,16 +52,13 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
   //   }
   // }
 
-  Future<List<OTP>> getOTPObjectList() async {
+  Future<List<CancelSession>> getCancelObjectList() async {
     try {
-      //user.nic
-      otp = OTP(0, "no","987654321", "");
       BaseClient baseClient = BaseClient();
-      var response =
-          await baseClient.post('/Notification/get/All/OTP', otp.toRawJson());
+      var response = await baseClient.get('/Session/get/All/cancel/sessions/${user.userId}');
       if (response != null) {
         print(response);
-        return OTP.otpFromJson(response);
+        return CancelSession.otpFromJson(response);
       } else {
         return [];
       }
@@ -71,24 +68,21 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     }
   }
 
-  Future<void> _getNic() async {
-    print("heloo");
+  Future<void> _getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
-    //String? receiverToken = prefs.getString('FcmToken');
     if (userJson != null ) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
-     // otp.receiverToken = receiverToken;
     }
   }
 
-  Future<void> deleteReceiveOTP(String id) async {
+  Future<void> deleteCancelSession(String id) async {
     try {
       BaseClient baseClient = BaseClient();
-      await baseClient.delete('/Notification/Receive/delete/$id');
+      await baseClient.delete('/Session/cancel/delete/$id');
       // Refresh the list after
-      fetchOTPNotifications();
+      fetchCancelNotifications();
     } catch (e) {
       print("Error: $e");
     }
@@ -114,7 +108,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
             ),
           ),
         ),
-        title: const Text("OTP Messages"),
+        title: const Text("Hospital Cancel Session Messages"),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -136,14 +130,14 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.18),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.09),
               child: Column(
                 children: [
                   SizedBox(
                     height: screenHeight * 0.055,
                   ),
-                  FutureBuilder<List<OTP>>(
-                    future: otpList,
+                  FutureBuilder<List<CancelSession>>(
+                    future: cancelList,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
@@ -155,7 +149,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
                               horizontal: screenWidth * 0.05,
                               vertical: screenHeight * 0.07),
                           child: Text(
-                            "NO any OTP messages in your history",
+                            "NO any cancel session messages in your history",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: screenHeight * 0.02,
@@ -166,8 +160,8 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
                         return Column(
                           children: snapshot.data!
                               .map((e) => OtpCard(
-                              otp: e,
-                              onDelete: () => deleteReceiveOTP(e.OTP_id!),
+                              cancelRef: e,
+                              onDelete: () => deleteCancelSession(e.cancel_id!),
                           ))
                               .toList(),
                         );
@@ -188,10 +182,10 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
 }
 
 class OtpCard extends StatelessWidget {
-  final OTP otp;
+  final CancelSession cancelRef;
   final VoidCallback onDelete;
 
-  const OtpCard({Key? key, required this.otp, required this.onDelete}) : super(key: key);
+  const OtpCard({Key? key, required this.cancelRef,required this.onDelete}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +196,7 @@ class OtpCard extends StatelessWidget {
       padding: EdgeInsets.only(bottom: screenHeight * 0.02),
       child: Container(
         width: double.infinity,
-        height: screenHeight * 0.1,
+        height: screenHeight * 0.2,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(screenWidth * 0.07),
@@ -231,14 +225,53 @@ class OtpCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  otp.sendBy!,
+                  "session cancelled",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenHeight * 0.02,
+                      color: Colors.blue[900]
+                  ),
+                ),
+                SizedBox(
+                  height: screenWidth * 0.03,
+                ),
+                Text(
+                  cancelRef.clinicName!,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: screenHeight * 0.02),
                 ),
+                SizedBox(
+                  height: screenWidth * 0.02,
+                ),
                 Text(
-                  '${otp.OTPNumber}',
-                  style: TextStyle(fontSize: screenHeight * 0.023),
+                  cancelRef.doctorFullName!,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenHeight * 0.02),
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
+                ),
+                Text(
+                  '${cancelRef.date}',
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.02,
+                      fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
+                ),
+                Text(
+                  'Sorry For Inconvenience !',
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.02,
+                      fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
                 )
               ],
             ),

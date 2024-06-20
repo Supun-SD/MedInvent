@@ -4,6 +4,22 @@ import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 import 'package:MedInvent/features/Profile/data/models/linkUser.dart';
 import 'dart:convert';
 
+class DependProvider extends InheritedWidget {
+  final LinkUser? newDepend;
+
+  DependProvider({Key? key, required Widget child, required this.newDepend})
+      : super(key: key, child: child);
+
+  static DependProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<DependProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(DependProvider oldWidget) {
+    return oldWidget.newDepend != newDepend;
+  }
+}
+
 class AddExistingMember extends StatefulWidget {
   const AddExistingMember({super.key});
 
@@ -13,31 +29,44 @@ class AddExistingMember extends StatefulWidget {
 
 class _AddExistingMemberState extends State<AddExistingMember> {
   final PageController _pageController = PageController(initialPage: 0);
+  LinkUser? newDepend;
+
+  void setNewDepend(LinkUser depend) {
+    setState(() {
+      newDepend = depend;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
 
-    return SizedBox(
-      height: screenHeight * 0.5 + keyboardSpace,
-      child: PageView(
+    return DependProvider(
+      newDepend: newDepend,
+      child: SizedBox(
+        height: screenHeight * 0.5 + keyboardSpace,
+        child: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
             LinkProfile(
               pageController: _pageController,
+              setNewDepend: setNewDepend,
             ),
             OtpVerify(pageController: _pageController),
-          ]),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class LinkProfile extends StatefulWidget {
   final PageController pageController;
+  final void Function(LinkUser) setNewDepend;
 
-  LinkProfile({super.key, required this.pageController});
+  LinkProfile({super.key, required this.pageController, required this.setNewDepend});
 
   @override
   State<LinkProfile> createState() => _LinkProfileState();
@@ -45,9 +74,7 @@ class LinkProfile extends StatefulWidget {
 
 class _LinkProfileState extends State<LinkProfile> {
   TextEditingController relationship = TextEditingController();
-
   TextEditingController mobileNo = TextEditingController();
-
   TextEditingController nic = TextEditingController();
 
   Future<bool> checkUserAvailabe() async {
@@ -106,6 +133,7 @@ class _LinkProfileState extends State<LinkProfile> {
         } else {
           return false;
         }
+        widget.setNewDepend(newDepend); // Set newDepend
         return true;
       } else {
         return false;
@@ -147,7 +175,7 @@ class _LinkProfileState extends State<LinkProfile> {
             //have to do validation before send backend
             var is_available = await checkUserAvailabe();
             if (is_available) {
-              widget.pageController.animateToPage(2,
+              widget.pageController.animateToPage(1,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOut);
             }
@@ -185,7 +213,7 @@ class OtpVerify extends StatefulWidget {
 
 class _OtpVerifyState extends State<OtpVerify> {
   final List<TextEditingController> controllers =
-      List.generate(4, (index) => TextEditingController());
+  List.generate(4, (index) => TextEditingController());
 
   @override
   void dispose() {
@@ -205,10 +233,52 @@ class _OtpVerifyState extends State<OtpVerify> {
     return otp;
   }
 
+  Future<bool> addProcess(LinkUser newDepend) async {
+    try {
+      BaseClient baseClient = BaseClient();
+      var response = await baseClient.post(
+          '/Notification/check/OTP', newDepend.toRawJsonForFourthRequest());
+      if (response != null) {
+        // Handle successful response
+        //print(response);
+        Map<String, dynamic> decodedJson = json.decode(response);
+        print(response);
+        bool is_correctOTP = decodedJson['data'];
+        if (is_correctOTP) {
+          baseClient = BaseClient();
+          print(newDepend.toJsonForFifthRequest());
+          var response = await baseClient.post(
+              '/DependMember/add/new/linked/DependMember', json.encode(newDepend.toJsonForFifthRequest()));
+          if (response != null) {
+            Map<String, dynamic> decodedJson = json.decode(response);
+            String data = decodedJson['data']['dID'];
+            if(data!=null){
+              return true;
+            }
+            else{
+              return false;
+            }
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } catch (e) {
+      // Handle error
+      print("Error: $e");
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    final newDepend = DependProvider.of(context)?.newDepend;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -243,7 +313,25 @@ class _OtpVerifyState extends State<OtpVerify> {
           height: screenHeight * 0.05,
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async{
+            if (newDepend != null) {
+              var getOTPValue =_getOtp();
+              if(getOTPValue!= null){
+                newDepend.OTPNumber=int.parse(getOTPValue);
+                var addNewDependdata = await addProcess(newDepend);
+                if(addNewDependdata){
+                  print("process success");
+                }
+                else{
+                  print("invalid OTP");
+                }
+              }
+              else{
+                print("OTP is null");
+              }
+            } else {
+              print("null new depend");
+            }
             Navigator.pop(context);
           },
           style: TextButton.styleFrom(
@@ -275,13 +363,6 @@ class Input extends StatelessWidget {
   const Input({Key? key, required this.label, required this.controller})
       : super(key: key);
 
-  // String? _validateInput(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return 'Please enter a title';
-  //   }
-  //   return null;
-  // }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -293,7 +374,6 @@ class Input extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        // validator: _validateInput,
         decoration: InputDecoration(
           labelText: label,
           contentPadding: EdgeInsets.only(left: screenWidth * 0.05),

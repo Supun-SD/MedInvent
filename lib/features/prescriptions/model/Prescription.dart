@@ -46,6 +46,7 @@ class PresMedicine {
   String frq;
   String mealTiming;
   int duration;
+  int remainingDays;
   List<String>? reminders;
   String? prescriptionId;
 
@@ -56,6 +57,7 @@ class PresMedicine {
     required this.frq,
     required this.mealTiming,
     required this.duration,
+    required this.remainingDays,
     this.reminders,
     this.prescriptionId,
   });
@@ -68,6 +70,7 @@ class PresMedicine {
       frq: json['frq'],
       mealTiming: json['mealTiming'],
       duration: json['duration'],
+      remainingDays: json['remainingDays'],
       reminders: json['reminders'] != null
           ? List<String>.from(json['reminders'])
           : null,
@@ -85,6 +88,7 @@ Prescription mapNewPrescriptionToPrescription(
       frq: newMed.frq,
       mealTiming: newMed.mealTiming,
       duration: newMed.duration,
+      remainingDays: newMed.duration,
       reminders: newMed.reminders,
     );
   }).toList();
