@@ -528,6 +528,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  payhere_mobilesdk_flutter:
+    dependency: "direct main"
+    description:
+      name: payhere_mobilesdk_flutter
+      sha256: defb3e9fe187361e5b7f5ce0adca7d2668f6d8cc38b6fa374aa0472933bf5573
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.10"
   platform:
     dependency: transitive
     description:
@@ -734,5 +742,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.1.4 <4.0.0"
+  dart: ">=3.1.4 <=3.4.4"
   flutter: ">=3.13.0"
