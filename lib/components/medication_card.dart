@@ -1,3 +1,4 @@
+import 'package:MedInvent/components/step_progress_bar.dart';
 import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
 import 'package:flutter/material.dart';
 import '../features/Daily_medication/models/DailyMedication.dart';
@@ -102,67 +103,9 @@ class PrescriptionTemplate extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
-          StepProgressIndicator(totalSteps: totalMeds, currentStep: takenMeds)
+          StepProgressBar(totalSteps: totalMeds, currentStep: takenMeds)
         ],
       ),
-    );
-  }
-}
-
-class StepProgressIndicator extends StatelessWidget {
-  final int totalSteps;
-  final int currentStep;
-
-  const StepProgressIndicator({
-    super.key,
-    required this.totalSteps,
-    required this.currentStep,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: 300,
-          height: 25,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.black12, Colors.black12],
-            ),
-          ),
-        ),
-        Container(
-          width: currentStep * 25,
-          height: 25,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color.fromARGB(150, 63, 195, 128), Colors.black12],
-            ),
-          ),
-        ),
-        Positioned(
-          left: 25 * (currentStep - 1),
-          child: Container(
-            width: 25,
-            height: 25,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: Colors.transparent,
-            ),
-            child: const Icon(
-              Icons.check,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
