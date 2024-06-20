@@ -95,6 +95,15 @@ class _MapPageState extends ConsumerState<MapPage> {
     }
 
     for (NearByClinic clinic in nearbyClinics) {
+      int activeSessions = 0;
+      for (Session session in clinic.sessions) {
+        if (!session.isCancelled) {
+          activeSessions++;
+        }
+      }
+      if (activeSessions == 0) {
+        continue;
+      }
       Marker marker = Marker(
           markerId: MarkerId(clinic.clinicId),
           position: LatLng(clinic.location.lat, clinic.location.long),
@@ -333,10 +342,10 @@ class _MapPageState extends ConsumerState<MapPage> {
                   ),
                   const SizedBox(height: 20.0),
                   Column(
-                    children: clinic.sessions
-                        .map((session) => SessionTemp(session: session))
-                        .toList(),
-                  ),
+                      children: clinic.sessions
+                          .where((session) => !session.isCancelled)
+                          .map((session) => SessionTemp(session: session))
+                          .toList()),
                 ],
               ),
             ),
