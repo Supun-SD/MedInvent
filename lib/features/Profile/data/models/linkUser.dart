@@ -55,7 +55,6 @@ class LinkUser {
 
   //check entered OTP
   Map<String, dynamic> toJsonForFourthRequest() => {
-    "FcmToken":FcmToken,
     "OTPNumber":OTPNumber,
     "senderUUID":LoggedUserID,
     "receiverNic":receiverNic

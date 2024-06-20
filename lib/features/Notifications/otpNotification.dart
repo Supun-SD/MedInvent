@@ -55,7 +55,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
   Future<List<OTP>> getOTPObjectList() async {
     try {
       //user.nic
-      otp = OTP(0, "no","987654321", "");
+      otp = OTP(0, "no",user.nic, "");
       BaseClient baseClient = BaseClient();
       var response =
           await baseClient.post('/Notification/get/All/OTP', otp.toRawJson());

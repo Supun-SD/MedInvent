@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:MedInvent/features/Notifications/cancelSessionNotification.dart';
+import 'package:MedInvent/features/Notifications/doctorArriveNotification.dart';
 import 'package:MedInvent/providers/nearbyPharmaciesAndDoctorsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,7 +78,10 @@ class MyApp extends StatelessWidget {
        routes: {
          '/':((context)=> CheckAuth()),
          '/notifications':((context)=>const OTPNotification()),
-         '/landing':((contex)=>const Landing())
+         '/landing':((context)=>const Landing()),
+         '/linkDevice':((context)=>const OTPNotification()),
+         '/ArriveNotification':((context)=>const ArriveNotification()),
+         '/CancelNotification':((context)=>const CancelNotification())
        },
     );
   }

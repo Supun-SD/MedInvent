@@ -88,8 +88,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         _invalidCredentials();
       } finally {
         setState(() {
-          isLoading = false;
-        });
+          isLoading = false;        });
       }
     } else {
       _invalidCredentials();

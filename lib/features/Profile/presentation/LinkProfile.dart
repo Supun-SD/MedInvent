@@ -236,19 +236,24 @@ class _OtpVerifyState extends State<OtpVerify> {
   Future<bool> addProcess(LinkUser newDepend) async {
     try {
       BaseClient baseClient = BaseClient();
+      print(newDepend.FcmToken);
+      print(newDepend.OTPNumber);
+      print(newDepend.LoggedUserID);
+      print(newDepend.receiverNic);
       var response = await baseClient.post(
           '/Notification/check/OTP', newDepend.toRawJsonForFourthRequest());
       if (response != null) {
-        // Handle successful response
-        //print(response);
         Map<String, dynamic> decodedJson = json.decode(response);
         print(response);
         bool is_correctOTP = decodedJson['data'];
+        print(is_correctOTP);
         if (is_correctOTP) {
+          print("is_correctOTP $is_correctOTP");
           baseClient = BaseClient();
-          print(newDepend.toJsonForFifthRequest());
+         // print(newDepend.toJsonForFifthRequest());
+          print("before request send");
           var response = await baseClient.post(
-              '/DependMember/add/new/linked/DependMember', json.encode(newDepend.toJsonForFifthRequest()));
+              '/DependMember/add/new/linked/DependMember',newDepend.toRawJsonForFifthRequest());
           if (response != null) {
             Map<String, dynamic> decodedJson = json.decode(response);
             String data = decodedJson['data']['dID'];
@@ -256,9 +261,11 @@ class _OtpVerifyState extends State<OtpVerify> {
               return true;
             }
             else{
+              print("data null");
               return false;
             }
           } else {
+            print("response null");
             return false;
           }
         } else {
