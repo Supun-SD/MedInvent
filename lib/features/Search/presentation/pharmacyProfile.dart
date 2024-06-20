@@ -11,10 +11,9 @@ class PharmacyProfile extends StatelessWidget {
   final Pharmacy pharmacy;
 
   void openDialer() async {
-    const String telNumber = '+94773841819';
     final Uri dialNumber = Uri(
       scheme: 'tel',
-      path: telNumber,
+      path: pharmacy.contactNo,
     );
     try {
       if (await canLaunchUrl(dialNumber)) {

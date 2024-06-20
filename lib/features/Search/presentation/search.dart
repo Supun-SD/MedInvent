@@ -6,22 +6,25 @@ import 'package:MedInvent/features/Search/presentation/medicineProfile.dart';
 import 'package:MedInvent/features/Search/models/Doctor.dart';
 import 'package:MedInvent/features/Search/models/Pharmacy.dart';
 import 'package:MedInvent/features/Search/presentation/pharmacyProfile.dart';
+import 'package:MedInvent/providers/models/nearbyClinic.dart';
 import 'package:flutter/material.dart';
-
+import 'package:MedInvent/providers/nearbyPharmaciesAndDoctorsProvider.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Search/presentation/advancedSearch.dart';
 import 'package:MedInvent/features/Search/data/categories.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
-class Search extends StatefulWidget {
+class Search extends ConsumerStatefulWidget {
   const Search({super.key});
 
   @override
-  State<Search> createState() => _SearchState();
+  ConsumerState<Search> createState() => _SearchState();
 }
 
-class _SearchState extends State<Search> {
+class _SearchState extends ConsumerState<Search> {
   String selectedValue = 'Doctors';
   TextEditingController search = TextEditingController();
 
@@ -31,6 +34,20 @@ class _SearchState extends State<Search> {
   void dispose() {
     search.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initialization();
+  }
+
+  void initialization() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref
+          .read(pharmaciesAndDoctorsProvider.notifier)
+          .checkLocationPermission();
+    });
   }
 
   List<Doctor> doctors = [];
@@ -135,6 +152,26 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    bool isNearbyLoading = ref.watch(pharmaciesAndDoctorsProvider).isLoading;
+
+    List<Pharmacy> nearbyPharmacies =
+        ref.watch(pharmaciesAndDoctorsProvider).nearbyPharmacies;
+    List<NearByClinic> nearbyClinics =
+        ref.watch(pharmaciesAndDoctorsProvider).nearbyDoctors;
+    List<Doctor> nearbyDoctors = [];
+
+    Set<String> doctorIds = {};
+
+    for (var clinic in nearbyClinics) {
+      for (var session in clinic.sessions) {
+        if (!doctorIds.contains(session.doctor.id)) {
+          doctorIds.add(session.doctor.id!);
+          nearbyDoctors.add(session.doctor);
+        }
+      }
+    }
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -295,8 +332,7 @@ class _SearchState extends State<Search> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: importantCategories.map((category) {
-                            return Category(
-                                category: category);
+                            return Category(category: category);
                           }).toList(),
                         ),
                       ),
@@ -309,19 +345,47 @@ class _SearchState extends State<Search> {
                             fontSize: screenWidth * 0.05,
                             fontWeight: FontWeight.bold),
                       ),
-                      // SingleChildScrollView(
-                      //   scrollDirection: Axis.horizontal,
-                      //   child: Row(
-                      //     children: doctors.map((doctor) {
-                      //       return Padding(
-                      //           padding: EdgeInsets.symmetric(
-                      //               vertical: screenHeight * 0.02),
-                      //           child: NearbyDoctor(
-                      //             doctor: doctor,
-                      //           ));
-                      //     }).toList(),
-                      //   ),
-                      // ),
+                      if (isNearbyLoading)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.05),
+                          child: const SpinKitCircle(
+                            size: 30,
+                            color: Colors.blue,
+                          ),
+                        )
+                      else
+                        nearbyDoctors.isEmpty
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    right: screenWidth * 0.05,
+                                    top: screenHeight * 0.02,
+                                    bottom: screenHeight * 0.02),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF0F0F0),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.05,
+                                    horizontal: screenWidth * 0.1),
+                                child: const Text(
+                                  "There are no any doctors with sessions near you today",
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                            : SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: nearbyDoctors.map((doctor) {
+                                    return Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: screenHeight * 0.02),
+                                        child: NearbyDoctor(
+                                          doctor: doctor,
+                                        ));
+                                  }).toList(),
+                                ),
+                              ),
                       SizedBox(
                         height: screenHeight * 0.015,
                       ),
@@ -331,14 +395,47 @@ class _SearchState extends State<Search> {
                             fontSize: screenWidth * 0.05,
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
-                        height: screenHeight * 0.025,
-                      ),
-                      ...pharmacies
-                          .map((p) => NearbyPharmacy(
-                                pharmacy: p,
-                              ))
-                          .toList(),
+                      if (isNearbyLoading)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.05),
+                          child: const SpinKitCircle(
+                            size: 30,
+                            color: Colors.blue,
+                          ),
+                        )
+                      else
+                        nearbyPharmacies.isEmpty
+                            ? Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.only(
+                                    right: screenWidth * 0.05,
+                                    top: screenHeight * 0.02,
+                                    bottom: screenHeight * 0.02),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF0F0F0),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.05,
+                                    horizontal: screenWidth * 0.1),
+                                child: const Text(
+                                  "There are no any pharmacies near you",
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  SizedBox(
+                                    height: screenHeight * 0.02,
+                                  ),
+                                  ...nearbyPharmacies
+                                      .map((p) => NearbyPharmacy(
+                                            pharmacy: p,
+                                          ))
+                                      .toList(),
+                                ],
+                              ),
                       SizedBox(
                         height: screenHeight * 0.1,
                       ),
@@ -545,79 +642,127 @@ class Category extends StatelessWidget {
   }
 }
 
-// class NearbyDoctor extends StatelessWidget {
-//   const NearbyDoctor({required this.doctor, super.key});
-//   final Doctor doctor;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final double screenWidth = MediaQuery.of(context).size.width;
-//     final double screenHeight = MediaQuery.of(context).size.height;
-//
-//     return InkWell(
-//       onTap: () {
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//               builder: (context) => DoctorProfile(doctor: doctor)),
-//         );
-//       },
-//       child: Container(
-//         margin: EdgeInsets.only(right: screenWidth * 0.03),
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           borderRadius: BorderRadius.circular(20),
-//           boxShadow: [
-//             BoxShadow(
-//                 color: Colors.grey.withOpacity(0.5),
-//                 blurRadius: 10,
-//                 offset: const Offset(5, 0)),
-//           ],
-//         ),
-//         child: ClipRRect(
-//           borderRadius: BorderRadius.circular(20),
-//           child: Column(
-//             children: [
-//               Image.asset(
-//                 'assets/images/doctor.jpg',
-//                 height: screenHeight * 0.15,
-//               ),
-//               SizedBox(
-//                 height: screenHeight * 0.01,
-//               ),
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     '${doctor.fname} ${doctor.lname}',
-//                     style: TextStyle(
-//                         fontWeight: FontWeight.bold,
-//                         fontSize: screenWidth * 0.028),
-//                   ),
-//                   SizedBox(
-//                     height: screenHeight * 0.005,
-//                   ),
-//                   Text(
-//                     doctor.specialization,
-//                     style: TextStyle(fontSize: screenWidth * 0.025),
-//                   )
-//                 ],
-//               ),
-//               SizedBox(
-//                 height: screenHeight * 0.02,
-//               )
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+class NearbyDoctor extends StatelessWidget {
+  const NearbyDoctor({required this.doctor, super.key});
+  final Doctor doctor;
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoctorProfile(doctor: doctor)),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: screenWidth * 0.03),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 10,
+                offset: const Offset(5, 0)),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/images/doctor.jpg',
+                height: screenHeight * 0.15,
+              ),
+              SizedBox(
+                height: screenHeight * 0.01,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${doctor.fname} ${doctor.lname}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth * 0.028),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.005,
+                  ),
+                  Text(
+                    doctor.specialization!,
+                    style: TextStyle(fontSize: screenWidth * 0.025),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: screenHeight * 0.02,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class NearbyPharmacy extends StatelessWidget {
   const NearbyPharmacy({required this.pharmacy, super.key});
 
   final Pharmacy pharmacy;
+
+  void openDialer() async {
+    final Uri dialNumber = Uri(
+      scheme: 'tel',
+      path: pharmacy.contactNo,
+    );
+    try {
+      if (await canLaunchUrl(dialNumber)) {
+        await launchUrl(dialNumber);
+      } else {
+        throw 'Could not launch $dialNumber';
+      }
+    } catch (e) {
+      _showError("Error");
+    }
+  }
+
+  void openGoogleMaps() async {
+    final Uri googleMapsUri = Uri(
+      scheme: 'https',
+      host: 'www.google.com',
+      path: '/maps',
+      queryParameters: {
+        'q': '${pharmacy.lat},${pharmacy.long}(${pharmacy.name})',
+        'z': '15',
+      },
+    );
+    try {
+      if (await canLaunchUrl(googleMapsUri)) {
+        await launchUrl(googleMapsUri);
+      } else {
+        throw 'Could not launch $googleMapsUri';
+      }
+    } catch (e) {
+      _showError("Error");
+    }
+  }
+
+  void _showError(String text) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -637,11 +782,11 @@ class NearbyPharmacy extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              blurRadius: 15,
+              color: Colors.grey.withOpacity(0.4),
+              blurRadius: 10,
             ),
           ],
         ),
@@ -652,10 +797,11 @@ class NearbyPharmacy extends StatelessWidget {
             Row(
               children: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: openGoogleMaps,
                     icon: const Icon(Icons.location_on_outlined)),
                 IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.call_outlined)),
+                    onPressed: openDialer,
+                    icon: const Icon(Icons.call_outlined)),
               ],
             )
           ],
