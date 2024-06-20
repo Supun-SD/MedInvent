@@ -1,9 +1,11 @@
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/presentation/addFamilyMember.dart';
+import 'package:MedInvent/providers/authProvider.dart';
+import 'package:MedInvent/providers/familyMembersProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'FamilyMemberProfile.dart';
-import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 
 class FamilyMembers extends ConsumerStatefulWidget {
   const FamilyMembers({super.key});
@@ -13,52 +15,27 @@ class FamilyMembers extends ConsumerStatefulWidget {
 }
 
 class _FamilyMembersState extends ConsumerState<FamilyMembers> {
-  late Future<List<FamilyMember>> familyMembers;
-
   @override
   void initState() {
     super.initState();
-    fetchFamilyMembers();
+    initialize();
   }
 
-  void fetchFamilyMembers() {
-    setState(() {
-      familyMembers = getFamilyMembers();
+  void initialize() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      String userID = ref.watch(userProvider)!.userId;
+      ref.read(familyMembersProvider.notifier).getFamilyMembers(userID);
     });
-  }
-
-  Future<List<FamilyMember>> getFamilyMembers() async {
-    try {
-      BaseClient baseClient = BaseClient();
-      var response = await baseClient.get(
-        '/DependMember/get/DependMembers/details/550e8400-e29b-41d4-a716-446655440000',
-      );
-      if (response != null) {
-        return FamilyMember.userDependFromJson(response);
-      } else {
-        return [];
-      }
-    } catch (e) {
-      // Handle error
-      print("Error: $e");
-      return [];
-    }
-  }
-
-  Future<void> deleteFamilyMember(String id) async {
-    try {
-      BaseClient baseClient = BaseClient();
-      await baseClient.delete('/DependMember/delete/DependMember/$id');
-      fetchFamilyMembers(); // Refresh the list after
-    } catch (e) {
-      print("Error: $e");
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    List<FamilyMember> familyMembers =
+        ref.watch(familyMembersProvider).familyMembers;
+    bool isLoading = ref.watch(familyMembersProvider).isLoading;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -77,7 +54,7 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                   ),
                   context: context,
                   builder: (BuildContext context) {
-                    return AddNewMember();
+                    return const AddNewMember();
                   },
                 );
               },
@@ -123,38 +100,39 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                   SizedBox(
                     height: screenHeight * 0.055,
                   ),
-                  FutureBuilder<List<FamilyMember>>(
-                    future: familyMembers,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text("Error: ${snapshot.error}");
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.05,
-                              vertical: screenHeight * 0.07),
-                          child: Text(
-                            "NO family member added yet",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: screenHeight * 0.02,
-                                color: Colors.grey),
-                          ),
-                        );
-                      } else {
-                        return Column(
-                          children: snapshot.data!
-                              .map((e) => FamilyMemberCard(
-                              familyMember: e,
-                              onDelete: () => deleteFamilyMember(e.dID!),
-                          ))
-                              .toList(),
-                        );
-                      }
-                    },
-                  ),
+                  if (isLoading)
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.1),
+                      child: const SpinKitCircle(
+                        size: 40,
+                        color: Colors.blue,
+                      ),
+                    )
+                  else
+                    familyMembers.isEmpty
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.05,
+                                vertical: screenHeight * 0.07),
+                            child: Text(
+                              "No family members added yet",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: screenHeight * 0.02,
+                                  color: Colors.grey),
+                            ),
+                          )
+                        : Column(children: [
+                            ...familyMembers
+                                .map((fm) => FamilyMemberCard(
+                                      familyMember: fm,
+                                      onDelete: () => ref
+                                          .read(familyMembersProvider.notifier)
+                                          .deleteFamilyMember(fm.dID!),
+                                    ))
+                                .toList()
+                          ]),
                   SizedBox(
                     height: screenHeight * 0.04,
                   ),
@@ -175,13 +153,13 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(screenHeight * 0.05),
+                            BorderRadius.circular(screenHeight * 0.05),
                         side: const BorderSide(color: Color(0xFF2980B9)),
                       ),
                     ),
                     child: Padding(
                       padding:
-                      EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                       child: Text(
                         "Add Member",
                         style: TextStyle(
@@ -274,7 +252,7 @@ class FamilyMemberCard extends StatelessWidget {
                 ],
               ),
               IconButton(
-                icon: Icon(Icons.delete, color: Colors.red),
+                icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: onDelete,
               ),
             ],
@@ -284,4 +262,3 @@ class FamilyMemberCard extends StatelessWidget {
     );
   }
 }
-

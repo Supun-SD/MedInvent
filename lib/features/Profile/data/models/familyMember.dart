@@ -14,21 +14,23 @@ class FamilyMember extends Profile {
       String? nic,
       List? prescriptionsAssigned,
       this.relationship,
-      this.dID
-      ) : super(fname, lname, dob, gender, picPath, nic, prescriptionsAssigned);
+      this.dID)
+      : super(fname, lname, dob, gender, picPath, nic, prescriptionsAssigned);
 
-
-  factory FamilyMember.fromRawJson(String str) => FamilyMember.fromJson(json.decode(str));
+  factory FamilyMember.fromRawJson(String str) =>
+      FamilyMember.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
   String toRawJsonCreate() => json.encode(toJsonCreate());
 
   static List<FamilyMember> userDependFromJson(String str) {
     final jsonData = json.decode(str);
-    return List<FamilyMember>.from(jsonData["data"].map((x) => FamilyMember.fromJson(x)));
+    return List<FamilyMember>.from(
+        jsonData["data"].map((x) => FamilyMember.fromJson(x)));
   }
 
-  static String userDependToJson(List<FamilyMember> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+  static String userDependToJson(List<FamilyMember> data) =>
+      json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
   factory FamilyMember.fromJson(Map<String, dynamic> json) => FamilyMember(
       json["Fname"],
@@ -37,34 +39,33 @@ class FamilyMember extends Profile {
       json["gender"],
       json["picPath"],
       json["nic"],
-      json["prescriptionsAssigned"] != null ? List.from(json["prescriptionsAssigned"]) : null,
+      json["prescriptionsAssigned"] != null
+          ? List.from(json["prescriptionsAssigned"])
+          : null,
       json["relationship"],
-      json["dID"]
-  );
+      json["dID"]);
 
   @override
   Map<String, dynamic> toJson() => {
-    "Fname": fname,
-    "Lname": lname,
-    "dob": dob?.toIso8601String(),
-    "gender": gender,
-    "picPath": picPath,
-    "nic": nic,
-   // "prescriptionsAssigned": prescriptionsAssigned,
-    "relationship": relationship,
-    "dID":dID
-  };
+        "Fname": fname,
+        "Lname": lname,
+        "dob": dob?.toIso8601String(),
+        "gender": gender,
+        "picPath": picPath,
+        "nic": nic,
+        // "prescriptionsAssigned": prescriptionsAssigned,
+        "relationship": relationship,
+        "dID": dID
+      };
 
   Map<String, dynamic> toJsonCreate() => {
-    "Fname": fname,
-    "Lname": lname,
-    "dob": dob?.toIso8601String(),
-    "gender": gender,
-    "picPath": picPath,
-    "nic": nic,
-    // "prescriptionsAssigned": prescriptionsAssigned,
-    "relationship": relationship,
-  };
-
-
+        "Fname": fname,
+        "Lname": lname,
+        "dob": dob?.toIso8601String(),
+        "gender": gender,
+        "picPath": picPath,
+        "nic": nic,
+        // "prescriptionsAssigned": prescriptionsAssigned,
+        "relationship": relationship,
+      };
 }

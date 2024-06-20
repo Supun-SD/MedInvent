@@ -1,11 +1,11 @@
-import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:MedInvent/providers/familyMembersProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 
 // create new depend profile page
 class CreateLocalProfile extends ConsumerStatefulWidget {
@@ -69,6 +69,9 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+
+    String userId = ref.watch(userProvider)!.userId;
+    bool isLoading = ref.watch(familyMembersProvider).isLoading;
 
     return Form(
       key: _formKey,
@@ -220,70 +223,50 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
               SizedBox(
                 height: screenHeight * 0.05,
               ),
-              TextButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate() &&
-                      displayText != "Date of Birth") {
-
-                    // Create a new FamilyMember instance
-                    FamilyMember newMember = FamilyMember(
-                      firstName.text,
-                      lastName.text,
-                      selectedDate,
-                      selectedGender,
-                      _image?.path,
-                      nic.text,
-                      [],
-                      relationship.text,
-                      ""
-                    );
-
-                    // Send the new member data to the backend
-                    try {
-                      BaseClient baseClient = BaseClient();
-                      var response = await baseClient.post(
-                        '/DependMember/add/new/DependMember/550e8400-e29b-41d4-a716-446655440000',
-                        newMember.toRawJsonCreate(),
-                      );
-                      if (response != null) {
-                        // Handle successful response
-                        print(response);
-                        Navigator.pop(context);
-                      }
-                    } catch (e) {
-                      // Handle error
-                      print("Error: $e");
-                    }
-
-                    //give code to filll here
-                    // ref.read(familyMembersProvider.notifier).addFamilyMember(
-                    //     FamilyMember(
-                    //         "${firstName.text} ${lastName.text}",
-                    //         relationship.text,
-                    //         nic.text,
-                    //         selectedGender,
-                    //         displayText, []));
-                    // Navigator.pop(context);
-
-                  }
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFF2980B9),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(screenHeight * 0.05),
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-                  child: Text(
-                    "Add",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenHeight * 0.018,
+              isLoading
+                  ? const SpinKitCircle(
+                      size: 25,
+                      color: Colors.blue,
+                    )
+                  : TextButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate() &&
+                            displayText != "Date of Birth") {
+                          // Create a new FamilyMember instance
+                          FamilyMember newMember = FamilyMember(
+                              firstName.text,
+                              lastName.text,
+                              selectedDate,
+                              selectedGender,
+                              _image?.path,
+                              nic.text,
+                              [],
+                              relationship.text,
+                              "");
+                          ref
+                              .read(familyMembersProvider.notifier)
+                              .createFamilyMember(newMember, userId, context);
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: const Color(0xFF2980B9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(screenHeight * 0.05),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.08),
+                        child: Text(
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: screenHeight * 0.018,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
               SizedBox(
                 height: screenHeight * 0.03,
               ),
