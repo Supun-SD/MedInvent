@@ -13,7 +13,7 @@ class UserStateNotifier extends StateNotifier<User?> {
   UserStateNotifier() : super(null);
 
   Future<User> loginUser(String emailOrMobileNo, String password) async {
-    const String userId = "b77565de-75a7-49c6-9335-0478a5d2ff75";
+    const String userId = "550e8400-e29b-41d4-a716-446655440000";
 
     const String apiURL =
         '${ApiConfig.baseUrl}/patientuser/get/patientuser/details/byuserid/$userId';

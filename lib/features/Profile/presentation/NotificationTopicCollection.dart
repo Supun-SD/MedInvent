@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:MedInvent/features/Notifications/otpNotification.dart';
 import 'package:MedInvent/features/Notifications/cancelSessionNotification.dart';
 import 'package:MedInvent/features/Notifications/doctorArriveNotification.dart';
+import 'package:MedInvent/components/Savebutton.dart';
+import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
+
 
 
 class NotificationCategory extends ConsumerWidget {
@@ -29,6 +32,16 @@ class NotificationCategory extends ConsumerWidget {
           ),
         ),
         title: const Text("Notification Categories"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ProfilePage()),
+            );// Customize the navigation behavior here
+          },
+        ),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -133,10 +146,20 @@ class NotificationCategory extends ConsumerWidget {
                       ),
                       SizedBox(
                         height: screenHeight * 0.05,
-                      )
+                      ),
                     ],
                   ),
                 ),
+                SaveButton(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfilePage()),
+                    );
+                  },
+                  save: '<= Profile',
+                )
               ],
             ),
           ),

@@ -4,6 +4,9 @@ import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:MedInvent/features/login/data/models/user_model.dart';
 import 'package:MedInvent/features/Notifications/models/doctorArrive.dart';
+import 'package:MedInvent/components/sideNavBar.dart';
+import 'package:MedInvent/components/Savebutton.dart';
+import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
 import 'dart:convert';
 
 class ArriveNotification extends ConsumerStatefulWidget {
@@ -94,6 +97,7 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      drawer: const SideNavBar(),
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
@@ -109,6 +113,16 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
           ),
         ),
         title: const Text("Doctor Arrived Messages"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const NotificationCategory()),
+            );// Customize the navigation behavior here
+          },
+        ),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -171,6 +185,16 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
                   SizedBox(
                     height: screenHeight * 0.04,
                   ),
+                  SaveButton(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const NotificationCategory()),
+                      );
+                    },
+                    save: '<= Categories',
+                  )
                 ],
               ),
             ),
