@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:MedInvent/features/prescriptions/model/DependMember.dart';
+
 class NewPrescription {
   late String presName;
-  late String assignedTo;
+  late String? assignedTo;
+  late String? dID;
+  late DependMember? dependMember;
   late List<NewPresMedicine> presMedicine;
 
   Map<String, dynamic> toJson(String createdBy, String userId) {
@@ -11,8 +15,11 @@ class NewPrescription {
         'presName': presName,
         'createdBy': createdBy,
         'userID': userId,
+        'assignedTo': assignedTo,
+        'dID': dID
       },
-      'presMedicines': presMedicine.map((medicine) => medicine.toJson()).toList(),
+      'presMedicines':
+          presMedicine.map((medicine) => medicine.toJson()).toList(),
     };
   }
 }
@@ -36,4 +43,3 @@ class NewPresMedicine {
     };
   }
 }
-

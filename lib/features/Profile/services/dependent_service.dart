@@ -1,6 +1,7 @@
+import 'package:MedInvent/config/api.dart';
 import 'package:http/http.dart' as http;
 
-const String baseUrl = 'http://10.0.2.2:8080/api';
+const String baseUrl = ApiConfig.baseUrl;
 
 class BaseClient {
   var client = http.Client();

@@ -1,3 +1,4 @@
+import 'package:MedInvent/features/prescriptions/model/DependMember.dart';
 import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
 import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,6 +87,10 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
 
   Future<void> addUserPrescription(BuildContext context,
       NewPrescription newPrescription, String userID) async {
+    state = PrescriptionsState(
+        docPrescriptions: state.docPrescriptions,
+        userPrescriptions: state.userPrescriptions,
+        isLoading: true);
     String apiUrl = '${ApiConfig.baseUrl}/prescription/newprescription';
     try {
       final response = await http.post(
@@ -126,6 +131,11 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
           backgroundColor: Colors.red,
         ),
       );
+    } finally {
+      PrescriptionsState(
+          docPrescriptions: state.docPrescriptions,
+          userPrescriptions: state.userPrescriptions,
+          isLoading: false);
     }
   }
 
@@ -162,6 +172,91 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error updating the prescription.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> assignPrescription(Prescription prescription, String assignedTo,
+      DependMember? member, BuildContext context) async {
+    state = PrescriptionsState(
+        docPrescriptions: state.docPrescriptions,
+        userPrescriptions: state.userPrescriptions,
+        isLoading: true);
+
+    final String apiUrl =
+        '${ApiConfig.baseUrl}/prescription/assign/${prescription.prescriptionId}';
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      'assignedTo': assignedTo,
+      'dID': member?.dID,
+    });
+
+    try {
+      final response = await http.put(
+        Uri.parse(apiUrl),
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        prescription.assignedTo = assignedTo;
+        prescription.dID = member?.dID;
+        prescription.dependMember = member;
+
+        final updatedPrescription = Prescription(
+          prescriptionId: prescription.prescriptionId,
+          presName: prescription.presName,
+          createdBy: prescription.createdBy,
+          doctorName: prescription.doctorName,
+          createdAt: prescription.createdAt,
+          updatedAt: prescription.updatedAt,
+          userId: prescription.userId,
+          assignedTo: assignedTo,
+          dID: member?.dID,
+          dependMember: member,
+          presMedicine: prescription.presMedicine,
+        );
+
+        if (prescription.createdBy == 'doctor') {
+          state = PrescriptionsState(
+            docPrescriptions: state.docPrescriptions.map((p) {
+              return p.prescriptionId == prescription.prescriptionId
+                  ? updatedPrescription
+                  : p;
+            }).toList(),
+            userPrescriptions: state.userPrescriptions,
+            isLoading: false,
+          );
+        } else {
+          state = PrescriptionsState(
+              docPrescriptions: state.docPrescriptions,
+              userPrescriptions: state.userPrescriptions.map((p) {
+                return p.prescriptionId == prescription.prescriptionId
+                    ? updatedPrescription
+                    : p;
+              }).toList(),
+              isLoading: false);
+        }
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Prescription assigned successfully.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        throw Exception('Failed to assign the prescription');
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to assign the prescription.'),
           backgroundColor: Colors.red,
         ),
       );

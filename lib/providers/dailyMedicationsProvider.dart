@@ -43,7 +43,13 @@ class DailyMedicationNotifier extends StateNotifier<DailyMedicationState> {
 
           for (var json in dailyMedicationsJson) {
             DailyMedication dailyMedication = DailyMedication.fromJson(json);
-            dailyMedications.add(dailyMedication);
+            bool hasNonEmptyMedicationIntake =
+                dailyMedication.presMedicine.any((medicine) {
+              return medicine.medicationIntake.isNotEmpty;
+            });
+            if (hasNonEmptyMedicationIntake) {
+              dailyMedications.add(dailyMedication);
+            }
           }
 
           state = DailyMedicationState(
@@ -76,14 +82,12 @@ class DailyMedicationNotifier extends StateNotifier<DailyMedicationState> {
     });
 
     try {
-      final response = await http.put(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: body
-      );
+      final response = await http.put(Uri.parse(apiUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: body);
 
       if (response.statusCode == 200) {
         medicationIntake.taken = !medicationIntake.taken;

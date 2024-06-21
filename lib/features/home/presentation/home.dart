@@ -14,6 +14,8 @@ import 'package:MedInvent/features/Daily_medication/Presentation/daily_medicatio
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../../prescriptions/presentation/PrescriptionTemplate.dart';
+
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -114,7 +116,10 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           context: context,
           builder: (BuildContext context) {
-            return const AssignNewPrescription();
+            return const AssignPrescription(
+              prescription: null,
+              isNewPres: true,
+            );
           },
         );
       },

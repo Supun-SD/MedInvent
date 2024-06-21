@@ -1,5 +1,6 @@
 import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
 import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:MedInvent/providers/familyMembersProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -242,7 +243,7 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                     try {
                       BaseClient baseClient = BaseClient();
                       var response = await baseClient.post(
-                        '/DependMember/add/new/DependMember/550e8400-e29b-41d4-a716-446655440000',
+                        '/DependMember/add/new/DependMember/${ref.watch(userProvider)!.userId}',
                         newMember.toRawJsonCreate(),
                       );
                       if (response != null) {
