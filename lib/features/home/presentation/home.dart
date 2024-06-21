@@ -3,14 +3,12 @@ import 'package:MedInvent/features/Appointments/model/appointment.dart';
 import 'package:MedInvent/features/Appointments/presentation/appointmentDetails.dart';
 import 'package:MedInvent/features/Daily_medication/models/DailyMedication.dart';
 import 'package:MedInvent/features/Map/map_screen.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
-import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:MedInvent/providers/dailyMedicationsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/medication_card.dart';
-import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -599,7 +597,7 @@ class UpcomingWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Row(

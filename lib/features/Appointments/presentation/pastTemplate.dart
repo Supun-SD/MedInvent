@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PastTemplate extends StatelessWidget {
-  PastTemplate({required this.appointment, super.key});
+  const PastTemplate({required this.appointment, super.key});
 
-  Appointment appointment;
+  final Appointment appointment;
 
   String convertTime(String time) {
     DateTime dateTime = DateTime.parse('1970-01-01 $time');

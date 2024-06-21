@@ -39,7 +39,7 @@ class Upcoming extends ConsumerWidget {
             child: Center(
               child: Text(
                 textAlign: TextAlign.center,
-                "You dont have any upcoming appointmets",
+                "You don't have any upcoming appointments",
                 style: TextStyle(color: Colors.grey),
               ),
             ),

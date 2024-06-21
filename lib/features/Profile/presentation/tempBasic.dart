@@ -1,7 +1,5 @@
-import 'package:MedInvent/features/login/data/models/user_model.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/components/Savebutton.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BasicInfo extends ConsumerWidget {
@@ -59,7 +57,7 @@ class BasicInfo extends ConsumerWidget {
                     child: CircleAvatar(
                       radius: screenHeight * 0.065,
                       backgroundImage:
-                      const AssetImage('assets/images/pic.png'),
+                          const AssetImage('assets/images/pic.png'),
                     ),
                   ),
                   SizedBox(

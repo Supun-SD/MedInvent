@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/Profile/data/models/Profile.dart';
+import 'package:MedInvent/features/Profile/models/Profile.dart';
 
 class MyProfile extends Profile {
   MyProfile(super.fname, super.lname, super.dob, super.gender, super.picPath,

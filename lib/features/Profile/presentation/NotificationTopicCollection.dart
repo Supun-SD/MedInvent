@@ -1,13 +1,10 @@
-import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:MedInvent/features/Notifications/otpNotification.dart';
-import 'package:MedInvent/features/Notifications/cancelSessionNotification.dart';
-import 'package:MedInvent/features/Notifications/doctorArriveNotification.dart';
+import 'package:MedInvent/features/Notifications/presentation/otpNotification.dart';
+import 'package:MedInvent/features/Notifications/presentation/cancelSessionNotification.dart';
+import 'package:MedInvent/features/Notifications/presentation/doctorArriveNotification.dart';
 import 'package:MedInvent/components/Savebutton.dart';
 import 'package:MedInvent/features/Profile/presentation/main_profile.dart';
-
-
 
 class NotificationCategory extends ConsumerWidget {
   const NotificationCategory({super.key});
@@ -33,13 +30,12 @@ class NotificationCategory extends ConsumerWidget {
         ),
         title: const Text("Notification Categories"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const ProfilePage()),
-            );// Customize the navigation behavior here
+              MaterialPageRoute(builder: (context) => const ProfilePage()),
+            ); // Customize the navigation behavior here
           },
         ),
       ),
@@ -99,7 +95,8 @@ class NotificationCategory extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const CancelNotification()),
+                                builder: (context) =>
+                                    const CancelNotification()),
                           );
                         },
                       ),
@@ -117,7 +114,8 @@ class NotificationCategory extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ArriveNotification()),
+                                builder: (context) =>
+                                    const ArriveNotification()),
                           );
                         },
                       ),
@@ -188,7 +186,6 @@ class Mybutton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
       onTap: onTap,
@@ -203,7 +200,7 @@ class Mybutton extends StatelessWidget {
             ),
             Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Container(
+                child: SizedBox(
                   width: 200,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

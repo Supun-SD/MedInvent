@@ -28,7 +28,8 @@ class _DisplayPageState extends State<DisplayPage> {
     if (getarguments != null) {
       Map? pushArguments = getarguments as Map;
       if (pushArguments.containsKey("message")) {
-        Map<String, dynamic> messageData = json.decode(pushArguments["message"]);
+        Map<String, dynamic> messageData =
+            json.decode(pushArguments["message"]);
         setState(() {
           sendBy = messageData["sendBy"];
           OTP = messageData["OTP"];
@@ -48,8 +49,7 @@ class _DisplayPageState extends State<DisplayPage> {
             width: 500,
             height: 500,
             child: Text(
-                'send by value is $sendBy , OTP value is $OTP',
-
+              'send by value is $sendBy , OTP value is $OTP',
             ),
           ),
         ),

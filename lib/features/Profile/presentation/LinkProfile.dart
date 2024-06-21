@@ -1,13 +1,14 @@
 import 'package:MedInvent/components/otp_input.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
-import 'package:MedInvent/features/Profile/data/models/linkUser.dart';
+import 'package:MedInvent/features/Profile/models/linkUser.dart';
 import 'dart:convert';
 
 class DependProvider extends InheritedWidget {
   final LinkUser? newDepend;
 
-  DependProvider({Key? key, required Widget child, required this.newDepend})
+  const DependProvider(
+      {Key? key, required Widget child, required this.newDepend})
       : super(key: key, child: child);
 
   static DependProvider? of(BuildContext context) {
@@ -66,7 +67,8 @@ class LinkProfile extends StatefulWidget {
   final PageController pageController;
   final void Function(LinkUser) setNewDepend;
 
-  LinkProfile({super.key, required this.pageController, required this.setNewDepend});
+  const LinkProfile(
+      {super.key, required this.pageController, required this.setNewDepend});
 
   @override
   State<LinkProfile> createState() => _LinkProfileState();
@@ -109,7 +111,7 @@ class _LinkProfileState extends State<LinkProfile> {
                 newDepend.FcmTokens.add(tokenStore['fcm_token']);
               }
             }
-            if (newDepend.FcmTokens.length > 0) {
+            if (newDepend.FcmTokens.isNotEmpty) {
               bool A = await newDepend.temporary();
               bool B = await newDepend.assignLoggedUserID();
               if (A && B) {
@@ -143,7 +145,6 @@ class _LinkProfileState extends State<LinkProfile> {
       print("Error: $e");
       return false;
     }
-    return false;
   }
 
   @override
@@ -173,8 +174,8 @@ class _LinkProfileState extends State<LinkProfile> {
         TextButton(
           onPressed: () async {
             //have to do validation before send backend
-            var is_available = await checkUserAvailabe();
-            if (is_available) {
+            var isAvailable = await checkUserAvailabe();
+            if (isAvailable) {
               widget.pageController.animateToPage(1,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOut);
@@ -213,7 +214,7 @@ class OtpVerify extends StatefulWidget {
 
 class _OtpVerifyState extends State<OtpVerify> {
   final List<TextEditingController> controllers =
-  List.generate(4, (index) => TextEditingController());
+      List.generate(4, (index) => TextEditingController());
 
   @override
   void dispose() {
@@ -245,22 +246,22 @@ class _OtpVerifyState extends State<OtpVerify> {
       if (response != null) {
         Map<String, dynamic> decodedJson = json.decode(response);
         print(response);
-        bool is_correctOTP = decodedJson['data'];
-        print(is_correctOTP);
-        if (is_correctOTP) {
-          print("is_correctOTP $is_correctOTP");
+        bool isCorrectotp = decodedJson['data'];
+        print(isCorrectotp);
+        if (isCorrectotp) {
+          print("is_correctOTP $isCorrectotp");
           baseClient = BaseClient();
-         // print(newDepend.toJsonForFifthRequest());
+          // print(newDepend.toJsonForFifthRequest());
           print("before request send");
           var response = await baseClient.post(
-              '/DependMember/add/new/linked/DependMember',newDepend.toRawJsonForFifthRequest());
+              '/DependMember/add/new/linked/DependMember',
+              newDepend.toRawJsonForFifthRequest());
           if (response != null) {
             Map<String, dynamic> decodedJson = json.decode(response);
             String data = decodedJson['data']['dID'];
-            if(data!=null){
+            if (data != null) {
               return true;
-            }
-            else{
+            } else {
               print("data null");
               return false;
             }
@@ -320,20 +321,18 @@ class _OtpVerifyState extends State<OtpVerify> {
           height: screenHeight * 0.05,
         ),
         TextButton(
-          onPressed: () async{
+          onPressed: () async {
             if (newDepend != null) {
-              var getOTPValue =_getOtp();
-              if(getOTPValue!= null){
-                newDepend.OTPNumber=int.parse(getOTPValue);
+              var getOTPValue = _getOtp();
+              if (getOTPValue != null) {
+                newDepend.OTPNumber = int.parse(getOTPValue);
                 var addNewDependdata = await addProcess(newDepend);
-                if(addNewDependdata){
+                if (addNewDependdata) {
                   print("process success");
-                }
-                else{
+                } else {
                   print("invalid OTP");
                 }
-              }
-              else{
+              } else {
                 print("OTP is null");
               }
             } else {

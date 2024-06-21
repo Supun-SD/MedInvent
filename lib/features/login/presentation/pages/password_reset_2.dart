@@ -1,16 +1,18 @@
 import 'package:MedInvent/features/login/presentation/pages/password_reset_3.dart';
 import 'package:MedInvent/components/otp_input.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/custom_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PasswordReset2 extends StatefulWidget {
+class PasswordReset2 extends ConsumerStatefulWidget {
   const PasswordReset2({super.key});
 
   @override
-  State<PasswordReset2> createState() => _PasswordReset2State();
+  ConsumerState<PasswordReset2> createState() => _PasswordReset2State();
 }
 
-class _PasswordReset2State extends State<PasswordReset2> {
+class _PasswordReset2State extends ConsumerState<PasswordReset2> {
   final List<TextEditingController> controllers =
       List.generate(4, (index) => TextEditingController());
 
@@ -60,7 +62,7 @@ class _PasswordReset2State extends State<PasswordReset2> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: Text(
-                    'Enter the confirmation code sent to +94771234567',
+                    'Enter the confirmation code sent to ${ref.watch(userProvider)!.mobileNo}}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: screenHeight * 0.02,

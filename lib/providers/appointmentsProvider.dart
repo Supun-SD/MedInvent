@@ -1,13 +1,14 @@
 import 'package:MedInvent/features/Appointments/model/appointment.dart';
 import 'package:MedInvent/features/Search/models/session.dart';
 import 'package:MedInvent/features/Search/presentation/appointmentSuccess.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '../config/api.dart';
+import 'nearbyPharmaciesAndDoctorsProvider.dart';
 
 class AppointmentsState {
   final List<Appointment> upcomingAppointments;
@@ -75,12 +76,7 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
         throw Exception('Failed to load appointments');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to get appointments.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar('Failed to get appointments.', 'error');
       state = AppointmentsState(
         upcomingAppointments: state.upcomingAppointments,
         pastAppointments: state.pastAppointments,
@@ -169,24 +165,16 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
           isLoading: false,
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Appointment booked successfully.'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AppointmentSuccess()));
+        _showSnackBar('Appointment booked successfully.', 'success');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const AppointmentSuccess()));
       } else {
         throw Exception('Failed booking the appointment');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed booking the appointment.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar('Failed booking the appointment.', 'error');
     }
   }
 
@@ -218,27 +206,16 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
       );
 
       if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
         appointment.isCancelled = true;
         appointment.cancelledByType = 'user';
         appointment.cancelledById = userId;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Appointment cancelled successfully'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        _showSnackBar('Appointment cancelled successfully', 'success');
       } else {
         throw Exception('Failed to cancel the appointment');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed cancelling the appointment'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar('Failed cancelling the appointment', 'error');
     } finally {
       state = AppointmentsState(
         upcomingAppointments: state.upcomingAppointments,
@@ -246,6 +223,15 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
         isLoading: false,
       );
     }
+  }
+
+  void _showSnackBar(String text, String type) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: type == 'error' ? Colors.red : Colors.green,
+      ),
+    );
   }
 }
 

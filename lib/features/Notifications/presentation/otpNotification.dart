@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
-import 'package:MedInvent/features/Profile/data/models/otp.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
+import 'package:MedInvent/features/Profile/models/otp.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/components/Savebutton.dart';
 import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
@@ -58,7 +58,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
   Future<List<OTP>> getOTPObjectList() async {
     try {
       //user.nic
-      otp = OTP(0, "no",user.nic, "");
+      otp = OTP(0, "no", user.nic, "");
       BaseClient baseClient = BaseClient();
       var response =
           await baseClient.post('/Notification/get/All/OTP', otp.toRawJson());
@@ -79,10 +79,10 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
     //String? receiverToken = prefs.getString('FcmToken');
-    if (userJson != null ) {
+    if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
-     // otp.receiverToken = receiverToken;
+      // otp.receiverToken = receiverToken;
     }
   }
 
@@ -120,13 +120,13 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
         ),
         title: const Text("OTP Messages"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => const NotificationCategory()),
-            );// Customize the navigation behavior here
+            ); // Customize the navigation behavior here
           },
         ),
       ),
@@ -140,72 +140,71 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
           ),
         ),
         child: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.only(top: screenHeight * 0.025),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(50.0),
-                topRight: Radius.circular(50.0),
-              ),
+            child: Container(
+          margin: EdgeInsets.only(top: screenHeight * 0.025),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(50.0),
+              topRight: Radius.circular(50.0),
             ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.18),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: screenHeight * 0.055,
-                  ),
-                  FutureBuilder<List<OTP>>(
-                    future: otpList,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text("Error: ${snapshot.error}");
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.05,
-                              vertical: screenHeight * 0.07),
-                          child: Text(
-                            "NO any OTP messages in your history",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: screenHeight * 0.02,
-                                color: Colors.grey),
-                          ),
-                        );
-                      } else {
-                        return Column(
-                          children: snapshot.data!
-                              .map((e) => OtpCard(
-                              otp: e,
-                              onDelete: () => deleteReceiveOTP(e.OTP_id!),
-                          ))
-                              .toList(),
-                        );
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.04,
-                  ),
-                  SaveButton(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const NotificationCategory()),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.18),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: screenHeight * 0.055,
+                ),
+                FutureBuilder<List<OTP>>(
+                  future: otpList,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text("Error: ${snapshot.error}");
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.05,
+                            vertical: screenHeight * 0.07),
+                        child: Text(
+                          "NO any OTP messages in your history",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: screenHeight * 0.02,
+                              color: Colors.grey),
+                        ),
                       );
-                    },
-                    save: '<= Categories',
-                  )
-                ],
-              ),
+                    } else {
+                      return Column(
+                        children: snapshot.data!
+                            .map((e) => OtpCard(
+                                  otp: e,
+                                  onDelete: () => deleteReceiveOTP(e.OTP_id!),
+                                ))
+                            .toList(),
+                      );
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: screenHeight * 0.04,
+                ),
+                SaveButton(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NotificationCategory()),
+                    );
+                  },
+                  save: '<= Categories',
+                )
+              ],
             ),
-          )
-        ),
+          ),
+        )),
       ),
     );
   }
@@ -215,7 +214,8 @@ class OtpCard extends StatelessWidget {
   final OTP otp;
   final VoidCallback onDelete;
 
-  const OtpCard({Key? key, required this.otp, required this.onDelete}) : super(key: key);
+  const OtpCard({Key? key, required this.otp, required this.onDelete})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +270,7 @@ class OtpCard extends StatelessWidget {
               width: screenWidth * 0.05,
             ),
             IconButton(
-              icon: Icon(Icons.delete, color: Colors.blue),
+              icon: const Icon(Icons.delete, color: Colors.blue),
               onPressed: onDelete,
             ),
           ],

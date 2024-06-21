@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
 import 'package:MedInvent/features/prescriptions/presentation/ReminersUpdate.dart';

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UpcomingTemplate extends StatefulWidget {
-  UpcomingTemplate({required this.appointment, super.key});
+  const UpcomingTemplate({required this.appointment, super.key});
 
-  Appointment appointment;
+  final Appointment appointment;
 
   @override
   State<UpcomingTemplate> createState() => _UpcomingTemplateState();
@@ -14,7 +14,6 @@ class UpcomingTemplate extends StatefulWidget {
 
 // cancle popup
 class _UpcomingTemplateState extends State<UpcomingTemplate> {
-
   String convertTime(String time) {
     DateTime dateTime = DateTime.parse('1970-01-01 $time');
     String formattedTime = DateFormat('h:mm a').format(dateTime);
@@ -104,7 +103,7 @@ class Button extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  Button({required this.text, required this.onPressed});
+  const Button({super.key, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

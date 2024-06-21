@@ -1,19 +1,16 @@
 import 'dart:convert';
-import 'package:MedInvent/features/Notifications/cancelSessionNotification.dart';
-import 'package:MedInvent/features/Notifications/doctorArriveNotification.dart';
+import 'package:MedInvent/features/Notifications/presentation/cancelSessionNotification.dart';
+import 'package:MedInvent/features/Notifications/presentation/doctorArriveNotification.dart';
 import 'package:MedInvent/providers/nearbyPharmaciesAndDoctorsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'features/Register/presentation/pages/landing_page.dart';
+import 'features/Register/presentation/landing_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'features/Notifications/notificationDisplay.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'features/login/presentation/pages/checkLog.dart';
-import 'features/Notifications/otpNotification.dart';
-
+import 'features/Notifications/presentation/otpNotification.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -23,45 +20,43 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseMessaging.instance.getToken().then((value) => {
-    print("get token : $value")
-  });
+  FirebaseMessaging.instance
+      .getToken()
+      .then((value) => {print("get token : $value")});
 
   FirebaseMessaging.onMessageOpenedApp.listen(
-        (RemoteMessage message) async{
+    (RemoteMessage message) async {
       print("onMessageOpenedApp : $message");
-      Navigator.pushNamed(navigatorKey.currentState!.context,
+      Navigator.pushNamed(
+        navigatorKey.currentState!.context,
         '/',
-        arguments: {
-          "message":json.encode(message.data)
-        },
+        arguments: {"message": json.encode(message.data)},
       );
     },
   );
 
-  FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) =>{
-    if(message!=null){
-      Navigator.pushNamed(navigatorKey.currentState!.context, '/',
-        arguments: {
-          "message":json.encode(message.data)
+  FirebaseMessaging.instance.getInitialMessage().then(
+        (RemoteMessage? message) => {
+          if (message != null)
+            {
+              Navigator.pushNamed(
+                navigatorKey.currentState!.context,
+                '/',
+                arguments: {"message": json.encode(message.data)},
+              )
+            }
         },
-      )
-    }
-  },
-  );
-
+      );
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const ProviderScope(child: MyApp()));
 }
 
-  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async
-  {
-    await Firebase.initializeApp();
-    print("_firebaseMessagingBackgroundHandler : $message");
-  }
-
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("_firebaseMessagingBackgroundHandler : $message");
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -74,16 +69,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway'),
       //home:  CheckAuth(),
-      navigatorKey:navigatorKey,
-       routes: {
-         '/':((context)=> CheckAuth()),
-         '/notifications':((context)=>const OTPNotification()),
-         '/landing':((context)=>const Landing()),
-         '/linkDevice':((context)=>const OTPNotification()),
-         '/ArriveNotification':((context)=>const ArriveNotification()),
-         '/CancelNotification':((context)=>const CancelNotification())
-       },
+      navigatorKey: navigatorKey,
+      routes: {
+        '/': ((context) => const CheckAuth()),
+        '/notifications': ((context) => const OTPNotification()),
+        '/landing': ((context) => const Landing()),
+        '/linkDevice': ((context) => const OTPNotification()),
+        '/ArriveNotification': ((context) => const ArriveNotification()),
+        '/CancelNotification': ((context) => const CancelNotification())
+      },
     );
   }
 }
-

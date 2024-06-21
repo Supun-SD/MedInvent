@@ -1,6 +1,6 @@
 import 'package:MedInvent/config/api.dart';
-import 'package:MedInvent/features/Register/data/models/user_model.dart';
-import 'package:MedInvent/features/Register/presentation/validations.dart';
+import 'package:MedInvent/features/Register/models/user_model.dart';
+import 'package:MedInvent/features/Register/validations.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
@@ -76,7 +76,7 @@ class _Register3State extends State<Register3> {
       }
     } catch (error) {
       _showErrorDialog('An error occurred. Please try again.');
-    } finally{
+    } finally {
       setState(() {
         isLoading = false;
       });

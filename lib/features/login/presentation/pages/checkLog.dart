@@ -1,9 +1,9 @@
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:MedInvent/features/Register/presentation/pages/landing_page.dart';
+import 'package:MedInvent/features/Register/presentation/landing_page.dart';
 import 'package:MedInvent/features/home/presentation/mainPage.dart';
 import 'dart:convert';
 

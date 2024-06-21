@@ -1,7 +1,7 @@
 import 'package:MedInvent/config/api.dart';
-import 'package:MedInvent/features/Register/data/models/user_model.dart';
-import 'package:MedInvent/features/Register/presentation/pages/register_3.dart';
-import 'package:MedInvent/features/Register/presentation/validations.dart';
+import 'package:MedInvent/features/Register/models/user_model.dart';
+import 'package:MedInvent/features/Register/presentation/register_3.dart';
+import 'package:MedInvent/features/Register/validations.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components//input_field.dart';
 import 'package:flutter/material.dart';

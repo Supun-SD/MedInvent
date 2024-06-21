@@ -2,40 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
-import 'package:MedInvent/features/Notifications/models/doctorArrive.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
+import 'package:MedInvent/features/Notifications/models/cancelsession.dart';
 import 'package:MedInvent/components/sideNavBar.dart';
-import 'package:MedInvent/components/Savebutton.dart';
 import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
+import 'package:MedInvent/components/Savebutton.dart';
 import 'dart:convert';
 
-class ArriveNotification extends ConsumerStatefulWidget {
-  const ArriveNotification({super.key});
+class CancelNotification extends ConsumerStatefulWidget {
+  const CancelNotification({super.key});
 
   @override
-  ConsumerState<ArriveNotification> createState() => _ArriveNotificationState();
+  ConsumerState<CancelNotification> createState() => _CancelNotificationState();
 }
 
-class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
-  late Future<List<DoctorArrival>> arrivelList;
+class _CancelNotificationState extends ConsumerState<CancelNotification> {
+  late Future<List<CancelSession>> cancelList;
   late User user;
-  late DoctorArrival arriveReference;
+  late CancelSession cancelSession;
 
   @override
   void initState() {
     super.initState();
-    arrivelList = Future.value([]);
+    cancelList = Future.value([]);
     _initialize();
   }
 
   void _initialize() async {
     await _getUserID();
-    fetchArriveNotifications();
+    fetchCancelNotifications();
   }
 
-  void fetchArriveNotifications() async {
+  void fetchCancelNotifications() async {
     setState(() {
-      arrivelList = getArriveObjectList();
+      cancelList = getCancelObjectList();
     });
 
     // Print the OTP list to the console
@@ -55,13 +55,14 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
   //   }
   // }
 
-  Future<List<DoctorArrival>> getArriveObjectList() async {
+  Future<List<CancelSession>> getCancelObjectList() async {
     try {
       BaseClient baseClient = BaseClient();
-      var response = await baseClient.get('/Session/get/All/arrive/messages/${user.userId}');
+      var response = await baseClient
+          .get('/Session/get/All/cancel/sessions/${user.userId}');
       if (response != null) {
         print(response);
-        return DoctorArrival.otpFromJson(response);
+        return CancelSession.otpFromJson(response);
       } else {
         return [];
       }
@@ -74,18 +75,18 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
   Future<void> _getUserID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
-    if (userJson != null ) {
+    if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
     }
   }
 
-  Future<void> deleteArriveMessage(String id) async {
+  Future<void> deleteCancelSession(String id) async {
     try {
       BaseClient baseClient = BaseClient();
-      await baseClient.delete('/Session/delete/arrive/message/$id');
+      await baseClient.delete('/Session/cancel/delete/$id');
       // Refresh the list after
-      fetchArriveNotifications();
+      fetchCancelNotifications();
     } catch (e) {
       print("Error: $e");
     }
@@ -112,15 +113,15 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
             ),
           ),
         ),
-        title: const Text("Doctor Arrived Messages"),
+        title: const Text("Hospital Cancel Session Messages"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => const NotificationCategory()),
-            );// Customize the navigation behavior here
+            ); // Customize the navigation behavior here
           },
         ),
       ),
@@ -144,17 +145,17 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.09),
               child: Column(
                 children: [
                   SizedBox(
                     height: screenHeight * 0.055,
                   ),
-                  FutureBuilder<List<DoctorArrival>>(
-                    future: arrivelList,
+                  FutureBuilder<List<CancelSession>>(
+                    future: cancelList,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text("Error: ${snapshot.error}");
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -163,7 +164,7 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
                               horizontal: screenWidth * 0.05,
                               vertical: screenHeight * 0.07),
                           child: Text(
-                            "NO any  messages in your history",
+                            "NO any cancel session messages in your history",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: screenHeight * 0.02,
@@ -174,9 +175,10 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
                         return Column(
                           children: snapshot.data!
                               .map((e) => OtpCard(
-                            arriveRef: e,
-                            onDelete: () => deleteArriveMessage(e.arrive_id!),
-                          ))
+                                    cancelRef: e,
+                                    onDelete: () =>
+                                        deleteCancelSession(e.cancel_id!),
+                                  ))
                               .toList(),
                         );
                       }
@@ -206,10 +208,11 @@ class _ArriveNotificationState extends ConsumerState<ArriveNotification> {
 }
 
 class OtpCard extends StatelessWidget {
-  final DoctorArrival arriveRef;
+  final CancelSession cancelRef;
   final VoidCallback onDelete;
 
-  const OtpCard({Key? key, required this.arriveRef,required this.onDelete}) : super(key: key);
+  const OtpCard({Key? key, required this.cancelRef, required this.onDelete})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -242,60 +245,59 @@ class OtpCard extends StatelessWidget {
               height: screenWidth * 0.15,
             ),
             SizedBox(
-              width: screenWidth * 0.04,
+              width: screenWidth * 0.05,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Doctor Arrived",
+                  "session cancelled",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: screenHeight * 0.02,
-                      color: Colors.blue[900]
-                  ),
+                      color: Colors.blue[900]),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.02,
+                  height: screenWidth * 0.03,
                 ),
                 Text(
-                  arriveRef.clinicName!,
+                  cancelRef.clinicName!,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: screenHeight * 0.02),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.01,
+                  height: screenWidth * 0.02,
                 ),
                 Text(
-                  arriveRef.doctorFullName!,
+                  cancelRef.doctorFullName!,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: screenHeight * 0.02),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.01,
+                  height: screenWidth * 0.02,
                 ),
                 Text(
-                  '${arriveRef.date}',
+                  '${cancelRef.date}',
                   style: TextStyle(
-                      fontSize: screenHeight * 0.02,
-                      fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.01,
-                ),
-                Text(
-                  'Visit your doctor !',
-                  style: TextStyle(
-                      fontSize: screenHeight * 0.02,
+                    fontSize: screenHeight * 0.02,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.01,
+                  height: screenWidth * 0.02,
+                ),
+                Text(
+                  'Sorry For Inconvenience !',
+                  style: TextStyle(
+                    fontSize: screenHeight * 0.02,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
                 )
               ],
             ),
@@ -303,7 +305,7 @@ class OtpCard extends StatelessWidget {
               width: screenWidth * 0.05,
             ),
             IconButton(
-              icon: Icon(Icons.delete, color: Colors.blue),
+              icon: const Icon(Icons.delete, color: Colors.blue),
               onPressed: onDelete,
             ),
           ],

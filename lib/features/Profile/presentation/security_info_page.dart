@@ -104,8 +104,8 @@ class SecurityInfoState extends ConsumerState<SecurityInfo> {
                       topValue: 41.8,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.02),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.white,

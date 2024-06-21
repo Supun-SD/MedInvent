@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '../config/api.dart';
+import 'nearbyPharmaciesAndDoctorsProvider.dart';
 
 class PrescriptionsState {
   final List<Prescription> docPrescriptions;
@@ -71,12 +72,7 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
         throw Exception('Failed to load prescriptions');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to get prescriptions.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar('Failed to get prescriptions.', 'error');
       state = PrescriptionsState(
         docPrescriptions: state.docPrescriptions,
         userPrescriptions: state.userPrescriptions,
@@ -115,22 +111,12 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
           isLoading: false,
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Prescription created successfully.'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        _showSnackBar('Prescription created successfully.', 'success');
       } else {
         throw Exception('Failed to add prescription');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to add prescription.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar('Failed to add prescription.', 'error');
     } finally {
       PrescriptionsState(
           docPrescriptions: state.docPrescriptions,
@@ -159,22 +145,12 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Prescription updated successfully.'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        _showSnackBar('Prescription updated successfully.', 'success');
       } else {
         throw Exception('Failed to update the prescription');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error updating the prescription.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar('Error updating the prescription.', 'error');
     }
   }
 
@@ -243,24 +219,23 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
               isLoading: false);
         }
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Prescription assigned successfully.'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        _showSnackBar('Prescription assigned successfully.', 'success');
       } else {
         throw Exception('Failed to assign the prescription');
       }
     } catch (e) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to assign the prescription.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showSnackBar('Failed to assign the prescription.', 'error');
     }
+  }
+
+  void _showSnackBar(String text, String type) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: type == 'error' ? Colors.red : Colors.green,
+      ),
+    );
   }
 }
 

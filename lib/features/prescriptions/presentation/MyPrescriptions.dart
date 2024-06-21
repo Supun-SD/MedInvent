@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MyPresContent extends ConsumerWidget {
-
   const MyPresContent({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    
-    final userPrescriptions = ref.watch(prescriptionsProvider).userPrescriptions;
+
+    final userPrescriptions =
+        ref.watch(prescriptionsProvider).userPrescriptions;
 
     return SingleChildScrollView(
       child: Padding(
@@ -58,7 +58,8 @@ class MyPresContent extends ConsumerWidget {
                         ),
                         context: context,
                         builder: (BuildContext context) {
-                          return const AssignPrescription(prescription: null, isNewPres: true);
+                          return const AssignPrescription(
+                              prescription: null, isNewPres: true);
                         },
                       );
                     },
@@ -89,4 +90,3 @@ class MyPresContent extends ConsumerWidget {
     );
   }
 }
-

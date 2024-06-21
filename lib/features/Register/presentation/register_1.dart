@@ -1,9 +1,9 @@
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:MedInvent/components/input_field.dart';
 import 'package:MedInvent/config/api.dart';
-import 'package:MedInvent/features/Register/data/models/user_model.dart';
+import 'package:MedInvent/features/Register/models/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/features/Register/presentation/pages/register_2.dart';
+import 'package:MedInvent/features/Register/presentation/register_2.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../validations.dart';
 import 'package:http/http.dart' as http;

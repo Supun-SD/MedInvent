@@ -220,8 +220,6 @@ class Mybutton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
       onTap: onTap,
@@ -236,7 +234,7 @@ class Mybutton extends StatelessWidget {
             ),
             Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Container(
+                child: SizedBox(
                   width: 200,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

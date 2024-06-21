@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,10 +10,10 @@ class BasicInfo extends ConsumerStatefulWidget {
   const BasicInfo({super.key});
 
   @override
-  _BasicInfoState createState() => _BasicInfoState();
+  BasicInfoState createState() => BasicInfoState();
 }
 
-class _BasicInfoState extends ConsumerState<BasicInfo> {
+class BasicInfoState extends ConsumerState<BasicInfo> {
   final TextEditingController _fnameController = TextEditingController();
   final TextEditingController _lnameController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
@@ -44,33 +44,20 @@ class _BasicInfoState extends ConsumerState<BasicInfo> {
       user.lname = _lnameController.text;
       user.dob = _dobController.text;
       user.gender = _genderController.text;
-      user.patientAddress.lineOne = _addressLine1Controller.text ?? "";
-      user.patientAddress.lineTwo = _addressLine2Controller.text ?? "";
-      user.patientAddress.city = _cityController.text ?? "";
-      user.patientAddress.district = _districtController.text ?? "";
+      user.patientAddress.lineOne = _addressLine1Controller.text;
+      user.patientAddress.lineTwo = _addressLine2Controller.text;
+      user.patientAddress.city = _cityController.text;
+      user.patientAddress.district = _districtController.text;
 
       // Update databse with the new user information
       BaseClient baseClient = BaseClient();
-      User user_one = user;
-      PatientAddress user_one_Address;
+      User userOne = user;
 
-      user_one_Address = PatientAddress(
-        lineOne: _addressLine1Controller.text,
-        lineTwo: _addressLine2Controller.text,
-        city: _cityController.text,
-        district: _districtController.text,
-        postalCode: user.postalCode,
-      );
       var response = await baseClient.put(
           '/PatientUser/update/PatientUser/${user.userId}',
-          json.encode(user_one.toJson())
-      );
+          json.encode(userOne.toJson()));
       if (response != null) {
-        baseClient=BaseClient();
-        var response = await baseClient.put(
-            '/PatientUser/update/PatientUser/${user.userId}',
-            json.encode(user_one_Address.toJson())
-        );
+        baseClient = BaseClient();
       } else {
         print('Update not successful');
       }
@@ -129,7 +116,7 @@ class _BasicInfoState extends ConsumerState<BasicInfo> {
                     child: CircleAvatar(
                       radius: screenHeight * 0.065,
                       backgroundImage:
-                      const AssetImage('assets/images/pic.png'),
+                          const AssetImage('assets/images/pic.png'),
                     ),
                   ),
                   SizedBox(
@@ -225,10 +212,10 @@ class EditableInfoField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EditableInfoFieldState createState() => _EditableInfoFieldState();
+  EditableInfoFieldState createState() => EditableInfoFieldState();
 }
 
-class _EditableInfoFieldState extends State<EditableInfoField> {
+class EditableInfoFieldState extends State<EditableInfoField> {
   bool isEditing = false;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -277,44 +264,46 @@ class _EditableInfoFieldState extends State<EditableInfoField> {
                 Expanded(
                   child: isEditing
                       ? widget.isDob
-                      ? TextButton(
-                    onPressed: () => _selectDate(context),
-                    child: Text(
-                      widget.controller.text,
-                      style: TextStyle(
-                          fontSize: screenHeight * 0.02,
-                          color: Colors.black),
-                    ),
-                  )
-                      : TextField(
-                    controller: widget.controller,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.check),
-                        onPressed: () {
-                          setState(() {
-                            isEditing = false;
-                          });
-                          widget.onUpdate();
-                        },
-                      ),
-                    ),
-                  )
+                          ? TextButton(
+                              onPressed: () => _selectDate(context),
+                              child: Text(
+                                widget.controller.text,
+                                style: TextStyle(
+                                    fontSize: screenHeight * 0.02,
+                                    color: Colors.black),
+                              ),
+                            )
+                          : TextField(
+                              controller: widget.controller,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.check),
+                                  onPressed: () {
+                                    setState(() {
+                                      isEditing = false;
+                                    });
+                                    widget.onUpdate();
+                                  },
+                                ),
+                              ),
+                            )
                       : Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                    child: Text(
-                      widget.controller.text,
-                      style: TextStyle(
-                        fontSize: screenHeight * 0.02,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 10.0),
+                          child: Text(
+                            widget.controller.text,
+                            style: TextStyle(
+                              fontSize: screenHeight * 0.02,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.edit),
+                  icon: const Icon(Icons.edit),
                   color: Colors.blue,
                   onPressed: () {
                     setState(() {

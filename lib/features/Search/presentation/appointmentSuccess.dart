@@ -1,4 +1,3 @@
-import 'package:MedInvent/features/Search/presentation/advancedSearch.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentSuccess extends StatelessWidget {

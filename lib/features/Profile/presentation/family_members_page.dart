@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/features/Profile/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/presentation/addFamilyMember.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,7 +77,7 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                   ),
                   context: context,
                   builder: (BuildContext context) {
-                    return AddNewMember();
+                    return const AddNewMember();
                   },
                 );
               },
@@ -127,7 +127,7 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                     future: familyMembers,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text("Error: ${snapshot.error}");
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -147,9 +147,9 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                         return Column(
                           children: snapshot.data!
                               .map((e) => FamilyMemberCard(
-                              familyMember: e,
-                              onDelete: () => deleteFamilyMember(e.dID!),
-                          ))
+                                    familyMember: e,
+                                    onDelete: () => deleteFamilyMember(e.dID!),
+                                  ))
                               .toList(),
                         );
                       }
@@ -175,13 +175,13 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.circular(screenHeight * 0.05),
+                            BorderRadius.circular(screenHeight * 0.05),
                         side: const BorderSide(color: Color(0xFF2980B9)),
                       ),
                     ),
                     child: Padding(
                       padding:
-                      EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                       child: Text(
                         "Add Member",
                         style: TextStyle(
@@ -274,7 +274,7 @@ class FamilyMemberCard extends StatelessWidget {
                 ],
               ),
               IconButton(
-                icon: Icon(Icons.delete, color: Colors.red),
+                icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: onDelete,
               ),
             ],
@@ -284,4 +284,3 @@ class FamilyMemberCard extends StatelessWidget {
     );
   }
 }
-

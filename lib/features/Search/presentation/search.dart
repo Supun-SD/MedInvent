@@ -172,7 +172,6 @@ class _SearchState extends ConsumerState<Search> {
       }
     }
 
-
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: const SideNavBar(),

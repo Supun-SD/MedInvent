@@ -14,10 +14,10 @@ class Prescriptions extends ConsumerStatefulWidget {
   const Prescriptions({super.key});
 
   @override
-  _PrescriptionsState createState() => _PrescriptionsState();
+  PrescriptionsState createState() => PrescriptionsState();
 }
 
-class _PrescriptionsState extends ConsumerState<Prescriptions> {
+class PrescriptionsState extends ConsumerState<Prescriptions> {
   late String userID;
 
   @override

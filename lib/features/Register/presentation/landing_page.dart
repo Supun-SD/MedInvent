@@ -6,10 +6,10 @@ class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
 
   @override
-  _WelcomeState createState() => _WelcomeState();
+  WelcomeState createState() => WelcomeState();
 }
 
-class _WelcomeState extends State<Landing> {
+class WelcomeState extends State<Landing> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 

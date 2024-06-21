@@ -1,6 +1,6 @@
 import 'package:MedInvent/features/Map/map_screen.dart';
 import 'package:MedInvent/features/home/presentation/mainPage.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
