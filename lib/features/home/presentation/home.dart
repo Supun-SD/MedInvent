@@ -26,7 +26,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   String medication1 = "Fever";
   String medication2 = "Diabetes";
   Image profilePhoto = Image.asset("assets/images/pic.png");
-  final _controller = PageController();
   String username1 = "Amali";
 
   @override

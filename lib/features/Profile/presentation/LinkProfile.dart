@@ -259,6 +259,7 @@ class _OtpVerifyState extends State<OtpVerify> {
           if (response != null) {
             Map<String, dynamic> decodedJson = json.decode(response);
             String data = decodedJson['data']['dID'];
+            // ignore: unnecessary_null_comparison
             if (data != null) {
               return true;
             } else {

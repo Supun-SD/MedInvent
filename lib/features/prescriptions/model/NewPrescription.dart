@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:MedInvent/features/prescriptions/model/DependMember.dart';
 
 class NewPrescription {
