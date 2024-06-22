@@ -1,15 +1,18 @@
 import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Appointments/model/appointment.dart';
+import 'package:MedInvent/features/Appointments/presentation/appointmentDetails.dart';
+import 'package:MedInvent/features/Daily_medication/models/DailyMedication.dart';
 import 'package:MedInvent/features/Map/map_screen.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
-import 'package:MedInvent/features/prescriptions/presentation/MyPrescriptions.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:MedInvent/providers/authProvider.dart';
+import 'package:MedInvent/providers/dailyMedicationsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/medication_card.dart';
-import 'package:MedInvent/features/Daily_medication/Presentation/daily_medication.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import '../../prescriptions/presentation/PrescriptionTemplate.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -23,7 +26,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   String medication1 = "Fever";
   String medication2 = "Diabetes";
   Image profilePhoto = Image.asset("assets/images/pic.png");
-  final _controller = PageController();
   String username1 = "Amali";
 
   @override
@@ -34,6 +36,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       ref
           .read(appointmentsProvider.notifier)
           .fetchAppointments(context, userID);
+      ref.read(dailyMedicationsProvider.notifier).fetchDailyMedications(userID);
     });
 
     super.initState();
@@ -75,10 +78,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    bool isAppointmentsLoading = ref.watch(appointmentsProvider).isLoading;
     User user = ref.watch(userProvider)!;
+
+    bool isAppointmentsLoading = ref.watch(appointmentsProvider).isLoading;
+    bool isDailyMedsLoading = ref.watch(dailyMedicationsProvider).isLoading;
+
     List<Appointment> upcomingAppointments =
         ref.watch(appointmentsProvider).upcomingAppointments;
+    List<DailyMedication> dailyMedications =
+        ref.watch(dailyMedicationsProvider).dailyMedications;
 
     List shortcutActions = [
       () {
@@ -105,7 +113,10 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           context: context,
           builder: (BuildContext context) {
-            return const AssignNewPrescription();
+            return const AssignPrescription(
+              prescription: null,
+              isNewPres: true,
+            );
           },
         );
       },
@@ -210,47 +221,31 @@ class _HomePageState extends ConsumerState<HomePage> {
                   height: screenHeight * 0.025,
                 ),
 
-                // medication tracker
-                SizedBox(
-                  height: screenHeight * 0.25,
-                  child: PageView(
-                    scrollDirection: Axis.horizontal,
-                    controller: _controller,
-                    children: [
-                      InkWell(
-                        child: Medication_card(
-                          screenHeight: screenHeight,
-                          screenWidth: screenWidth,
-                          medication1: medication1,
-                          medication2: medication2,
-                          User: "${user.fname} ${user.lname}",
+                isDailyMedsLoading
+                    ? Container(
+                        height: screenHeight * 0.23,
+                        margin: EdgeInsets.symmetric(
+                            vertical: screenHeight * 0.01,
+                            horizontal: screenWidth * 0.07),
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.15),
+                              blurRadius: 10,
+                            ),
+                          ],
                           color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => DailyMed()),
-                          );
-                        },
-                      ),
-                      InkWell(
-                        child: Medication_card(
-                            screenHeight: screenHeight,
-                            screenWidth: screenWidth,
-                            medication1: medication1,
-                            medication2: medication2,
-                            User: username1,
-                            color: Colors.white),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => DailyMed()),
-                          );
-                        },
+                        child: const SpinKitCircle(
+                          size: 30,
+                          color: Colors.indigoAccent,
+                        ),
                       )
-                    ],
-                  ),
-                ),
+                    :
+                    // medication tracker
+                    MedicationCard(dailyMedications: dailyMedications),
 
                 //upcoming appointments
                 SizedBox(
@@ -300,7 +295,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.05),
-                                height: screenHeight * 0.17,
+                                height: screenHeight * 0.14,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(30),
@@ -335,7 +330,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           children: [
                             Container(
                               margin: EdgeInsets.only(left: screenWidth * 0.08),
-                              height: screenHeight * 0.12,
+                              height: screenHeight * 0.145,
                               width: screenWidth * 0.25,
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -367,6 +362,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                               width: 15,
                             ),
                             ...upcomingAppointments
+                                .where(
+                                    (appointment) => !appointment.isCancelled)
                                 .map((appointment) =>
                                     UpcomingWidget(appointment: appointment))
                                 .toList()
@@ -493,137 +490,164 @@ class UpcomingWidget extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      margin: const EdgeInsets.only(right: 15),
-      child: Column(
-        children: [
-          Container(
-            height: screenHeight * 0.08,
-            width: screenWidth * 0.75,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ClipOval(
-                  child: Image.asset(
-                    "assets/images/doctor.jpg",
-                    height: screenHeight * 0.05,
-                    fit: BoxFit.cover,
+    return InkWell(
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AppointmentDetails(
+                  appointment: appointment, type: "upcoming")),
+        )
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 15),
+        child: Column(
+          children: [
+            Container(
+              height: screenHeight * 0.08,
+              width: screenWidth * 0.65,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 10,
                   ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Dr ${appointment.session.doctor.fname} ${appointment.session.doctor.lname}",
-                      style: TextStyle(
-                          fontSize: screenWidth * 0.04,
-                          fontWeight: FontWeight.bold),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  ClipOval(
+                    child: Image.asset(
+                      "assets/images/doctor.jpg",
+                      height: screenHeight * 0.05,
+                      fit: BoxFit.cover,
                     ),
-                    Text(
-                      appointment.session.doctor.specialization,
-                      style: TextStyle(fontSize: screenWidth * 0.03),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Dr ${appointment.session.doctor.fname} ${appointment.session.doctor.lname}",
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.04,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        appointment.session.doctor.specialization,
+                        style: TextStyle(fontSize: screenWidth * 0.03),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Container(
+              height: screenHeight * 0.06,
+              width: screenWidth * 0.65,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF474CA0),
+                    Color(0xFF468FA0),
+                  ],
+                ),
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: screenWidth * 0.03,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          appointment.session.clinic.name,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: screenWidth * 0.028),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_month,
+                              size: screenWidth * 0.03,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              appointment.session.date,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: screenWidth * 0.028),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.alarm,
+                              size: screenWidth * 0.03,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              appointment.session.timeFrom,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: screenWidth * 0.028),
+                            ),
+                          ],
+                        )
+                      ],
                     )
                   ],
-                )
-              ],
-            ),
-          ),
-          Container(
-            height: screenHeight * 0.04,
-            width: screenWidth * 0.75,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF474CA0),
-                  Color(0xFF468FA0),
-                ],
-              ),
-              borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 10,
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.035),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        size: screenWidth * 0.03,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        appointment.session.clinic.name,
-                        style: TextStyle(
-                            color: Colors.white, fontSize: screenWidth * 0.028),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_month,
-                        size: screenWidth * 0.03,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        appointment.session.date,
-                        style: TextStyle(
-                            color: Colors.white, fontSize: screenWidth * 0.028),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.alarm,
-                        size: screenWidth * 0.03,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        appointment.session.timeFrom,
-                        style: TextStyle(
-                            color: Colors.white, fontSize: screenWidth * 0.028),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

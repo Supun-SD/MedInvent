@@ -1,18 +1,75 @@
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/components/Savebutton.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:MedInvent/features/Profile/services/dependent_service.dart';
+import 'dart:convert';
 
-class BasicInfo extends ConsumerWidget {
+class BasicInfo extends ConsumerStatefulWidget {
   const BasicInfo({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  BasicInfoState createState() => BasicInfoState();
+}
+
+class BasicInfoState extends ConsumerState<BasicInfo> {
+  final TextEditingController _fnameController = TextEditingController();
+  final TextEditingController _lnameController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _addressLine1Controller = TextEditingController();
+  final TextEditingController _addressLine2Controller = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _districtController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    var user = ref.read(userProvider)!;
+    _fnameController.text = user.fname;
+    _lnameController.text = user.lname;
+    _dobController.text = user.dob;
+    _genderController.text = user.gender;
+    _addressLine1Controller.text = user.patientAddress.lineOne;
+    _addressLine2Controller.text = user.patientAddress.lineTwo ?? "";
+    _cityController.text = user.patientAddress.city;
+    _districtController.text = user.patientAddress.district;
+  }
+
+  void _updateDatabase() async {
+    try {
+      var user = ref.read(userProvider)!;
+      user.fname = _fnameController.text;
+      user.lname = _lnameController.text;
+      user.dob = _dobController.text;
+      user.gender = _genderController.text;
+      user.patientAddress.lineOne = _addressLine1Controller.text;
+      user.patientAddress.lineTwo = _addressLine2Controller.text;
+      user.patientAddress.city = _cityController.text;
+      user.patientAddress.district = _districtController.text;
+
+      // Update databse with the new user information
+      BaseClient baseClient = BaseClient();
+      User userOne = user;
+
+      var response = await baseClient.put(
+          '/PatientUser/update/PatientUser/${user.userId}',
+          json.encode(userOne.toJson()));
+      if (response != null) {
+        baseClient = BaseClient();
+      } else {
+        print('Update not successful');
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-
-    var user = ref.watch(userProvider)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -74,47 +131,26 @@ class BasicInfo extends ConsumerWidget {
                   SizedBox(
                     height: screenHeight * 0.02,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.02,
-                        horizontal: screenWidth * 0.02),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0,
-                          blurRadius: 70,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Info(
-                          label: "First Name",
-                          data: user.fname,
-                        ),
-                        Info(
-                          label: "Last Name",
-                          data: user.lname,
-                        ),
-                        Info(
-                          label: "NIC",
-                          data: user.nic,
-                        ),
-                        Info(
-                          label: "Date of Birth",
-                          data: user.dob,
-                        ),
-                        Info(
-                          label: "Gender",
-                          data: user.gender,
-                        ),
-                      ],
-                    ),
+                  EditableInfoField(
+                    label: "First Name",
+                    controller: _fnameController,
+                    onUpdate: _updateDatabase,
+                  ),
+                  EditableInfoField(
+                    label: "Last Name",
+                    controller: _lnameController,
+                    onUpdate: _updateDatabase,
+                  ),
+                  EditableInfoField(
+                    label: "Date of Birth",
+                    controller: _dobController,
+                    onUpdate: _updateDatabase,
+                    isDob: true,
+                  ),
+                  EditableInfoField(
+                    label: "Gender",
+                    controller: _genderController,
+                    onUpdate: _updateDatabase,
                   ),
                   SizedBox(
                     height: screenHeight * 0.03,
@@ -128,45 +164,25 @@ class BasicInfo extends ConsumerWidget {
                   SizedBox(
                     height: screenHeight * 0.02,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.02,
-                        horizontal: screenWidth * 0.02),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0,
-                          blurRadius: 70,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Info(
-                          label: "Address Line 1",
-                          data: user.patientAddress.lineOne,
-                        ),
-                        Info(
-                          label: "Address Line 2",
-                          data: user.patientAddress.lineTwo == null
-                              ? user.patientAddress.lineTwo!
-                              : "-",
-                        ),
-                        Info(
-                          label: "City",
-                          data: user.patientAddress.city,
-                        ),
-                        Info(
-                          label: "District",
-                          data: user.patientAddress.district,
-                        ),
-                      ],
-                    ),
+                  EditableInfoField(
+                    label: "Address Line 1",
+                    controller: _addressLine1Controller,
+                    onUpdate: _updateDatabase,
+                  ),
+                  EditableInfoField(
+                    label: "Address Line 2",
+                    controller: _addressLine2Controller,
+                    onUpdate: _updateDatabase,
+                  ),
+                  EditableInfoField(
+                    label: "City",
+                    controller: _cityController,
+                    onUpdate: _updateDatabase,
+                  ),
+                  EditableInfoField(
+                    label: "District",
+                    controller: _districtController,
+                    onUpdate: _updateDatabase,
                   ),
                   SizedBox(
                     height: screenHeight * 0.09,
@@ -181,50 +197,125 @@ class BasicInfo extends ConsumerWidget {
   }
 }
 
-class Info extends StatelessWidget {
-  const Info({required this.label, required this.data, super.key});
+class EditableInfoField extends StatefulWidget {
+  final String label;
+  final TextEditingController controller;
+  final VoidCallback onUpdate;
+  final bool isDob;
 
-  final String label, data;
+  const EditableInfoField({
+    Key? key,
+    required this.label,
+    required this.controller,
+    required this.onUpdate,
+    this.isDob = false,
+  }) : super(key: key);
+
+  @override
+  EditableInfoFieldState createState() => EditableInfoFieldState();
+}
+
+class EditableInfoFieldState extends State<EditableInfoField> {
+  bool isEditing = false;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        widget.controller.text = DateFormat('dd-MM-yyyy').format(picked);
+        isEditing = false;
+      });
+      widget.onUpdate();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    return Stack(
-      children: [
-        Container(
-          margin: EdgeInsets.all(screenWidth * 0.03),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey,
-              width: 1.0,
-            ),
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
-          child: Text(data, style: TextStyle(fontSize: screenWidth * 0.04)),
-        ),
-        Positioned(
-          top: 0,
-          left: 25,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-            decoration: const BoxDecoration(
-              color: Color(0xFFF2F2F2),
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: screenWidth * 0.035,
-              ),
+
+    return Padding(
+      padding: EdgeInsets.all(screenWidth * 0.03),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.label,
+            style: TextStyle(
+              fontSize: screenHeight * 0.025,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
+          SizedBox(
+            height: screenHeight * 0.01,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: isEditing
+                      ? widget.isDob
+                          ? TextButton(
+                              onPressed: () => _selectDate(context),
+                              child: Text(
+                                widget.controller.text,
+                                style: TextStyle(
+                                    fontSize: screenHeight * 0.02,
+                                    color: Colors.black),
+                              ),
+                            )
+                          : TextField(
+                              controller: widget.controller,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.check),
+                                  onPressed: () {
+                                    setState(() {
+                                      isEditing = false;
+                                    });
+                                    widget.onUpdate();
+                                  },
+                                ),
+                              ),
+                            )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 10.0),
+                          child: Text(
+                            widget.controller.text,
+                            style: TextStyle(
+                              fontSize: screenHeight * 0.02,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  color: Colors.blue,
+                  onPressed: () {
+                    setState(() {
+                      isEditing = true;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

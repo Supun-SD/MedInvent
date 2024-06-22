@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/features/Profile/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
-import 'dart:convert';
 import 'package:intl/intl.dart';
-
 
 class FamilyMemberProfile extends StatefulWidget {
   final FamilyMember familyMember;
@@ -36,27 +34,26 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
 
   void _updateDatabase() async {
     // Add your database update logic here
-    print("Database updated with NIC: ${_nicController.text}, Gender: ${_genderController.text}, DOB: ${_dobController.text}, First Name: ${_fnameController.text}, Last Name: ${_lnameController.text}, Relationship: ${_relationshipController.text}");
+    print(
+        "Database updated with NIC: ${_nicController.text}, Gender: ${_genderController.text}, DOB: ${_dobController.text}, First Name: ${_fnameController.text}, Last Name: ${_lnameController.text}, Relationship: ${_relationshipController.text}");
 
     try {
       widget.familyMember.nic = _nicController.text;
-      widget.familyMember.gender = _genderController.text ?? "N/A";
+      widget.familyMember.gender = _genderController.text;
       widget.familyMember.dob = _dobController.text != "N/A"
           ? DateFormat('dd-MM-yyyy').parse(_dobController.text)
           : null;
-      widget.familyMember.fname = _fnameController.text ?? "";
-      widget.familyMember.lname = _lnameController.text ?? "";
-      widget.familyMember.relationship = _relationshipController.text ?? "N/A";
+      widget.familyMember.fname = _fnameController.text;
+      widget.familyMember.lname = _lnameController.text;
+      widget.familyMember.relationship = _relationshipController.text;
 
       BaseClient baseClient = BaseClient();
       var response = await baseClient.put(
-          '/DependMember/update/DependMember/126b4f01-e486-461e-b20e-311e3c7c0ffb',
-          widget.familyMember.toRawJson()
-      );
+          '/DependMember/update/DependMember/550e8400-e29b-41d4-a716-446655440000',
+          widget.familyMember.toRawJson());
       if (response != null) {
         // Handle successful response
         print(response);
-        Map<String, dynamic> decodedJson = json.decode(response);
         //newDepend.receiverID=decodedJson ['data']['userID'];
         //print(newDepend.receiverID);
       } else {
@@ -74,7 +71,6 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     String profilePic = "assets/images/pic.png";
-    int loyalityPoints = 335;
 
     return Scaffold(
       body: Stack(
@@ -102,127 +98,132 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
             ),
           ),
           Container(
-            margin:EdgeInsets.only(top: 240.0),
-            padding: EdgeInsets.only(top:10.0),
+            margin: const EdgeInsets.only(top: 240.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child:Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                  child: Container(
-                    height: screenHeight * 0.38,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(screenWidth * 0.07),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 20,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: screenHeight * 0.075,
-                        ),
-                        InfoField(
-                          title: "First Name -:",
-                          controller: _fnameController,
-                          onUpdate: _updateDatabase,
-                        ),
-                        InfoField(
-                          title: "Last Name -:",
-                          controller: _lnameController,
-                          onUpdate: _updateDatabase,
-                        ),
-                        InfoField(
-                          title: "Relationship -:",
-                          controller: _relationshipController,
-                          onUpdate: _updateDatabase,
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.008,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.025,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(screenWidth * 0.07),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 20,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    child: Container(
+                      height: screenHeight * 0.38,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(screenWidth * 0.07),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                          ),
+                        ],
+                      ),
                       child: Column(
                         children: [
+                          SizedBox(
+                            height: screenHeight * 0.075,
+                          ),
                           InfoField(
-                            title: "NIC",
-                            controller: _nicController,
+                            title: "First Name -:",
+                            controller: _fnameController,
                             onUpdate: _updateDatabase,
                           ),
                           InfoField(
-                            title: "Gender",
-                            controller: _genderController,
+                            title: "Last Name -:",
+                            controller: _lnameController,
                             onUpdate: _updateDatabase,
                           ),
                           InfoField(
-                            title: "Date of Birth",
-                            controller: _dobController,
+                            title: "Relationship -:",
+                            controller: _relationshipController,
                             onUpdate: _updateDatabase,
-                            isDob: true,
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.008,
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.025,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                  child: Container(
-                    height: screenHeight * 0.2,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(screenWidth * 0.07),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 20,
+                  SizedBox(
+                    height: screenHeight * 0.025,
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(screenWidth * 0.07),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                        child: Column(
+                          children: [
+                            InfoField(
+                              title: "NIC",
+                              controller: _nicController,
+                              onUpdate: _updateDatabase,
+                            ),
+                            InfoField(
+                              title: "Gender",
+                              controller: _genderController,
+                              onUpdate: _updateDatabase,
+                            ),
+                            InfoField(
+                              title: "Date of Birth",
+                              controller: _dobController,
+                              onUpdate: _updateDatabase,
+                              isDob: true,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        "No prescriptions assigned",
-                        style: TextStyle(
-                            fontSize: screenHeight * 0.015, color: Colors.grey),
                       ),
                     ),
                   ),
-                )
-              ],
-             ),
+                  SizedBox(
+                    height: screenHeight * 0.025,
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    child: Container(
+                      height: screenHeight * 0.2,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(screenWidth * 0.07),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          "No prescriptions assigned",
+                          style: TextStyle(
+                              fontSize: screenHeight * 0.015,
+                              color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           Positioned(
-            left: screenWidth*0.1,
-            right: screenWidth*0.1,
+            left: screenWidth * 0.1,
+            right: screenWidth * 0.1,
             top: screenHeight * 0.22,
             child: Container(
               height: 60.0,
@@ -292,10 +293,10 @@ class InfoField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _InfoFieldState createState() => _InfoFieldState();
+  InfoFieldState createState() => InfoFieldState();
 }
 
-class _InfoFieldState extends State<InfoField> {
+class InfoFieldState extends State<InfoField> {
   bool isEditing = false;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -320,46 +321,50 @@ class _InfoFieldState extends State<InfoField> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+      padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             widget.title,
-            style: TextStyle(fontSize: screenHeight * 0.02, color: Colors.blue[900]),
+            style: TextStyle(
+                fontSize: screenHeight * 0.02, color: Colors.blue[900]),
           ),
           SizedBox(
             width: screenWidth * 0.29,
             child: isEditing
                 ? widget.isDob
-                ? TextButton(
-              onPressed: () => _selectDate(context),
-              child: Text(
-                widget.controller.text,
-                style: TextStyle(fontSize: screenHeight * 0.02, color: Colors.black),
-              ),
-            )
-                : TextField(
-              controller: widget.controller,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.check),
-                  onPressed: () {
-                    setState(() {
-                      isEditing = false;
-                    });
-                    widget.onUpdate();
-                  },
-                ),
-              ),
-            )
+                    ? TextButton(
+                        onPressed: () => _selectDate(context),
+                        child: Text(
+                          widget.controller.text,
+                          style: TextStyle(
+                              fontSize: screenHeight * 0.02,
+                              color: Colors.black),
+                        ),
+                      )
+                    : TextField(
+                        controller: widget.controller,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.check),
+                            onPressed: () {
+                              setState(() {
+                                isEditing = false;
+                              });
+                              widget.onUpdate();
+                            },
+                          ),
+                        ),
+                      )
                 : Text(
-              widget.controller.text,
-              style: TextStyle(fontSize: screenHeight * 0.02, color: Colors.black),
-            ),
+                    widget.controller.text,
+                    style: TextStyle(
+                        fontSize: screenHeight * 0.02, color: Colors.black),
+                  ),
           ),
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () {
               setState(() {
                 isEditing = true;

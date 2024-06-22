@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:MedInvent/features/home/presentation/mainPage.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dart';
 import 'package:MedInvent/components/input_field.dart';
-import 'package:MedInvent/features/Register/presentation/pages/register_1.dart';
+import 'package:MedInvent/features/Register/presentation/register_1.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -75,15 +74,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             .read(userProvider.notifier)
             .loginUser(_email.text, _password.text);
         await _onLoginSuccess(username, password, user);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Home(
-              sideNavIndex: 2,
-            ),
-          ),
-          (Route<dynamic> route) => false,
-        );
       } catch (e) {
         _invalidCredentials();
       } finally {
@@ -100,6 +90,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Future<void> _onLoginSuccess(
       String username, String password, User user) async {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Home(
+          sideNavIndex: 2,
+        ),
+      ),
+      (Route<dynamic> route) => false,
+    );
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', username);
     await prefs.setString('password', password);

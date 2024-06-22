@@ -1,35 +1,28 @@
-import 'package:MedInvent/features/Profile/data/models/Profile.dart';
-import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/features/prescriptions/model/Prescription.dart';
 import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
 import 'package:MedInvent/features/prescriptions/presentation/ReminersUpdate.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PrescriptionDetails extends StatefulWidget {
+class PrescriptionDetails extends ConsumerStatefulWidget {
   final Prescription prescription;
-  final VoidCallback updatePrescriptionsScreen;
-  const PrescriptionDetails(
-      {required this.prescription,
-      required this.updatePrescriptionsScreen,
-      super.key});
+  const PrescriptionDetails({required this.prescription, super.key});
 
   @override
-  State<PrescriptionDetails> createState() => _PrescriptionDetailsState();
+  ConsumerState<PrescriptionDetails> createState() =>
+      _PrescriptionDetailsState();
 }
 
-class _PrescriptionDetailsState extends State<PrescriptionDetails> {
+class _PrescriptionDetailsState extends ConsumerState<PrescriptionDetails> {
   String image = "assets/images/pic.png";
-
-  void updateUI(Profile fm) {
-    setState(() {
-      widget.prescription.assignedTo = fm;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    User user = ref.watch(userProvider)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -78,92 +71,131 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        widget.prescription.assignedTo != null
-                            ? Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage: AssetImage(image),
-                                    radius: screenHeight * 0.04,
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * 0.05,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.prescription.assignedTo!.name,
-                                        style: TextStyle(
-                                            fontSize: screenHeight * 0.025,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        height: screenHeight * 0.005,
-                                      ),
-                                      if (widget.prescription.assignedTo
-                                          is FamilyMember)
-                                        Text(
-                                          widget.prescription.assignedTo!
-                                              .relationship,
-                                          style: TextStyle(
-                                              fontSize: screenHeight * 0.015),
-                                        ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            : Row(
-                                children: [
-                                  Text(
-                                    "Not Assigned",
-                                    style: TextStyle(
-                                        fontSize: screenHeight * 0.017),
-                                  ),
-                                  const Spacer(),
-                                  TextButton(
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                        backgroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(
-                                                  screenHeight * 0.05)),
-                                        ),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AssignPrescription(
-                                            prescription: widget.prescription,
-                                            onAssignPressed:
-                                                (Profile selectedProfile) {
-                                              updateUI(selectedProfile);
-                                              widget
-                                                  .updatePrescriptionsScreen();
-                                            },
-                                          );
-                                        },
+                        if (widget.prescription.assignedTo == null)
+                          Row(
+                            children: [
+                              Text(
+                                "Not Assigned",
+                                style:
+                                    TextStyle(fontSize: screenHeight * 0.017),
+                              ),
+                              const Spacer(),
+                              // Button to assign prescription
+                              TextButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(
+                                              screenHeight * 0.05)),
+                                    ),
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AssignPrescription(
+                                        prescription: widget.prescription,
+                                        isNewPres: false,
                                       );
                                     },
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFF2980B9),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            screenHeight * 0.05),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: screenWidth * 0.02),
-                                      child: Text(
-                                        "Assign",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: screenHeight * 0.015),
-                                      ),
-                                    ),
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2980B9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        screenHeight * 0.05),
                                   ),
-                                ],
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.02),
+                                  child: Text(
+                                    "Assign",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: screenHeight * 0.015),
+                                  ),
+                                ),
                               ),
+                            ],
+                          )
+                        else
+                          (widget.prescription.assignedTo == 'user')
+                              ? Padding(
+                                  padding: EdgeInsets.only(
+                                      top: screenHeight * 0.01,
+                                      bottom: screenHeight * 0.02),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: const AssetImage(
+                                            "assets/images/pic.png"),
+                                        radius: screenHeight * 0.025,
+                                      ),
+                                      SizedBox(
+                                        width: screenWidth * 0.05,
+                                      ),
+                                      Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "${user.fname} ${user.lname}",
+                                              style: TextStyle(
+                                                  fontSize: screenHeight * 0.02,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              height: screenHeight * 0.005,
+                                            ),
+                                            Text(
+                                              "You",
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      screenHeight * 0.015),
+                                            ),
+                                          ]),
+                                    ],
+                                  ),
+                                )
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      top: screenHeight * 0.01,
+                                      bottom: screenHeight * 0.02),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: const AssetImage(
+                                            "assets/images/pic.png"),
+                                        radius: screenHeight * 0.025,
+                                      ),
+                                      SizedBox(
+                                        width: screenWidth * 0.05,
+                                      ),
+                                      Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "${widget.prescription.dependMember!.fname} ${widget.prescription.dependMember!.lname}",
+                                              style: TextStyle(
+                                                  fontSize: screenHeight * 0.02,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              height: screenHeight * 0.005,
+                                            ),
+                                            Text(
+                                              widget.prescription.dependMember!
+                                                  .relationship,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      screenHeight * 0.015),
+                                            ),
+                                          ]),
+                                    ],
+                                  ),
+                                ),
                         SizedBox(
                           height: screenHeight * 0.03,
                         ),
@@ -199,18 +231,20 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                       Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: screenHeight * 0.04,
-                            ),
-                            ...widget.prescription.presMedicine
-                                .map((medicine) => DrugTemplate(
-                                      medicine: medicine,
-                                      prescription: widget.prescription,
-                                    ))
-                                .toList(),
-                          ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: screenHeight * 0.04,
+                              ),
+                              ...widget.prescription.presMedicine
+                                  .map((medicine) => DrugTemplate(
+                                        medicine: medicine,
+                                        prescription: widget.prescription,
+                                      ))
+                                  .toList(),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
@@ -282,9 +316,9 @@ class _PrescriptionDetailsState extends State<PrescriptionDetails> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    (widget.prescription.doctorName == "")
+                                    (widget.prescription.doctorName == null)
                                         ? 'N/A'
-                                        : widget.prescription.doctorName,
+                                        : widget.prescription.doctorName!,
                                     style: TextStyle(
                                         fontSize: screenWidth * 0.035,
                                         fontWeight: FontWeight.bold),
@@ -320,15 +354,6 @@ class DrugTemplate extends StatefulWidget {
 }
 
 class _DrugTemplateState extends State<DrugTemplate> {
-  int calculateDaysLeft(String createdAt, int duration) {
-    DateTime createdAtDate = DateTime.parse(createdAt);
-    DateTime today = DateTime.now();
-    int differenceInDays = today.difference(createdAtDate).inDays;
-    int daysLeft = duration - differenceInDays;
-
-    return daysLeft;
-  }
-
   List<String> reminders = [];
 
   @override
@@ -350,11 +375,8 @@ class _DrugTemplateState extends State<DrugTemplate> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    Color daysLeftColor = calculateDaysLeft(
-                widget.prescription.createdAt, widget.medicine.duration) <
-            3
-        ? Colors.red
-        : Colors.green;
+    Color daysLeftColor =
+        widget.medicine.remainingDays < 3 ? Colors.red : Colors.green;
 
     return Column(
       children: [
@@ -408,11 +430,9 @@ class _DrugTemplateState extends State<DrugTemplate> {
                         width: screenWidth * 0.2,
                         child: Center(
                             child: Text(
-                          calculateDaysLeft(widget.prescription.createdAt,
-                                      widget.medicine.duration) <
-                                  0
+                          widget.medicine.remainingDays < 0
                               ? 'Finished'
-                              : '${calculateDaysLeft(widget.prescription.createdAt, widget.medicine.duration)} days left',
+                              : '${widget.medicine.remainingDays} days left',
                           style: TextStyle(
                             fontSize: screenHeight * 0.012,
                             color: Colors.white,

@@ -10,7 +10,6 @@ class Past extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //getting the screen size
-    final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     List<Appointment> pastAppointments =

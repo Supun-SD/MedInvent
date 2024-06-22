@@ -5,6 +5,7 @@ import 'package:MedInvent/features/Profile/presentation/security_info_page.dart'
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -136,30 +137,6 @@ class ProfilePage extends ConsumerWidget {
                         height: 1,
                       ),
                       Mybutton(
-                        iconData1: Icons.notifications_active_outlined,
-                        buttonText1: 'Notifications',
-                        buttonText2: 'Medicine,Notification settings',
-                        iconData2: Icons.navigate_next,
-                        onTap: () {},
-                      ),
-                      Container(
-                        color: Colors.black12,
-                        width: 290.0,
-                        height: 1,
-                      ),
-                      Mybutton(
-                        iconData1: Icons.g_translate_outlined,
-                        buttonText1: 'Language',
-                        buttonText2: 'Change app language',
-                        iconData2: Icons.navigate_next,
-                        onTap: () {},
-                      ),
-                      Container(
-                        color: Colors.black12,
-                        width: 290.0,
-                        height: 1,
-                      ),
-                      Mybutton(
                         iconData1: Icons.diversity_1_outlined,
                         buttonText1: 'Family Members',
                         buttonText2: 'Edit,Add Profiles',
@@ -172,14 +149,19 @@ class ProfilePage extends ConsumerWidget {
                           );
                         },
                       ),
+                      Container(
+                        color: Colors.black12,
+                        width: 290.0,
+                        height: 1,
+                      ),
                       SizedBox(
-                        height: screenHeight * 0.03,
+                        height: screenHeight * 0.05,
                       )
                     ],
                   ),
                 ),
                 Container(
-                  height: 70,
+                  height: 80,
                   width: 358,
                   alignment: Alignment.center,
                   decoration: const BoxDecoration(
@@ -198,11 +180,17 @@ class ProfilePage extends ConsumerWidget {
                     ],
                   ),
                   child: Mybutton(
-                    iconData1: Icons.help_outline,
-                    buttonText1: 'Help',
-                    buttonText2: 'FAQ',
+                    iconData1: Icons.notifications_active_outlined,
+                    buttonText1: 'Notifications',
+                    buttonText2: 'tap to view all Notifications',
                     iconData2: Icons.navigate_next,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const NotificationCategory()),
+                      );
+                    },
                   ),
                 ),
               ],
@@ -232,8 +220,6 @@ class Mybutton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
       onTap: onTap,
@@ -248,7 +234,7 @@ class Mybutton extends StatelessWidget {
             ),
             Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Container(
+                child: SizedBox(
                   width: 200,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

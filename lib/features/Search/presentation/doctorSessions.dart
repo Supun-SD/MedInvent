@@ -34,9 +34,7 @@ class _DoctorSessionsState extends State<DoctorSessions> {
     final uniqueClinics = <String>{};
     for (final session in widget.sessions) {
       final clinicName = session.clinic;
-      if (clinicName != null) {
-        uniqueClinics.add(clinicName);
-      }
+      uniqueClinics.add(clinicName);
     }
 
     clinics = ['All Clinics', ...uniqueClinics.toList()];

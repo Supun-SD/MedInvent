@@ -1,4 +1,5 @@
 import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_1.dart';
 import 'package:MedInvent/features/prescriptions/presentation/NewPrescription_2.dart';
@@ -18,9 +19,6 @@ class AddNewPrescription extends ConsumerStatefulWidget {
 
 class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
   TextEditingController title = TextEditingController();
-  bool isLoading = false;
-
-  String userId = "126b4f01-e486-461e-b20e-311e3c7c0ffb";
 
   void updateUI() {
     setState(() {});
@@ -41,25 +39,15 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
     );
   }
 
-  Future<void> onSubmitClick(
-      NewPrescription prescription, BuildContext context) async {
+  Future<void> onSubmitClick() async {
     if (title.text.isEmpty) {
       showAlert(context, "Prescription title cannot be empty", true);
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
-
-    prescription.presName = title.text;
-    await ref
-        .read(prescriptionsProvider.notifier)
-        .addUserPrescription(context, prescription, userId);
-
-    setState(() {
-      isLoading = false;
-    });
+    widget.newPrescription.presName = title.text;
+    await ref.read(prescriptionsProvider.notifier).addUserPrescription(
+        context, widget.newPrescription, ref.watch(userProvider)!.userId);
   }
 
   @override
@@ -67,6 +55,7 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
+    bool isLoading = ref.watch(prescriptionsProvider).isLoading;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -170,11 +159,7 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
                             size: 30.0,
                           )
                         : TextButton(
-                            onPressed: () {
-                              widget.newPrescription.presName = title.text;
-                              onSubmitClick(widget.newPrescription, context);
-                              Navigator.pop(context);
-                            },
+                            onPressed: onSubmitClick,
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFF2980B9),
                               shape: RoundedRectangleBorder(

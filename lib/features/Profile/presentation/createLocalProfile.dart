@@ -1,6 +1,5 @@
-import 'package:MedInvent/features/Profile/data/datasources/familyMembers.dart';
-import 'package:MedInvent/features/Profile/data/models/familyMember.dart';
-import 'package:MedInvent/providers/familyMembersProvider.dart';
+import 'package:MedInvent/features/Profile/models/familyMember.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -224,26 +223,24 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate() &&
                       displayText != "Date of Birth") {
-
                     // Create a new FamilyMember instance
                     FamilyMember newMember = FamilyMember(
-                      firstName.text,
-                      lastName.text,
-                      selectedDate,
-                      selectedGender,
-                      _image?.path,
-                      nic.text,
-                      [],
-                      relationship.text,
-                      ""
-                    );
+                        firstName.text,
+                        lastName.text,
+                        selectedDate,
+                        selectedGender,
+                        _image?.path,
+                        nic.text,
+                        [],
+                        relationship.text,
+                        "");
 
                     // Send the new member data to the backend
                     try {
                       BaseClient baseClient = BaseClient();
                       var response = await baseClient.post(
-                        '/DependMember/add/new/DependMember/126b4f01-e486-461e-b20e-311e3c7c0ffb',
-                        newMember.toRawJson(),
+                        '/DependMember/add/new/DependMember/${ref.watch(userProvider)!.userId}',
+                        newMember.toRawJsonCreate(),
                       );
                       if (response != null) {
                         // Handle successful response
@@ -264,7 +261,6 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                     //         selectedGender,
                     //         displayText, []));
                     // Navigator.pop(context);
-
                   }
                 },
                 style: TextButton.styleFrom(

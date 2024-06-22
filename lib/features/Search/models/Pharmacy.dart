@@ -1,4 +1,4 @@
-class Pharmacy{
+class Pharmacy {
   String id;
   String name;
   String contactNo;

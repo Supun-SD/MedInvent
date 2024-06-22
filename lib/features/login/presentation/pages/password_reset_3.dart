@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/Register/presentation/validations.dart';
+import 'package:MedInvent/features/Register/validations.dart';
 import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/custom_button.dart';

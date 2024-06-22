@@ -1,4 +1,4 @@
-import 'package:MedInvent/features/Profile/presentation/basic_info_page.dart';
+import 'package:MedInvent/features/Profile/presentation/tempBasic.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/input_field_edit.dart';
@@ -92,6 +92,10 @@ class SecurityInfoState extends ConsumerState<SecurityInfo> {
                             label: "Mobile Number",
                             data: user.mobileNo,
                           ),
+                          Info(
+                            label: "Nic",
+                            data: user.nic,
+                          ),
                         ],
                       ),
                     ),
@@ -100,8 +104,8 @@ class SecurityInfoState extends ConsumerState<SecurityInfo> {
                       topValue: 41.8,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.02),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.white,

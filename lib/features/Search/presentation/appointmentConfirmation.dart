@@ -2,13 +2,14 @@ import 'package:MedInvent/components/PatientDetailInput.dart';
 import 'package:MedInvent/components/RadioButtonOption.dart';
 import 'package:MedInvent/components/UserDetail.dart';
 import 'package:MedInvent/features/Search/models/session.dart';
-import 'package:MedInvent/features/login/data/models/user_model.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/appointmentsProvider.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 
 class AppointmentConfirmation extends ConsumerStatefulWidget {
   const AppointmentConfirmation({required this.session, super.key});
@@ -32,6 +33,7 @@ class _AppointmentConfirmationState
   int discount = 200;
   int refundableFee = 250;
   bool isRefundable = false;
+  double totalFee = 0;
 
   final TextEditingController _patientName = TextEditingController();
   final TextEditingController _mobileNo = TextEditingController();
@@ -111,6 +113,36 @@ class _AppointmentConfirmationState
       );
       return;
     }
+    totalFee = widget.session.docFee + widget.session.clinicFee;
+    Map paymentObject = {
+      "sandbox": true,
+      "merchant_id": "1227303",
+      "merchant_secret": "MzYxMDQ4OTAwMTMxMzg3NjUwMTM4MzA1NDU0NjcyMjIxOTIyMDE2",
+      "notify_url": "http://sample.com/notify",
+      "order_id": "ItemNo12345",
+      "items": "Hello from Flutter!",
+      "amount": totalFee,
+      "currency": "LKR",
+      "first_name": user.fname,
+      "last_name": user.lname,
+      "email": user.email,
+      "phone": user.mobileNo,
+      "address": user.patientAddress.lineOne,
+      "city": user.patientAddress.city,
+      "country": "Sri Lanka",
+      "delivery_address": user.patientAddress.lineOne,
+      "delivery_city": user.patientAddress.city,
+      "delivery_country": "Sri Lanka",
+      "custom_1": "",
+      "custom_2": ""
+    };
+    PayHere.startPayment(paymentObject, (paymentId) {
+      print("One Time Payment Success. Payment Id: $paymentId");
+    }, (error) {
+      print("One Time Payment Failed. Error: $error");
+    }, () {
+      print("One Time Payment Dismissed");
+    });
 
     await ref.read(appointmentsProvider.notifier).createAppointment(
         context,

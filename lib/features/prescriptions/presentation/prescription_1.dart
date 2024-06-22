@@ -1,4 +1,6 @@
+import 'package:MedInvent/features/prescriptions/presentation/PrescriptionTemplate.dart';
 import 'package:MedInvent/providers/authProvider.dart';
+import 'package:MedInvent/providers/dependMemberProvider.dart';
 import 'package:MedInvent/providers/prescriptionsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,10 +14,10 @@ class Prescriptions extends ConsumerStatefulWidget {
   const Prescriptions({super.key});
 
   @override
-  _PrescriptionsState createState() => _PrescriptionsState();
+  PrescriptionsState createState() => PrescriptionsState();
 }
 
-class _PrescriptionsState extends ConsumerState<Prescriptions> {
+class PrescriptionsState extends ConsumerState<Prescriptions> {
   late String userID;
 
   @override
@@ -26,6 +28,9 @@ class _PrescriptionsState extends ConsumerState<Prescriptions> {
       ref
           .read(prescriptionsProvider.notifier)
           .fetchPrescriptions(context, userID);
+      ref
+          .read(dependMembersProvider.notifier)
+          .fetchDependentMembers(userID, context);
     });
   }
 
@@ -64,7 +69,10 @@ class _PrescriptionsState extends ConsumerState<Prescriptions> {
                   ),
                   context: context,
                   builder: (BuildContext context) {
-                    return const AssignNewPrescription();
+                    return const AssignPrescription(
+                      isNewPres: true,
+                      prescription: null,
+                    );
                   },
                 );
               },
