@@ -1,6 +1,6 @@
 import 'package:MedInvent/features/prescriptions/model/NewPrescription.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';    //to import date and time packages
 
 class Reminders extends StatefulWidget {
   final PageController pageController;
