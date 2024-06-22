@@ -88,7 +88,7 @@ class ProfilePage extends ConsumerWidget {
                               width: 25,
                             ),
                             Text(
-                              '${ref.watch(userProvider)!.fname} ${ref.watch(userProvider)!.lname}',
+                              '${ref.watch(userProvider).user!.fname} ${ref.watch(userProvider).user!.lname}',
                               style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             )
@@ -220,7 +220,6 @@ class Mybutton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onTap: onTap,
       child: SizedBox(

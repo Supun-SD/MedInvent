@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Register1 extends StatefulWidget {
-  final User user = User();
+  final NewUser user = NewUser();
   Register1({super.key});
 
   @override

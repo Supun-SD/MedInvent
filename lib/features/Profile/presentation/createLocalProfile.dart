@@ -239,7 +239,7 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                     try {
                       BaseClient baseClient = BaseClient();
                       var response = await baseClient.post(
-                        '/DependMember/add/new/DependMember/${ref.watch(userProvider)!.userId}',
+                        '/DependMember/add/new/DependMember/${ref.watch(userProvider).user!.userId}',
                         newMember.toRawJsonCreate(),
                       );
                       if (response != null) {

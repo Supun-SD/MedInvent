@@ -43,40 +43,47 @@ class MedicationCard extends StatelessWidget {
                   DailyMedicationDetails(dailyMedications: dailyMedications)),
         )
       },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(
-            vertical: screenHeight * 0.025, horizontal: screenWidth * 0.08),
-        margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              blurRadius: 10,
-            ),
-          ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: screenHeight * 0.28,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-                child: Text(
-              "Your daily medications",
-              style: TextStyle(fontSize: 16),
-            )),
-            const Divider(),
-            const SizedBox(
-              height: 10,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.025, horizontal: screenWidth * 0.08),
+          margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                    child: Text(
+                  "Your daily medications",
+                  style: TextStyle(fontSize: 16),
+                )),
+                const Divider(),
+                const SizedBox(
+                  height: 10,
+                ),
+                ...dailyMedications
+                    .map((dailyMed) => PrescriptionTemplate(
+                        dailyMedication: dailyMed,
+                        totalMeds: calculateTotalMedicationIntake(dailyMed),
+                        takenMeds: calculateTakenMedicationIntakes(dailyMed)))
+                    .toList(),
+              ],
             ),
-            ...dailyMedications
-                .map((dailyMed) => PrescriptionTemplate(
-                    dailyMedication: dailyMed,
-                    totalMeds: calculateTotalMedicationIntake(dailyMed),
-                    takenMeds: calculateTakenMedicationIntakes(dailyMed)))
-                .toList(),
-          ],
+          ),
         ),
       ),
     );

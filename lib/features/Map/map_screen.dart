@@ -48,9 +48,6 @@ class _MapPageState extends ConsumerState<MapPage> {
     await ref
         .read(pharmaciesAndDoctorsProvider.notifier)
         .checkLocationPermission();
-    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
-        zoom: 13.8)));
     addMarkers();
   }
 
@@ -448,6 +445,12 @@ class _MapPageState extends ConsumerState<MapPage> {
           GoogleMap(
             onMapCreated: (GoogleMapController controller) {
               mapController = controller;
+              mapController!.animateCamera(CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
+                  zoom: 13.8,
+                ),
+              ));
             },
             initialCameraPosition: CameraPosition(
               target: myLocation,

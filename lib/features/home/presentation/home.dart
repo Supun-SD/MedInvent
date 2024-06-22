@@ -32,7 +32,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     setGreeting();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      String userID = ref.watch(userProvider)!.userId;
+      String userID = ref.watch(userProvider).user!.userId;
       ref
           .read(appointmentsProvider.notifier)
           .fetchAppointments(context, userID);
@@ -78,7 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    User user = ref.watch(userProvider)!;
+    User user = ref.watch(userProvider).user!;
 
     bool isAppointmentsLoading = ref.watch(appointmentsProvider).isLoading;
     bool isDailyMedsLoading = ref.watch(dailyMedicationsProvider).isLoading;

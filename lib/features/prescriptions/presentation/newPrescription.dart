@@ -47,7 +47,7 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
 
     widget.newPrescription.presName = title.text;
     await ref.read(prescriptionsProvider.notifier).addUserPrescription(
-        context, widget.newPrescription, ref.watch(userProvider)!.userId);
+        context, widget.newPrescription, ref.watch(userProvider).user!.userId);
   }
 
   @override

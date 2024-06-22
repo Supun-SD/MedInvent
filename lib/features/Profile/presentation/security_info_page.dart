@@ -18,7 +18,7 @@ class SecurityInfoState extends ConsumerState<SecurityInfo> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    var user = ref.watch(userProvider)!;
+    var user = ref.watch(userProvider).user!;
 
     return Scaffold(
       appBar: AppBar(

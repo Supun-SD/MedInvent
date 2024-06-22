@@ -62,7 +62,7 @@ class _PasswordReset2State extends ConsumerState<PasswordReset2> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: Text(
-                    'Enter the confirmation code sent to ${ref.watch(userProvider)!.mobileNo}}',
+                    'Enter the confirmation code sent to ${ref.watch(userProvider).user!.mobileNo}}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: screenHeight * 0.02,

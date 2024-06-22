@@ -23,7 +23,7 @@ class PrescriptionsState extends ConsumerState<Prescriptions> {
   @override
   void initState() {
     super.initState();
-    userID = ref.read(userProvider)!.userId;
+    userID = ref.read(userProvider).user!.userId;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(prescriptionsProvider.notifier)

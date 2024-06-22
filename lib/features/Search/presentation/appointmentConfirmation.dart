@@ -194,7 +194,7 @@ class _AppointmentConfirmationState
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    User user = ref.watch(userProvider)!;
+    User user = ref.watch(userProvider).user!;
     bool isLoading = ref.watch(appointmentsProvider).isLoading;
 
     return Scaffold(

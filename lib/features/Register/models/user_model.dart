@@ -1,4 +1,4 @@
-class User{
+class NewUser{
   String? fName;
   String? lName;
   String? email;

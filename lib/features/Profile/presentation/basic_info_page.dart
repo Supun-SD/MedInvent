@@ -26,7 +26,7 @@ class BasicInfoState extends ConsumerState<BasicInfo> {
   @override
   void initState() {
     super.initState();
-    var user = ref.read(userProvider)!;
+    var user = ref.read(userProvider).user!;
     _fnameController.text = user.fname;
     _lnameController.text = user.lname;
     _dobController.text = user.dob;
@@ -39,7 +39,7 @@ class BasicInfoState extends ConsumerState<BasicInfo> {
 
   void _updateDatabase() async {
     try {
-      var user = ref.read(userProvider)!;
+      var user = ref.read(userProvider).user!;
       user.fname = _fnameController.text;
       user.lname = _lnameController.text;
       user.dob = _dobController.text;

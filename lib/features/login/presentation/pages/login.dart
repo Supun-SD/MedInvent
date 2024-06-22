@@ -9,7 +9,6 @@ import 'package:MedInvent/features/Register/presentation/register_1.dart';
 import 'package:MedInvent/components/custom_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,12 +18,6 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  //temporary username ans password
-  final String username = "admin";
-  final String password = "admin";
-
-  bool isLoading = false;
-
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
@@ -36,79 +29,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
-  //pop to show when invalid credentials are entered
-  Future<void> _invalidCredentials() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Invalid login credentials.'),
-          content: const Text(
-              'Please enter a valid email or mobile number and password.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   //function to authenticate login
   void loginAuth(BuildContext context) async {
     if (_email.text.isEmpty || _password.text.isEmpty) return;
 
-    if (_email.text == username && _password.text == password) {
-      setState(() {
-        isLoading = true;
-      });
-      try {
-        User user = await ref
-            .read(userProvider.notifier)
-            .loginUser(_email.text, _password.text);
-        await _onLoginSuccess(username, password, user);
-      } catch (e) {
-        _invalidCredentials();
-      } finally {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    } else {
-      _invalidCredentials();
-      _email.clear();
-      _password.clear();
-    }
-  }
-
-  Future<void> _onLoginSuccess(
-      String username, String password, User user) async {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Home(
-          sideNavIndex: 2,
-        ),
-      ),
-      (Route<dynamic> route) => false,
-    );
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', username);
-    await prefs.setString('password', password);
-    await prefs.setString('user', jsonEncode(user.toJson()));
+    await ref
+        .read(userProvider.notifier)
+        .loginUser(_email.text, _password.text, context);
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    bool isLoading = ref.watch(userProvider).isLoading;
 
     return Scaffold(
       backgroundColor: Colors.white,

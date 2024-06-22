@@ -74,7 +74,7 @@ class _AppointmentDetailsState extends ConsumerState<AppointmentDetails> {
               onPressed: () {
                 ref.read(appointmentsProvider.notifier).cancelAppointment(
                     widget.appointment,
-                    ref.read(userProvider)!.userId,
+                    ref.read(userProvider).user!.userId,
                     context);
                 Navigator.of(context).pop();
               },

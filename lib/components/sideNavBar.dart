@@ -20,7 +20,7 @@ class _SideNavBarState extends ConsumerState<SideNavBar> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    User user = ref.watch(userProvider)!;
+    User user = ref.watch(userProvider).user!;
 
     return Drawer(
       shape: RoundedRectangleBorder(
