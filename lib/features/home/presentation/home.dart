@@ -282,7 +282,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  const Icon(Icons.arrow_forward)
+                                  const Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.grey,
+                                  )
                                 ],
                               ),
                             ),
@@ -295,7 +298,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.05),
-                                height: screenHeight * 0.14,
+                                height: screenHeight * 0.17,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(30),
@@ -316,7 +319,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                                           "You don't have any upcoming appointments",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                              fontSize: screenWidth * 0.03),
+                                              fontSize: screenWidth * 0.03,
+                                              color: Colors.grey),
                                         ),
                                 ),
                               ),

@@ -37,51 +37,66 @@ class UserNotifier extends StateNotifier<UserState> {
   UserNotifier() : super(UserState.initial());
 
   Future<void> loginUser(
-      String emailOrMobileNo, String password, BuildContext context) async {
-    const String username = "admin";
-    const String password = "admin";
-
-    if (!(emailOrMobileNo == username && password == password)) {
-      _invalidCredentials(context);
-      return;
-    }
-
+      String email, String password, BuildContext context) async {
     state = UserState(
         user: state.user,
         isLoading: true,
         isAuthenticated: state.isAuthenticated,
         accessToken: state.accessToken);
-    const String userId = "550e8400-e29b-41d4-a716-446655440000";
-    const String apiURL =
-        '${ApiConfig.baseUrl}/patientuser/get/patientuser/details/byuserid/$userId';
+
+    const String apiURL = '${ApiConfig.baseUrl}/user/login';
+
+    final Map<String, String> headers = {"Content-Type": "application/json"};
+    final Map<String, String> body = {"email": email, "password": password};
 
     try {
-      final response = await http.get(Uri.parse(apiURL));
+      final response = await http.post(Uri.parse(apiURL),
+          headers: headers, body: json.encode(body));
 
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
 
         if (jsonResponse['data'] != null) {
-          var userJson = jsonResponse['data'];
+          var userJson = jsonResponse['data']['user'];
+          String accessToken = jsonResponse['data']['accessToken'];
+          List<dynamic> roles = jsonResponse['data']['roles'];
+
+          if (!roles.contains("patient")) {
+            _invalidCredentials(context);
+            return;
+          }
+
+          await saveAccessToken(accessToken);
 
           User user = User.fromJson(userJson);
-          await _onLoginSuccess(username, password, user, context);
+          await _onLoginSuccess(email, password, user, context);
+
           state = UserState(
-              user: user,
-              isLoading: false,
-              isAuthenticated: true,
-              accessToken: state.accessToken);
+            user: user,
+            isLoading: false,
+            isAuthenticated: true,
+            accessToken: accessToken,
+          );
         }
+      } else if (response.statusCode == 401) {
+        _invalidCredentials(context);
       } else {
         throw Exception("Failed to login");
       }
     } catch (e) {
       _invalidCredentials(context);
+    } finally {
+      state = UserState(
+        user: state.user,
+        isLoading: false,
+        isAuthenticated: state.isAuthenticated,
+        accessToken: state.accessToken,
+      );
     }
   }
 
   Future<void> registerUser(NewUser user, BuildContext context) async {
-    String apiUrl = '${ApiConfig.baseUrl}/patientuser/add/new/patientuser';
+    String apiUrl = '${ApiConfig.baseUrl}/user/create';
 
     state = UserState(
         user: null, isLoading: true, isAuthenticated: false, accessToken: null);
@@ -91,7 +106,8 @@ class UserNotifier extends StateNotifier<UserState> {
         Uri.parse(apiUrl),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          'userDetails': {
+          'accessToken': null,
+          'data': {
             'Fname': user.fName,
             'Lname': user.lName,
             'mobileNo': user.mobileNo,
@@ -111,6 +127,7 @@ class UserNotifier extends StateNotifier<UserState> {
             'email': user.email,
             'mobileNo': user.mobileNo,
             'password': user.password,
+            'role': "patient"
           }
         }),
       );
@@ -130,16 +147,22 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
-  void logoutUser() async {
-    await Future.delayed(const Duration(seconds: 2));
-
+  Future<void> logoutUser(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (Route<dynamic> route) => false,
+    );
+    await Future.delayed(const Duration(seconds: 2));
     state = UserState(
-        user: null,
-        isLoading: state.isLoading,
-        isAuthenticated: false,
-        accessToken: null);
+      user: null,
+      isLoading: false,
+      isAuthenticated: false,
+      accessToken: null,
+    );
   }
 
   void setUser(User user) {
@@ -152,9 +175,6 @@ class UserNotifier extends StateNotifier<UserState> {
 
   Future<void> _onLoginSuccess(
       String username, String password, User user, BuildContext context) async {
-
-    bool is_Token_actived = await _checkTokenDetails(user);
-    if(is_Token_actived) {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -162,12 +182,22 @@ class UserNotifier extends StateNotifier<UserState> {
           sideNavIndex: 2,
         ),
       ),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
-    }
-    else{
-      _invalidCredentials(context);
-    }
+    // bool is_Token_actived = await _checkTokenDetails(user);
+    // if (is_Token_actived) {
+    //   Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => const Home(
+    //         sideNavIndex: 2,
+    //       ),
+    //     ),
+    //     (Route<dynamic> route) => false,
+    //   );
+    // } else {
+    //   _invalidCredentials(context);
+    // }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('user', jsonEncode(user.toJson()));
   }
@@ -178,7 +208,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Registration Successful'),
           content: const Text('You have successfully registered!'),
           actions: [
@@ -187,7 +217,7 @@ class UserNotifier extends StateNotifier<UserState> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginPage()),
-                      (route) => false,
+                  (route) => false,
                 );
               },
               child: const Text('OK'),
@@ -205,7 +235,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Invalid login credentials.'),
           content: const Text(
               'Please enter a valid email or mobile number and password.'),
@@ -228,7 +258,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Registration Failed'),
           content: Text(message),
           actions: [
@@ -245,47 +275,45 @@ class UserNotifier extends StateNotifier<UserState> {
   }
 
   Future<bool> _checkTokenDetails(User user) async {
-    try{
+    try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? deviceToken = prefs.getString('fcm_token');
-      if(deviceToken != null) {
+      if (deviceToken != null) {
         FCM fcm = FCM(user.userId, deviceToken);
-        BaseClient baseClient =BaseClient();
+        BaseClient baseClient = BaseClient();
         var response = await baseClient.post(
-            '/Notification/check/Token/Available',fcm.toRawJson());
+            '/Notification/check/Token/Available', fcm.toRawJson());
         Map<String, dynamic> decodedJson = json.decode(response);
         bool data = decodedJson['data'];
-        if(data){
+        if (data) {
           return true;
-        }
-        else{
+        } else {
           return false;
         }
-      }
-      else{
+      } else {
         return false;
       }
-    }
-    catch(e){
+    } catch (e) {
       return false;
     }
+  }
+
+  Future<void> saveAccessToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('accessToken', token);
+  }
+
+  Future<String?> getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken');
+  }
+
+  Future<void> removeAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
   }
 }
 
 final userProvider = StateNotifierProvider<UserNotifier, UserState>(
-      (ref) => UserNotifier(),
+  (ref) => UserNotifier(),
 );
-
-RegExp emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
-RegExp mobileRegex = RegExp(r'^[0-9]{10}$');
-
-// Function to determine if input is email or mobile number
-String checkInputType(String input) {
-  if (emailRegex.hasMatch(input)) {
-    return 'email';
-  } else if (mobileRegex.hasMatch(input)) {
-    return 'mobile';
-  } else {
-    return 'unknown';
-  }
-}

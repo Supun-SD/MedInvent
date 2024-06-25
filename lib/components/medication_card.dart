@@ -75,12 +75,27 @@ class MedicationCard extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                ...dailyMedications
-                    .map((dailyMed) => PrescriptionTemplate(
-                        dailyMedication: dailyMed,
-                        totalMeds: calculateTotalMedicationIntake(dailyMed),
-                        takenMeds: calculateTakenMedicationIntakes(dailyMed)))
-                    .toList(),
+                dailyMedications.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          "You don't have any medications for today",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          ...dailyMedications
+                              .map((dailyMed) => PrescriptionTemplate(
+                                  dailyMedication: dailyMed,
+                                  totalMeds:
+                                      calculateTotalMedicationIntake(dailyMed),
+                                  takenMeds: calculateTakenMedicationIntakes(
+                                      dailyMed)))
+                              .toList(),
+                        ],
+                      )
               ],
             ),
           ),

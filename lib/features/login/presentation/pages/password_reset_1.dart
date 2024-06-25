@@ -38,7 +38,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Registration Failed'),
+          title: const Text('Password reset failed'),
           content: Text(message),
           actions: [
             TextButton(
@@ -148,7 +148,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
                       controller: _email,
                       keyboardType: TextInputType.text,
                       prefixIcon: const Icon(Icons.person),
-                      hint: 'Email/Phone No.',
+                      hint: 'Email',
                       isPassword: false),
                   SizedBox(
                     height: screenHeight * 0.02,

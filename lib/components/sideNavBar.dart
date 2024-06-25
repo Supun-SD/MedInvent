@@ -5,6 +5,7 @@ import 'package:MedInvent/features/login/presentation/pages/login.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SideNavBar extends ConsumerStatefulWidget {
   const SideNavBar({super.key});
@@ -16,11 +17,16 @@ class SideNavBar extends ConsumerStatefulWidget {
 class _SideNavBarState extends ConsumerState<SideNavBar> {
   Image profilePhoto = Image.asset("assets/images/pic.png");
 
+  Future<void> onLogout() async {
+    await ref.watch(userProvider.notifier).logoutUser(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     User user = ref.watch(userProvider).user!;
+    bool isLoading = ref.watch(userProvider).isLoading;
 
     return Drawer(
       shape: RoundedRectangleBorder(
@@ -146,21 +152,19 @@ class _SideNavBarState extends ConsumerState<SideNavBar> {
           SizedBox(
             height: screenHeight * 0.15,
           ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app, size: screenHeight * 0.03),
-            title: Text(
-              'Logout',
-              style: TextStyle(fontSize: screenHeight * 0.018),
-            ),
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (Route<dynamic> route) => false,
-              );
-              ref.watch(userProvider.notifier).logoutUser();
-            },
-          ),
+          isLoading
+              ? const SpinKitThreeInOut(
+                  size: 20,
+                  color: Colors.blue,
+                )
+              : ListTile(
+                  leading: Icon(Icons.exit_to_app, size: screenHeight * 0.03),
+                  title: Text(
+                    'Logout',
+                    style: TextStyle(fontSize: screenHeight * 0.018),
+                  ),
+                  onTap: onLogout,
+                ),
         ],
       ),
     );

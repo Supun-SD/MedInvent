@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:MedInvent/features/home/presentation/mainPage.dart';
-import 'package:MedInvent/features/login/models/user_model.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dart';
@@ -79,7 +76,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 controller: _email,
                 keyboardType: TextInputType.text,
                 prefixIcon: const Icon(Icons.person, color: Colors.grey),
-                hint: 'Email/Phone No',
+                hint: 'Email',
                 isPassword: false,
               ),
               SizedBox(height: screenHeight * 0.02),
