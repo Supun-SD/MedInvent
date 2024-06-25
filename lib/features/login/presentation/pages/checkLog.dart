@@ -16,8 +16,6 @@ class CheckAuth extends ConsumerStatefulWidget {
 
 class _CheckAuthState extends ConsumerState<CheckAuth> {
   bool is_Authenticated = false;
-  String username = "";
-  String password = "";
 
   @override
   @override
@@ -28,63 +26,62 @@ class _CheckAuthState extends ConsumerState<CheckAuth> {
     });
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   checkMessage();
-  // }
-
   Future<void> _checkAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? username = prefs.getString('username');
-    String? password = prefs.getString('password');
     String? userJson = prefs.getString('user');
-    String? receiverToken = prefs.getString('FcmToken') ?? "";
 
     late User user;
 
-    if (username != null && password != null && userJson != null) {
+    if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
       setState(() {
-        this.password = password;
-        this.username = username;
         is_Authenticated = true;
       });
       Future.delayed(Duration.zero, () {
         ref.watch(userProvider.notifier).setUser(user);
-        print(is_Authenticated);
       });
     }
   }
 
   void checkMessage() {
-    print('inside checkMessage');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final getarguments = ModalRoute.of(context)?.settings.arguments;
 
       if (getarguments != null) {
+        print("arguments not null");
         Map? pushArguments = getarguments as Map;
         if (pushArguments.containsKey("message")) {
           Map<String, dynamic> messageData =
               json.decode(pushArguments["message"]);
-          final getPassword = messageData["password"];
-          final getOTP = messageData["OTP"];
-          print('get password $getPassword');
-          print('OTP is $getOTP');
-          print('shared preferences password $password');
-          if (getPassword == password) {
-            print('equal');
+          final getTitle = messageData["identify"];
+          //final getOTP = messageData["OTP"];
+          //print('get password $getPassword');
+          //print('OTP is $getOTP');
+          //print('shared preferences password $password');
+          print(getTitle);
+          if (getTitle == "OTP") {
             Navigator.pushNamed(
               context,
               '/notifications',
               arguments: getarguments,
             );
-          } else if (getPassword != password) {
-            print('not equal');
+          } else if (getTitle == "cancel") {
             Navigator.pushNamed(
               context,
-              '/landing',
+              '/CancelNotification',
+              arguments: getarguments,
+            );
+          }else if (getTitle == "arrive") {
+            Navigator.pushNamed(
+              context,
+              '/ArriveNotification',
+              arguments: getarguments,
+            );
+          }else if (getTitle == "medicine") {
+            Navigator.pushNamed(
+              context,
+              '/ReminderNotification',
               arguments: getarguments,
             );
           }

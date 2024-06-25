@@ -364,7 +364,7 @@ class InfoFieldState extends State<InfoField> {
                   ),
           ),
           IconButton(
-            icon: const Icon(Icons.edit),
+            icon: Icon(Icons.edit,color: Colors.blue),
             onPressed: () {
               setState(() {
                 isEditing = true;

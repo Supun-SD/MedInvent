@@ -115,13 +115,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
               isLoading
                   ? SpinKitThreeBounce(
-                      size: screenWidth * 0.06,
-                      color: const Color(0xFF2980B9),
-                    )
+                size: screenWidth * 0.06,
+                color: const Color(0xFF2980B9),
+              )
                   : CustomButton(
-                      text: 'Sign In',
-                      onPressed: () => loginAuth(context),
-                    ),
+                text: 'Sign In',
+                onPressed: () => loginAuth(context),
+              ),
               SizedBox(height: screenHeight * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

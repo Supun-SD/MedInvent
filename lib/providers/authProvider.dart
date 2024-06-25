@@ -7,7 +7,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../config/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../features/Profile/services/dependent_service.dart';
+import '../features/login/models/fcmToken_model.dart';
 import '../features/Register/models/user_model.dart';
 
 class UserState {
@@ -50,7 +51,7 @@ class UserNotifier extends StateNotifier<UserState> {
         isLoading: true,
         isAuthenticated: state.isAuthenticated,
         accessToken: state.accessToken);
-    const String userId = "b77565de-75a7-49c6-9335-0478a5d2ff75";
+    const String userId = "550e8400-e29b-41d4-a716-446655440000";
     const String apiURL =
         '${ApiConfig.baseUrl}/patientuser/get/patientuser/details/byuserid/$userId';
 
@@ -151,6 +152,9 @@ class UserNotifier extends StateNotifier<UserState> {
 
   Future<void> _onLoginSuccess(
       String username, String password, User user, BuildContext context) async {
+
+    bool is_Token_actived = await _checkTokenDetails(user);
+    if(is_Token_actived) {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -158,11 +162,13 @@ class UserNotifier extends StateNotifier<UserState> {
           sideNavIndex: 2,
         ),
       ),
-      (Route<dynamic> route) => false,
+          (Route<dynamic> route) => false,
     );
+    }
+    else{
+      _invalidCredentials(context);
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', username);
-    await prefs.setString('password', password);
     await prefs.setString('user', jsonEncode(user.toJson()));
   }
 
@@ -172,7 +178,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Registration Successful'),
           content: const Text('You have successfully registered!'),
           actions: [
@@ -181,7 +187,7 @@ class UserNotifier extends StateNotifier<UserState> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginPage()),
-                  (route) => false,
+                      (route) => false,
                 );
               },
               child: const Text('OK'),
@@ -199,7 +205,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Invalid login credentials.'),
           content: const Text(
               'Please enter a valid email or mobile number and password.'),
@@ -222,7 +228,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Registration Failed'),
           content: Text(message),
           actions: [
@@ -237,10 +243,37 @@ class UserNotifier extends StateNotifier<UserState> {
       },
     );
   }
+
+  Future<bool> _checkTokenDetails(User user) async {
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? deviceToken = prefs.getString('fcm_token');
+      if(deviceToken != null) {
+        FCM fcm = FCM(user.userId, deviceToken);
+        BaseClient baseClient =BaseClient();
+        var response = await baseClient.post(
+            '/Notification/check/Token/Available',fcm.toRawJson());
+        Map<String, dynamic> decodedJson = json.decode(response);
+        bool data = decodedJson['data'];
+        if(data){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+      else{
+        return false;
+      }
+    }
+    catch(e){
+      return false;
+    }
+  }
 }
 
 final userProvider = StateNotifierProvider<UserNotifier, UserState>(
-  (ref) => UserNotifier(),
+      (ref) => UserNotifier(),
 );
 
 RegExp emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');

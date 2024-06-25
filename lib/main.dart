@@ -11,6 +11,10 @@ import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'features/login/presentation/pages/checkLog.dart';
 import 'features/Notifications/presentation/otpNotification.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'features/login/presentation/pages/checkLog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -20,9 +24,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseMessaging.instance
-      .getToken()
-      .then((value) => {print("get token : $value")});
+  // Store the token in SharedPreferences
+  FirebaseMessaging.instance.getToken().then((value) async {
+    if (value != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('fcm_token', value);
+      await prefs.remove('user');
+      print("get token : $value");
+    }
+  });
 
   FirebaseMessaging.onMessageOpenedApp.listen(
     (RemoteMessage message) async {
@@ -69,15 +79,16 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Raleway'),
       //home:  CheckAuth(),
-      navigatorKey: navigatorKey,
-      routes: {
-        '/': ((context) => const CheckAuth()),
-        '/notifications': ((context) => const OTPNotification()),
-        '/landing': ((context) => const Landing()),
-        '/linkDevice': ((context) => const OTPNotification()),
-        '/ArriveNotification': ((context) => const ArriveNotification()),
-        '/CancelNotification': ((context) => const CancelNotification())
-      },
+      navigatorKey:navigatorKey,
+       routes: {
+         '/':((context)=> CheckAuth()),
+         '/notifications':((context)=>const OTPNotification()),
+         '/landing':((context)=>const Landing()),
+         '/linkDevice':((context)=>const OTPNotification()),
+         '/ArriveNotification':((context)=>const ArriveNotification()),
+         '/CancelNotification':((context)=>const CancelNotification()),
+         '/ReminderNotification':((context)=>const CancelNotification())
+       },
     );
   }
 }
