@@ -29,7 +29,6 @@ void main() async {
     if (value != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('fcm_token', value);
-      await prefs.remove('user');
       print("get token : $value");
     }
   });
