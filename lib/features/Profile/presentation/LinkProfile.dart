@@ -86,6 +86,8 @@ class _LinkProfileState extends State<LinkProfile> {
       nic.text,
       relationship.text,
     );
+    //I want to acces user provider data here
+
     // Send the new member data to the backend
     try {
       BaseClient baseClient = BaseClient();
@@ -112,9 +114,8 @@ class _LinkProfileState extends State<LinkProfile> {
               }
             }
             if (newDepend.FcmTokens.isNotEmpty) {
-              bool A = await newDepend.temporary();
               bool B = await newDepend.assignLoggedUserID();
-              if (A && B) {
+              if (B) {
                 baseClient = BaseClient();
                 var response = await baseClient.post(
                     '/Notification/send/OTP/link/user',

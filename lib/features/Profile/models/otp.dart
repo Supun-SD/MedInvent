@@ -5,8 +5,7 @@ class OTP {
   int? OTPNumber;
   String? receiverNic;
   String? OTP_id;
-  String? receiverToken =
-      "cK8Aj-QcRRaf-C_6I9m27H:APA91bF7xsjFWF8t7X-10vAHsDao1rfvBvfTVdTRJXVIx-r99j5N1uruLGAkcUkf-fj8lUQp7ZoN5eNhqYRLc9HaqvdgtMu4-1M10xnivkokwO614dDahYMyVtNKR3CgXY-EqyjiPh6K";
+  String? receiverToken = "";
 
   OTP(
     this.OTPNumber,

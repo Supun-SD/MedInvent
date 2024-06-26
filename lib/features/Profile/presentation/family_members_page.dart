@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'FamilyMemberProfile.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 
 class FamilyMembers extends ConsumerStatefulWidget {
   const FamilyMembers({super.key});
@@ -18,7 +19,13 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
   @override
   void initState() {
     super.initState();
-    fetchFamilyMembers();
+    // fetchFamilyMembers();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchFamilyMembers(); // Moved it here
   }
 
   void fetchFamilyMembers() {
@@ -29,11 +36,14 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
 
   Future<List<FamilyMember>> getFamilyMembers() async {
     try {
+      print("hello");
+      var user = ref.watch(userProvider).user!;
       BaseClient baseClient = BaseClient();
       var response = await baseClient.get(
-        '/DependMember/get/DependMembers/details/550e8400-e29b-41d4-a716-446655440000',
+        '/DependMember/get/DependMembers/details/${user.userId}',
       );
       if (response != null) {
+        print(response);
         return FamilyMember.userDependFromJson(response);
       } else {
         return [];

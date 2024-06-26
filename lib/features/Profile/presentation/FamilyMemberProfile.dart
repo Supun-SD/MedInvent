@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:MedInvent/features/Profile/models/familyMember.dart';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:MedInvent/providers/authProvider.dart';
 
-class FamilyMemberProfile extends StatefulWidget {
+
+class FamilyMemberProfile extends ConsumerStatefulWidget {
   final FamilyMember familyMember;
   const FamilyMemberProfile({required this.familyMember, super.key});
 
   @override
-  State<FamilyMemberProfile> createState() => FamilyMemberProfileState();
+  ConsumerState<FamilyMemberProfile> createState() => FamilyMemberProfileState();
 }
 
-class FamilyMemberProfileState extends State<FamilyMemberProfile> {
+class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
   final TextEditingController _nicController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
@@ -47,9 +50,10 @@ class FamilyMemberProfileState extends State<FamilyMemberProfile> {
       widget.familyMember.lname = _lnameController.text;
       widget.familyMember.relationship = _relationshipController.text;
 
+      var user = ref.read(userProvider).user!;
       BaseClient baseClient = BaseClient();
       var response = await baseClient.put(
-          '/DependMember/update/DependMember/550e8400-e29b-41d4-a716-446655440000',
+          '/DependMember/update/DependMember/${user.userId}',
           widget.familyMember.toRawJson());
       if (response != null) {
         // Handle successful response

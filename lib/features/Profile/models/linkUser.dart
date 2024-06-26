@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:MedInvent/features/login/models/user_model.dart';
+
+
 
 class LinkUser {
   String? relationship;
@@ -59,19 +62,23 @@ class LinkUser {
 
   //get logged data from shared preferences
   Future<bool> assignLoggedUserID() async {
+    late User user;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    LoggedUserID = prefs.getString('userID') ?? "";
-    senderName = prefs.getString('Fname') ?? "";
-    FcmToken = prefs.getString('FcmToken') ?? "";
+    String? userJson = prefs.getString('user');
+    Map<String, dynamic> userMap = jsonDecode(userJson!);
+    user = User.fromJson(userMap);
+    LoggedUserID = user.userId;
+    senderName = user.fname;
+    FcmToken = prefs.getString('fcm_token') ?? "";
     return true;
   }
 
-  Future<bool> temporary() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('FcmToken',
-        "cK8Aj-QcRRaf-C_6I9m27H:APA91bF7xsjFWF8t7X-10vAHsDao1rfvBvfTVdTRJXVIx-r99j5N1uruLGAkcUkf-fj8lUQp7ZoN5eNhqYRLc9HaqvdgtMu4-1M10xnivkokwO614dDahYMyVtNKR3CgXY-EqyjiPh6K");
-    await prefs.setString('Fname', "Jane");
-    await prefs.setString('userID', "550e8400-e29b-41d4-a716-446655440000");
-    return true;
-  }
+  // Future<bool> temporary() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('FcmToken',
+  //       "cK8Aj-QcRRaf-C_6I9m27H:APA91bF7xsjFWF8t7X-10vAHsDao1rfvBvfTVdTRJXVIx-r99j5N1uruLGAkcUkf-fj8lUQp7ZoN5eNhqYRLc9HaqvdgtMu4-1M10xnivkokwO614dDahYMyVtNKR3CgXY-EqyjiPh6K");
+  //   await prefs.setString('Fname', "Jane");
+  //   await prefs.setString('userID', "550e8400-e29b-41d4-a716-446655440000");
+  //   return true;
+  // }
 }

@@ -8,6 +8,8 @@ import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/components/Savebutton.dart';
 import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
 import 'dart:convert';
+import 'package:MedInvent/providers/authProvider.dart';
+
 
 class OTPNotification extends ConsumerStatefulWidget {
   const OTPNotification({super.key});
@@ -78,11 +80,11 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     print("heloo");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
-    //String? receiverToken = prefs.getString('FcmToken');
+    String? receiverToken = prefs.getString('fcm_token');
     if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
-      // otp.receiverToken = receiverToken;
+      otp.receiverToken = receiverToken;
     }
   }
 
