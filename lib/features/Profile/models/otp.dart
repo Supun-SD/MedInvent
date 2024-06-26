@@ -5,7 +5,7 @@ class OTP {
   int? OTPNumber;
   String? receiverNic;
   String? OTP_id;
-  String? receiverToken = "";
+  String? receiverToken ;
 
   OTP(
     this.OTPNumber,

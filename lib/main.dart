@@ -81,6 +81,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(fontFamily: 'Raleway'),
       //home:  CheckAuth(),
       navigatorKey:navigatorKey,
+
        routes: {
          '/':((context)=> CheckAuth()),
          '/notifications':((context)=>const OTPNotification()),

@@ -21,7 +21,7 @@ class OTPNotification extends ConsumerStatefulWidget {
 class _OTPNotificationState extends ConsumerState<OTPNotification> {
   late Future<List<OTP>> otpList;
   late User user;
-  late OTP otp;
+  late OTP otp  = OTP(0, "no", user.nic, "");
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
   Future<List<OTP>> getOTPObjectList() async {
     try {
       //user.nic
-      otp = OTP(0, "no", user.nic, "");
+      // otp = OTP(0, "no", user.nic, "");
       BaseClient baseClient = BaseClient();
       var response =
           await baseClient.post('/Notification/get/All/OTP', otp.toRawJson());
@@ -81,10 +81,14 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
     String? receiverToken = prefs.getString('fcm_token');
+    print(receiverToken);
     if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
+      print(user.userId);
+
       otp.receiverToken = receiverToken;
+
     }
   }
 
