@@ -148,21 +148,29 @@ class UserNotifier extends StateNotifier<UserState> {
   }
 
   Future<void> logoutUser(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+   try{
+     bool is_Token_actived = await _inActiveTokenLogOut();
+     if(is_Token_actived){
+       SharedPreferences prefs = await SharedPreferences.getInstance();
+       await prefs.remove('user');
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (Route<dynamic> route) => false,
-    );
-    await Future.delayed(const Duration(seconds: 2));
-    state = UserState(
-      user: null,
-      isLoading: false,
-      isAuthenticated: false,
-      accessToken: null,
-    );
+       Navigator.pushAndRemoveUntil(
+         context,
+         MaterialPageRoute(builder: (context) => const LoginPage()),
+             (Route<dynamic> route) => false,
+       );
+       await Future.delayed(const Duration(seconds: 2));
+       state = UserState(
+         user: null,
+         isLoading: false,
+         isAuthenticated: false,
+         accessToken: null,
+       );
+     }
+   }
+   catch(e){
+     print(e);
+   }
   }
 
   void setUser(User user) {
@@ -175,29 +183,29 @@ class UserNotifier extends StateNotifier<UserState> {
 
   Future<void> _onLoginSuccess(
       String username, String password, User user, BuildContext context) async {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Home(
-          sideNavIndex: 2,
-        ),
-      ),
-      (Route<dynamic> route) => false,
-    );
-    // bool is_Token_actived = await _checkTokenDetails(user);
-    // if (is_Token_actived) {
-    //   Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => const Home(
-    //         sideNavIndex: 2,
-    //       ),
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => const Home(
+    //       sideNavIndex: 2,
     //     ),
-    //     (Route<dynamic> route) => false,
-    //   );
-    // } else {
-    //   _invalidCredentials(context);
-    // }
+    //   ),
+    //       (Route<dynamic> route) => false,
+    // );
+    bool is_Token_actived = await _checkTokenDetails(user);
+    if (is_Token_actived) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Home(
+            sideNavIndex: 2,
+          ),
+        ),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      _invalidCredentials(context);
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('user', jsonEncode(user.toJson()));
   }
@@ -208,7 +216,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Registration Successful'),
           content: const Text('You have successfully registered!'),
           actions: [
@@ -217,7 +225,7 @@ class UserNotifier extends StateNotifier<UserState> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginPage()),
-                  (route) => false,
+                      (route) => false,
                 );
               },
               child: const Text('OK'),
@@ -235,7 +243,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Invalid login credentials.'),
           content: const Text(
               'Please enter a valid email or mobile number and password.'),
@@ -258,7 +266,7 @@ class UserNotifier extends StateNotifier<UserState> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Registration Failed'),
           content: Text(message),
           actions: [
@@ -298,6 +306,38 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
+  Future<bool> _inActiveTokenLogOut() async {
+    try{
+      late User user;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? deviceToken = prefs.getString('fcm_token');
+      String? userJson = prefs.getString('user');
+      Map<String, dynamic> userMap = jsonDecode(userJson!);
+      user = User.fromJson(userMap);
+      if(deviceToken != null) {
+        FCM fcm = FCM(user.userId, deviceToken);
+        BaseClient baseClient =BaseClient();
+        var response = await baseClient.put(
+            '/Notification/update/isActive',fcm.toRawJson_two());
+        print(response);
+        Map<String, dynamic> decodedJson = json.decode(response);
+        bool data = decodedJson['data']['isActiveToken'];
+        if(!data){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+      else{
+        return false;
+      }
+    }
+    catch(e){
+      return false;
+    }
+  }
+
   Future<void> saveAccessToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('accessToken', token);
@@ -315,5 +355,5 @@ class UserNotifier extends StateNotifier<UserState> {
 }
 
 final userProvider = StateNotifierProvider<UserNotifier, UserState>(
-  (ref) => UserNotifier(),
+      (ref) => UserNotifier(),
 );

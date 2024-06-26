@@ -55,11 +55,6 @@ class _CheckAuthState extends ConsumerState<CheckAuth> {
           Map<String, dynamic> messageData =
               json.decode(pushArguments["message"]);
           final getTitle = messageData["identify"];
-          //final getOTP = messageData["OTP"];
-          //print('get password $getPassword');
-          //print('OTP is $getOTP');
-          //print('shared preferences password $password');
-          print(getTitle);
           if (getTitle == "OTP") {
             Navigator.pushNamed(
               context,

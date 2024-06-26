@@ -7,9 +7,9 @@
 // import 'package:flutter/material.dart';
 // import '../config/api.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
-// import '../features/Register/models/user_model.dart';
 // import '../features/Profile/services/dependent_service.dart';
 // import '../features/login/models/fcmToken_model.dart';
+// import '../features/Register/models/user_model.dart';
 //
 // class UserState {
 //   final User? user;
@@ -133,13 +133,16 @@
 //   void logoutUser() async {
 //     await Future.delayed(const Duration(seconds: 2));
 //
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     await prefs.clear();
-//     state = UserState(
-//         user: null,
-//         isLoading: state.isLoading,
-//         isAuthenticated: false,
-//         accessToken: null);
+//     bool is_Token_actived = await _inActiveTokenLogOut();
+//     if(is_Token_actived) {
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       await prefs.clear();
+//       state = UserState(
+//           user: null,
+//           isLoading: state.isLoading,
+//           isAuthenticated: false,
+//           accessToken: null);
+//     }
 //   }
 //
 //   void setUser(User user) {
@@ -153,21 +156,21 @@
 //   Future<void> _onLoginSuccess(
 //       String username, String password, User user, BuildContext context) async {
 //
-//     //bool is_Token_actived = await _checkTokenDetails(user);
-//     //if(is_Token_actived) {
-//     Navigator.pushAndRemoveUntil(
-//       context,
-//       MaterialPageRoute(
-//         builder: (context) => const Home(
-//           sideNavIndex: 2,
+//     bool is_Token_actived = await _checkTokenDetails(user);
+//     if(is_Token_actived) {
+//       Navigator.pushAndRemoveUntil(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => const Home(
+//             sideNavIndex: 2,
+//           ),
 //         ),
-//       ),
-//           (Route<dynamic> route) => false,
-//     );
-//     //}
-//     // else{
-//     //   _invalidCredentials(context);
-//     // }
+//             (Route<dynamic> route) => false,
+//       );
+//     }
+//     else{
+//       _invalidCredentials(context);
+//     }
 //     SharedPreferences prefs = await SharedPreferences.getInstance();
 //     await prefs.setString('user', jsonEncode(user.toJson()));
 //   }
@@ -243,34 +246,65 @@
 //       },
 //     );
 //   }
-// }
 //
-// // Future<bool> _checkTokenDetails(User user) async {
-// //   try{
-// //     SharedPreferences prefs = await SharedPreferences.getInstance();
-// //     String? deviceToken = prefs.getString('fcm_token');
-// //     if(deviceToken != null) {
-// //       FCM fcm = FCM(user.userId, deviceToken);
-// //       BaseClient baseClient =BaseClient();
-// //       var response = await baseClient.post(
-// //           '/Notification/check/Token/Available',fcm.toRawJson());
-// //       Map<String, dynamic> decodedJson = json.decode(response);
-// //       bool data = decodedJson['data'];
-// //       if(data){
-// //         return true;
-// //       }
-// //       else{
-// //         return false;
-// //       }
-// //     }
-// //     else{
-// //       return false;
-// //     }
-// //   }
-// //   catch(e){
-// //     return false;
-// //   }
-// // }
+//   Future<bool> _checkTokenDetails(User user) async {
+//     try{
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       String? deviceToken = prefs.getString('fcm_token');
+//       if(deviceToken != null) {
+//         FCM fcm = FCM(user.userId, deviceToken);
+//         BaseClient baseClient =BaseClient();
+//         var response = await baseClient.post(
+//             '/Notification/check/Token/Available',fcm.toRawJson());
+//         Map<String, dynamic> decodedJson = json.decode(response);
+//         bool data = decodedJson['data'];
+//         if(data){
+//           return true;
+//         }
+//         else{
+//           return false;
+//         }
+//       }
+//       else{
+//         return false;
+//       }
+//     }
+//     catch(e){
+//       return false;
+//     }
+//   }
+//
+//   Future<bool> _inActiveTokenLogOut() async {
+//     try{
+//       late User user;
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       String? deviceToken = prefs.getString('fcm_token');
+//       String? userJson = prefs.getString('user');
+//       Map<String, dynamic> userMap = jsonDecode(userJson!);
+//       user = User.fromJson(userMap);
+//       if(deviceToken != null) {
+//         FCM fcm = FCM(user.userId, deviceToken);
+//         BaseClient baseClient =BaseClient();
+//         var response = await baseClient.post(
+//             '/Notification/update/isActive',fcm.toRawJson_two());
+//         Map<String, dynamic> decodedJson = json.decode(response);
+//         bool data = decodedJson['data']['fcm_token'];
+//         if(data != null){
+//           return true;
+//         }
+//         else{
+//           return false;
+//         }
+//       }
+//       else{
+//         return false;
+//       }
+//     }
+//     catch(e){
+//       return false;
+//     }
+//   }
+// }
 //
 // final userProvider = StateNotifierProvider<UserNotifier, UserState>(
 //       (ref) => UserNotifier(),
