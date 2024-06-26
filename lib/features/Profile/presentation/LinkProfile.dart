@@ -79,6 +79,10 @@ class _LinkProfileState extends State<LinkProfile> {
   TextEditingController mobileNo = TextEditingController();
   TextEditingController nic = TextEditingController();
 
+  String? relationshipError;
+  String? mobileNoError;
+  String? nicError;
+
   Future<bool> checkUserAvailabe() async {
     LinkUser newDepend = LinkUser(
       mobileNo.text,
@@ -86,9 +90,6 @@ class _LinkProfileState extends State<LinkProfile> {
       nic.text,
       relationship.text,
     );
-    //I want to acces user provider data here
-
-    // Send the new member data to the backend
     try {
       BaseClient baseClient = BaseClient();
       var response = await baseClient.postCheckuserdata(
@@ -107,7 +108,6 @@ class _LinkProfileState extends State<LinkProfile> {
           if (response != null) {
             Map<String, dynamic> decodedJson = json.decode(response);
             List<dynamic> data = decodedJson['data'];
-
             for (var item in data) {
               for (var tokenStore in item['TokenStores']) {
                 newDepend.FcmTokens.add(tokenStore['fcm_token']);
@@ -115,7 +115,7 @@ class _LinkProfileState extends State<LinkProfile> {
             }
             if (newDepend.FcmTokens.isNotEmpty) {
               bool B = await newDepend.assignLoggedUserID();
-              if (B) {
+              if (B){
                 baseClient = BaseClient();
                 var response = await baseClient.post(
                     '/Notification/send/OTP/link/user',
@@ -148,6 +148,24 @@ class _LinkProfileState extends State<LinkProfile> {
     }
   }
 
+  void validateInputs() {
+    setState(() {
+      relationshipError = null;
+      mobileNoError = null;
+      nicError = null;
+
+      if (!RegExp(r"^[a-zA-Z]+$").hasMatch(relationship.text)) {
+        relationshipError = "Relationship cannot contain numbers or symbols.";
+      }
+      if (!RegExp(r"^[0-9]+$").hasMatch(mobileNo.text)) {
+        mobileNoError = "can only contain numbers.";
+      }
+      if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(nic.text)) {
+        nicError = "cannot contain symbols.";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -166,20 +184,24 @@ class _LinkProfileState extends State<LinkProfile> {
         SizedBox(
           height: screenHeight * 0.02,
         ),
-        Input(label: "Relationship", controller: relationship),
-        Input(label: "Mobile Number", controller: mobileNo),
-        Input(label: "NIC", controller: nic),
+        Input(label: "Relationship", controller: relationship, errorText: relationshipError),
+        Input(label: "Mobile Number", controller: mobileNo, errorText: mobileNoError),
+        Input(label: "NIC", controller: nic,errorText: nicError),
         SizedBox(
           height: screenHeight * 0.02,
         ),
         TextButton(
           onPressed: () async {
-            //have to do validation before send backend
-            var isAvailable = await checkUserAvailabe();
-            if (isAvailable) {
-              widget.pageController.animateToPage(1,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut);
+            validateInputs();
+            if (relationshipError == null && mobileNoError == null && nicError == null) {
+                var isAvailable = await checkUserAvailabe();
+                if (isAvailable) {
+                  widget.pageController.animateToPage(1,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut);
+                } else {
+                  //show erro message
+                }
             }
           },
           style: TextButton.styleFrom(
@@ -367,8 +389,9 @@ class _OtpVerifyState extends State<OtpVerify> {
 class Input extends StatelessWidget {
   final String label;
   final TextEditingController controller;
+  final String? errorText;
 
-  const Input({Key? key, required this.label, required this.controller})
+  const Input({Key? key, required this.label, required this.controller,this.errorText})
       : super(key: key);
 
   @override
@@ -384,6 +407,7 @@ class Input extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           labelText: label,
+          errorText: errorText,
           contentPadding: EdgeInsets.only(left: screenWidth * 0.05),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
