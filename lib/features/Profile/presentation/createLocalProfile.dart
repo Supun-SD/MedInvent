@@ -63,6 +63,25 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
     }
   }
 
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -243,24 +262,17 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                         newMember.toRawJsonCreate(),
                       );
                       if (response != null) {
-                        // Handle successful response
-                        print(response);
                         Navigator.pop(context);
+                        print(response);
+                        showPopupMessage(context, "New depend Added Successfully", Colors.green); // Success popup
                       }
                     } catch (e) {
-                      // Handle error
+                      showPopupMessage(context, "Process Failed", Colors.redAccent); // error popup
                       print("Error: $e");
                     }
 
-                    //give code to filll here
-                    // ref.read(familyMembersProvider.notifier).addFamilyMember(
-                    //     FamilyMember(
-                    //         "${firstName.text} ${lastName.text}",
-                    //         relationship.text,
-                    //         nic.text,
-                    //         selectedGender,
-                    //         displayText, []));
-                    // Navigator.pop(context);
+                  }else{
+                    showPopupMessage(context, "Process Failed", Colors.redAccent); // error popup
                   }
                 },
                 style: TextButton.styleFrom(
@@ -299,12 +311,19 @@ class Input extends StatelessWidget {
       : super(key: key);
 
   String? _validateInput(String? value) {
-    if (label == "First name" ||
-        label == "Last name" ||
-        label == "Relationship") {
-      if (value == null || value.isEmpty) {
-        return 'This field cannot be empty';
+    final RegExp lettersOnly = RegExp(r'^[a-zA-Z]+$');
+    final RegExp noSymbols = RegExp(r'^[a-zA-Z0-9]+$');
+
+    if (value == null || value.isEmpty) {
+      return 'This field cannot be empty';
+    }
+    if (label == "First name" || label == "Last name" || label == "Relationship") {
+      if (!lettersOnly.hasMatch(value)) {
+        return 'Only letters are allowed';
       }
+    }
+    if (label == "NIC" && !noSymbols.hasMatch(value)) {
+      return 'NIC cannot contain symbols';
     }
     return null;
   }
