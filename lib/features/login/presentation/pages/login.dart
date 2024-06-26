@@ -1,6 +1,6 @@
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:MedInvent/features/login/presentation/pages/password_reset_1.dart';
+import 'package:MedInvent/features/login/presentation/pages/password_reset.dart';
 import 'package:MedInvent/components/input_field.dart';
 import 'package:MedInvent/features/Register/presentation/register_1.dart';
 import 'package:MedInvent/components/custom_button.dart';
@@ -97,7 +97,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const PasswordReset1()),
+                            builder: (context) => const PasswordReset()),
                       );
                     },
                     child: Text(
@@ -112,13 +112,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
               isLoading
                   ? SpinKitThreeBounce(
-                size: screenWidth * 0.06,
-                color: const Color(0xFF2980B9),
-              )
+                      size: screenWidth * 0.06,
+                      color: const Color(0xFF2980B9),
+                    )
                   : CustomButton(
-                text: 'Sign In',
-                onPressed: () => loginAuth(context),
-              ),
+                      text: 'Sign In',
+                      onPressed: () => loginAuth(context),
+                    ),
               SizedBox(height: screenHeight * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

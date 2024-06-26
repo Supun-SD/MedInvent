@@ -26,14 +26,18 @@ void main() async {
 
   // Store the token in SharedPreferences
   FirebaseMessaging.instance.getToken().then((value) async {
-    if (value != null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('fcm_token', value);
-      String? token = prefs.getString('fcm_token');
-      print(token);
-      // print("get token : $value");
+    try {
+      if (value != null) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('fcm_token', value);
+        String? token = prefs.getString('fcm_token');
+        print(token);
+      }
+    } catch (error) {
+      print('Error occurred: $error');
     }
   });
+
 
   FirebaseMessaging.onMessageOpenedApp.listen(
     (RemoteMessage message) async {
