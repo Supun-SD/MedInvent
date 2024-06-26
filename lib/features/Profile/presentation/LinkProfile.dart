@@ -166,6 +166,25 @@ class _LinkProfileState extends State<LinkProfile> {
     });
   }
 
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -196,11 +215,12 @@ class _LinkProfileState extends State<LinkProfile> {
             if (relationshipError == null && mobileNoError == null && nicError == null) {
                 var isAvailable = await checkUserAvailabe();
                 if (isAvailable) {
+                  showPopupMessage(context, "OTP sent to relevant person", Colors.green); // Success popup
                   widget.pageController.animateToPage(1,
                       duration: const Duration(milliseconds: 500),
                       curve: Curves.easeInOut);
                 } else {
-                  //show erro message
+                  showPopupMessage(context, "Invalid Details! enter correct details to link", Colors.redAccent); // Error popup
                 }
             }
           },
@@ -306,6 +326,25 @@ class _OtpVerifyState extends State<OtpVerify> {
     }
   }
 
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -352,14 +391,18 @@ class _OtpVerifyState extends State<OtpVerify> {
                 newDepend.OTPNumber = int.parse(getOTPValue);
                 var addNewDependdata = await addProcess(newDepend);
                 if (addNewDependdata) {
+                  showPopupMessage(context, "Linked Successfully", Colors.green); // Success popup
                   print("process success");
                 } else {
+                  showPopupMessage(context, "Invalid OTP", Colors.redAccent); // Error popup
                   print("invalid OTP");
                 }
               } else {
+                showPopupMessage(context, "Enter received OTP to proceed", Colors.redAccent); // Error popup
                 print("OTP is null");
               }
             } else {
+              showPopupMessage(context, "process failed", Colors.redAccent); // Error popup
               print("null new depend");
             }
             Navigator.pop(context);
