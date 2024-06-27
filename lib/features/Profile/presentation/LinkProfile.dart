@@ -157,7 +157,7 @@ class _LinkProfileState extends State<LinkProfile> {
       if (!RegExp(r"^[a-zA-Z]+$").hasMatch(relationship.text)) {
         relationshipError = "Relationship cannot contain numbers or symbols.";
       }
-      if (!RegExp(r"^[0-9]+$").hasMatch(mobileNo.text)) {
+      if (!RegExp(r"^[+0-9]+$").hasMatch(mobileNo.text)) {
         mobileNoError = "can only contain numbers.";
       }
       if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(nic.text)) {
