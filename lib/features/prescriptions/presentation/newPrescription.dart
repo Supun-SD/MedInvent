@@ -48,6 +48,8 @@ class _AddNewPrescriptionState extends ConsumerState<AddNewPrescription> {
     widget.newPrescription.presName = title.text;
     await ref.read(prescriptionsProvider.notifier).addUserPrescription(
         context, widget.newPrescription, ref.watch(userProvider).user!.userId);
+
+    Navigator.pop(context);
   }
 
   @override
@@ -388,8 +390,11 @@ class TitleInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FocusNode _focusNode = FocusNode();
+
     final double screenWidth = MediaQuery.of(context).size.width;
     return TextFormField(
+      focusNode: _focusNode,
       controller: controller,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: _validateInput,

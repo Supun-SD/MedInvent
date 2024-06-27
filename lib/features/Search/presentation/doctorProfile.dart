@@ -50,9 +50,11 @@ class _DoctorProfileState extends State<DoctorProfile> {
 
           for (var session in sessions) {
             Session newSession = Session.fromJson(session);
-            allSessions.add(newSession);
+            if(!session['isCancelled']){
+              allSessions.add(newSession);
+            }
             if (session['date'] == formattedDate &&
-                (session['activePatients'] < session['noOfPatients'])) {
+                (session['activePatients'] < session['noOfPatients']) && session['isCancelled']) {
               todaySessions.add(newSession);
             }
           }

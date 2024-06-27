@@ -211,7 +211,7 @@ class MedicineDetailsState extends State<MedicineDetails> {
                     SizedBox(
                         width: screenWidth * 0.3,
                         child: Text(
-                          "Duration",
+                          "Duration \n(days)",
                           style: TextStyle(fontSize: screenWidth * 0.037),
                         )),
                     Expanded(

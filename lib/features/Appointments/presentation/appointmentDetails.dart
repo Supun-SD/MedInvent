@@ -149,6 +149,26 @@ class _AppointmentDetailsState extends ConsumerState<AppointmentDetails> {
                       ),
                     ),
                   ),
+                if (widget.appointment.session.isCancelled)
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.08,
+                        vertical: screenHeight * 0.025),
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(15.0),
+                      border: Border.all(color: Colors.red, width: 2.0),
+                    ),
+                    child: Text(
+                      "This session is cancelled by ${widget.appointment.session.cancelledByType}",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                   padding: EdgeInsets.symmetric(
@@ -356,6 +376,7 @@ class _AppointmentDetailsState extends ConsumerState<AppointmentDetails> {
                   height: 25,
                 ),
                 if (!widget.appointment.isCancelled &&
+                    !widget.appointment.session.isCancelled &&
                     widget.type == "upcoming")
                   ref.watch(appointmentsProvider).isLoading
                       ? const SpinKitCircle(

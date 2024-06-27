@@ -117,7 +117,9 @@ class AppointmentsNotifier extends StateNotifier<AppointmentsState> {
         docFee: session.docFee,
         clinicFee: session.clinicFee,
         doctor: doctor,
-        clinic: clinic);
+        clinic: clinic,
+        isCancelled: false,
+        cancelledByType: null);
 
     try {
       final response = await http.post(Uri.parse(apiUrl),

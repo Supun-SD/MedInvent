@@ -367,7 +367,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             ),
                             ...upcomingAppointments
                                 .where(
-                                    (appointment) => !appointment.isCancelled)
+                                    (appointment) => !appointment.isCancelled && !appointment.session.isCancelled)
                                 .map((appointment) =>
                                     UpcomingWidget(appointment: appointment))
                                 .toList()

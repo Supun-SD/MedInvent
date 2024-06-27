@@ -61,6 +61,8 @@ class ApSession {
   double docFee;
   double clinicFee;
   Doctor doctor;
+  bool isCancelled;
+  String? cancelledByType;
   Clinic clinic;
 
   ApSession({
@@ -70,6 +72,8 @@ class ApSession {
     required this.docFee,
     required this.clinicFee,
     required this.doctor,
+    required this.isCancelled,
+    required this.cancelledByType,
     required this.clinic,
   });
 
@@ -82,6 +86,8 @@ class ApSession {
       clinicFee: double.parse(json['clinicFee']),
       doctor: Doctor.fromJson(json['doctor']),
       clinic: Clinic.fromJson(json['clinic']),
+      isCancelled: json['isCancelled'],
+      cancelledByType: json['cancelledByType']
     );
   }
 }

@@ -86,7 +86,9 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
 
           for (var resultJson in resultsJson) {
             Session session = Session.fromJson(resultJson);
-            searchResults.add(session);
+            if(!session.isCancelled){
+              searchResults.add(session);
+            }
           }
         }
       } else {
