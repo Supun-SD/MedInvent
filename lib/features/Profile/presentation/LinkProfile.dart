@@ -157,8 +157,8 @@ class _LinkProfileState extends State<LinkProfile> {
       if (!RegExp(r"^[a-zA-Z]+$").hasMatch(relationship.text)) {
         relationshipError = "Relationship cannot contain numbers or symbols.";
       }
-      if (!RegExp(r"^[+0-9]+$").hasMatch(mobileNo.text)) {
-        mobileNoError = "can only contain numbers.";
+      if (!RegExp(r'^[0-9\W]+$').hasMatch(mobileNo.text)) {
+        mobileNoError = "can only contain numbers and symbols.";
       }
       if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(nic.text)) {
         nicError = "cannot contain symbols.";
@@ -391,21 +391,25 @@ class _OtpVerifyState extends State<OtpVerify> {
                 newDepend.OTPNumber = int.parse(getOTPValue);
                 var addNewDependdata = await addProcess(newDepend);
                 if (addNewDependdata) {
+                  Navigator.pop(context);
                   showPopupMessage(context, "Linked Successfully", Colors.green); // Success popup
                   print("process success");
                 } else {
+                  Navigator.pop(context);
                   showPopupMessage(context, "Invalid OTP", Colors.redAccent); // Error popup
                   print("invalid OTP");
                 }
               } else {
+                Navigator.pop(context);
                 showPopupMessage(context, "Enter received OTP to proceed", Colors.redAccent); // Error popup
                 print("OTP is null");
               }
             } else {
+              Navigator.pop(context);
               showPopupMessage(context, "process failed", Colors.redAccent); // Error popup
               print("null new depend");
             }
-            Navigator.pop(context);
+            //here
           },
           style: TextButton.styleFrom(
             backgroundColor: const Color(0xFF2980B9),

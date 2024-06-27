@@ -85,10 +85,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
-      print(user.userId);
-
       otp.receiverToken = receiverToken;
-
     }
   }
 

@@ -60,9 +60,30 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
       BaseClient baseClient = BaseClient();
       await baseClient.delete('/DependMember/delete/DependMember/$id');
       fetchFamilyMembers(); // Refresh the list after
+      showPopupMessage(context,"deleted successfully",Colors.green);
     } catch (e) {
+      showPopupMessage(context,"Process failed",Colors.redAccent);
       print("Error: $e");
     }
+  }
+
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -223,6 +244,65 @@ class FamilyMemberCard extends StatelessWidget {
     required this.onDelete,
   }) : super(key: key);
 
+  void _showDeleteConfirmationDialog(BuildContext context,Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text(
+              "Confirm Delete",
+               style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize:20
+            ),
+          ),
+          content:Text(
+              "Are you sure you want to delete ${familyMember.fname} family member from your account?",
+               style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize:17
+               ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text(
+                  "Cancel",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize:17
+                  ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                  "Delete",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize:17
+                  ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onDelete();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -285,7 +365,7 @@ class FamilyMemberCard extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.blue),
-                onPressed: onDelete,
+                onPressed:  () => _showDeleteConfirmationDialog(context,Colors.redAccent),
               ),
             ],
           ),
