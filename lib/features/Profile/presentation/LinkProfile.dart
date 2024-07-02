@@ -95,11 +95,8 @@ class _LinkProfileState extends State<LinkProfile> {
       var response = await baseClient.postCheckuserdata(
           '/Notification/check/user/available', newDepend.toRawJson());
       if (response != null) {
-        // Handle successful response
-        //print(response);
         Map<String, dynamic> decodedJson = json.decode(response);
         newDepend.receiverID = decodedJson['data']['userID'];
-        //print(newDepend.receiverID);
         if (newDepend.receiverID != null) {
           baseClient = BaseClient();
           var response = await baseClient.post(
@@ -132,7 +129,6 @@ class _LinkProfileState extends State<LinkProfile> {
           } else {
             return false;
           }
-          //print(response);
         } else {
           return false;
         }
@@ -142,8 +138,6 @@ class _LinkProfileState extends State<LinkProfile> {
         return false;
       }
     } catch (e) {
-      // Handle error
-      print("Error: $e");
       return false;
     }
   }
@@ -161,7 +155,7 @@ class _LinkProfileState extends State<LinkProfile> {
         mobileNoError = "can only contain numbers and symbols.";
       }
       if (!RegExp(r"^[a-zA-Z0-9]+$").hasMatch(nic.text)) {
-        nicError = "cannot contain symbols.";
+        nicError = "cannot contain symbols and essential";
       }
     });
   }
@@ -280,37 +274,25 @@ class _OtpVerifyState extends State<OtpVerify> {
   Future<bool> addProcess(LinkUser newDepend) async {
     try {
       BaseClient baseClient = BaseClient();
-      print(newDepend.FcmToken);
-      print(newDepend.OTPNumber);
-      print(newDepend.LoggedUserID);
-      print(newDepend.receiverNic);
       var response = await baseClient.post(
           '/Notification/check/OTP', newDepend.toRawJsonForFourthRequest());
       if (response != null) {
         Map<String, dynamic> decodedJson = json.decode(response);
-        print(response);
         bool isCorrectotp = decodedJson['data'];
-        print(isCorrectotp);
         if (isCorrectotp) {
-          print("is_correctOTP $isCorrectotp");
           baseClient = BaseClient();
-          // print(newDepend.toJsonForFifthRequest());
-          print("before request send");
           var response = await baseClient.post(
               '/DependMember/add/new/linked/DependMember',
               newDepend.toRawJsonForFifthRequest());
           if (response != null) {
             Map<String, dynamic> decodedJson = json.decode(response);
             String data = decodedJson['data']['dID'];
-            // ignore: unnecessary_null_comparison
             if (data != null) {
               return true;
             } else {
-              print("data null");
               return false;
             }
           } else {
-            print("response null");
             return false;
           }
         } else {
@@ -320,8 +302,6 @@ class _OtpVerifyState extends State<OtpVerify> {
         return false;
       }
     } catch (e) {
-      // Handle error
-      print("Error: $e");
       return false;
     }
   }

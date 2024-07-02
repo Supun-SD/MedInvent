@@ -147,16 +147,6 @@ class NotificationCategory extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ),
-                SaveButton(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ProfilePage()),
-                    );
-                  },
-                  save: '<= Profile',
                 )
               ],
             ),

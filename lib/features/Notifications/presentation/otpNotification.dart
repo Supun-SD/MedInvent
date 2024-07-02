@@ -39,23 +39,7 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     setState(() {
       otpList = getOTPObjectList();
     });
-
-    // Print the OTP list to the console
-    //printOtpList();
   }
-
-  // Future<void> printOtpList() async {
-  //   try {
-  //     List<OTP> otps = await otpList;
-  //     for (OTP otp in otps) {
-  //       print(otp.OTPNumber);
-  //       print(otp.sendBy);
-  //       print(otp.OTP_id);
-  //     }
-  //   } catch (e) {
-  //     print("Error printing OTP list: $e");
-  //   }
-  // }
 
   Future<List<OTP>> getOTPObjectList() async {
     try {
@@ -77,11 +61,9 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
   }
 
   Future<void> _getNic() async {
-    print("heloo");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userJson = prefs.getString('user');
     String? receiverToken = prefs.getString('fcm_token');
-    print(receiverToken);
     if (userJson != null) {
       Map<String, dynamic> userMap = jsonDecode(userJson);
       user = User.fromJson(userMap);
@@ -93,12 +75,32 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
     try {
       BaseClient baseClient = BaseClient();
       await baseClient.delete('/Notification/Receive/delete/$id');
-      // Refresh the list after
       fetchOTPNotifications();
+      showPopupMessage(context,"deleted successfully",Colors.green);
     } catch (e) {
-      print("Error: $e");
+      showPopupMessage(context,"Process failed",Colors.redAccent);
     }
   }
+
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -193,16 +195,6 @@ class _OTPNotificationState extends ConsumerState<OTPNotification> {
                 ),
                 SizedBox(
                   height: screenHeight * 0.04,
-                ),
-                SaveButton(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const NotificationCategory()),
-                    );
-                  },
-                  save: '<= Categories',
                 )
               ],
             ),
@@ -219,6 +211,65 @@ class OtpCard extends StatelessWidget {
 
   const OtpCard({Key? key, required this.otp, required this.onDelete})
       : super(key: key);
+
+  void _showDeleteConfirmationDialog(BuildContext context,Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text(
+            "Confirm Delete",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize:20
+            ),
+          ),
+          content:const Text(
+            "Are you sure you want to delete this message?",
+            style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize:17
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize:17
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "Delete",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize:17
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onDelete();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -274,7 +325,7 @@ class OtpCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.blue),
-              onPressed: onDelete,
+              onPressed:  () => _showDeleteConfirmationDialog(context,Colors.redAccent),
             ),
           ],
         ),

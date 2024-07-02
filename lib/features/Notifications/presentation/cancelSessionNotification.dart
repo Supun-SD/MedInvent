@@ -37,23 +37,7 @@ class _CancelNotificationState extends ConsumerState<CancelNotification> {
     setState(() {
       cancelList = getCancelObjectList();
     });
-
-    // Print the OTP list to the console
-    //printOtpList();
   }
-
-  // Future<void> printOtpList() async {
-  //   try {
-  //     List<OTP> otps = await otpList;
-  //     for (OTP otp in otps) {
-  //       print(otp.OTPNumber);
-  //       print(otp.sendBy);
-  //       print(otp.OTP_id);
-  //     }
-  //   } catch (e) {
-  //     print("Error printing OTP list: $e");
-  //   }
-  // }
 
   Future<List<CancelSession>> getCancelObjectList() async {
     try {
@@ -85,11 +69,30 @@ class _CancelNotificationState extends ConsumerState<CancelNotification> {
     try {
       BaseClient baseClient = BaseClient();
       await baseClient.delete('/Session/cancel/delete/$id');
-      // Refresh the list after
       fetchCancelNotifications();
+      showPopupMessage(context,"deleted successfully",Colors.green);
     } catch (e) {
-      print("Error: $e");
+      showPopupMessage(context,"Process failed",Colors.redAccent);
     }
+  }
+
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -113,7 +116,7 @@ class _CancelNotificationState extends ConsumerState<CancelNotification> {
             ),
           ),
         ),
-        title: const Text("Hospital Cancel Session Messages"),
+        title: const Text("Cancel Session Messages"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -145,7 +148,7 @@ class _CancelNotificationState extends ConsumerState<CancelNotification> {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.09),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
               child: Column(
                 children: [
                   SizedBox(
@@ -186,16 +189,6 @@ class _CancelNotificationState extends ConsumerState<CancelNotification> {
                   ),
                   SizedBox(
                     height: screenHeight * 0.04,
-                  ),
-                  SaveButton(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const NotificationCategory()),
-                      );
-                    },
-                    save: '<= Categories',
                   )
                 ],
               ),
@@ -214,6 +207,65 @@ class OtpCard extends StatelessWidget {
   const OtpCard({Key? key, required this.cancelRef, required this.onDelete})
       : super(key: key);
 
+  void _showDeleteConfirmationDialog(BuildContext context,Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text(
+            "Confirm Delete",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize:20
+            ),
+          ),
+          content:const Text(
+            "Are you sure you want to delete this message?",
+            style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize:17
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize:17
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                "Delete",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize:17
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onDelete();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -222,7 +274,7 @@ class OtpCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: screenHeight * 0.02),
       child: Container(
-        width: double.infinity,
+        width: screenWidth * 0.9,
         height: screenHeight * 0.2,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -306,7 +358,7 @@ class OtpCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.blue),
-              onPressed: onDelete,
+              onPressed:  () => _showDeleteConfirmationDialog(context,Colors.redAccent),
             ),
           ],
         ),

@@ -35,11 +35,51 @@ class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
     _relationshipController.text = widget.familyMember.relationship ?? "N/A";
   }
 
-  void _updateDatabase() async {
-    // Add your database update logic here
-    print(
-        "Database updated with NIC: ${_nicController.text}, Gender: ${_genderController.text}, DOB: ${_dobController.text}, First Name: ${_fnameController.text}, Last Name: ${_lnameController.text}, Relationship: ${_relationshipController.text}");
+  bool _validateInputs() {
+    final nameRegex = RegExp(r'^[a-zA-Z]+$');
+    final nicRegex = RegExp(r'^[a-zA-Z0-9]+$'); // Adjust as per NIC validation rules
 
+    if (_fnameController.text.isEmpty ||
+        _lnameController.text.isEmpty ||
+        _relationshipController.text.isEmpty ||
+        _nicController.text.isEmpty ||
+        _genderController.text.isEmpty) {
+      showPopupMessage(context, "All fields must be filled", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_fnameController.text)) {
+      showPopupMessage(context, "First name can contain only letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_lnameController.text)) {
+      showPopupMessage(context, "Last name can contain only letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_relationshipController.text)) {
+      showPopupMessage(context, "Relationship can contain only letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nicRegex.hasMatch(_nicController.text)) {
+      showPopupMessage(context, "NIC cannot contain symbols", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_genderController.text)) {
+      showPopupMessage(context, "Gender can contain only letters", Colors.redAccent);
+      return false;
+    }
+
+    return true;
+  }
+
+  void _updateDatabase() async {
+    if (!_validateInputs()) {
+      return;
+    }
     try {
       widget.familyMember.nic = _nicController.text;
       widget.familyMember.gender = _genderController.text;
@@ -56,17 +96,33 @@ class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
           '/DependMember/update/DependMember/${user.userId}',
           widget.familyMember.toRawJson());
       if (response != null) {
-        // Handle successful response
         print(response);
-        //newDepend.receiverID=decodedJson ['data']['userID'];
-        //print(newDepend.receiverID);
+        showPopupMessage(context,"updated successfully",Colors.green);
       } else {
-        print('not success');
+        showPopupMessage(context,"updating Process failed",Colors.redAccent);
       }
     } catch (e) {
-      // Handle error
-      print("Error: $e");
+      showPopupMessage(context,"updating Process failed",Colors.redAccent);
     }
+  }
+
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -112,7 +168,8 @@ class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
                     padding:
                         EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                     child: Container(
-                      height: screenHeight * 0.38,
+                      padding: EdgeInsets.fromLTRB(10, 8, 10, 2),
+                      height: screenHeight * 0.54,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(screenWidth * 0.07),
@@ -126,17 +183,23 @@ class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
                       child: Column(
                         children: [
                           SizedBox(
-                            height: screenHeight * 0.075,
+                            height: screenHeight * 0.03,
                           ),
                           InfoField(
                             title: "First Name -:",
                             controller: _fnameController,
                             onUpdate: _updateDatabase,
                           ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
                           InfoField(
                             title: "Last Name -:",
                             controller: _lnameController,
                             onUpdate: _updateDatabase,
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
                           ),
                           InfoField(
                             title: "Relationship -:",
@@ -144,7 +207,7 @@ class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
                             onUpdate: _updateDatabase,
                           ),
                           SizedBox(
-                            height: screenHeight * 0.008,
+                            height: screenHeight * 0.02,
                           ),
                         ],
                       ),
@@ -157,6 +220,7 @@ class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
                     padding:
                         EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                     child: Container(
+                      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(screenWidth * 0.07),
@@ -172,15 +236,24 @@ class FamilyMemberProfileState extends ConsumerState<FamilyMemberProfile> {
                             EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                         child: Column(
                           children: [
+                            SizedBox(
+                              height: screenHeight * 0.03,
+                            ),
                             InfoField(
                               title: "NIC",
                               controller: _nicController,
                               onUpdate: _updateDatabase,
                             ),
+                            SizedBox(
+                              height: screenHeight * 0.02,
+                            ),
                             InfoField(
                               title: "Gender",
                               controller: _genderController,
                               onUpdate: _updateDatabase,
+                            ),
+                            SizedBox(
+                              height: screenHeight * 0.02,
                             ),
                             InfoField(
                               title: "Date of Birth",
@@ -324,59 +397,73 @@ class InfoFieldState extends State<InfoField> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            widget.title,
-            style: TextStyle(
-                fontSize: screenHeight * 0.02, color: Colors.blue[900]),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.title,
+          style: TextStyle(
+              fontSize: screenHeight * 0.023,
+              color: Colors.black,
+              fontWeight: FontWeight.bold
           ),
-          SizedBox(
-            width: screenWidth * 0.29,
-            child: isEditing
-                ? widget.isDob
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.blue),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          margin: const EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: isEditing
+                    ? widget.isDob
                     ? TextButton(
-                        onPressed: () => _selectDate(context),
-                        child: Text(
-                          widget.controller.text,
-                          style: TextStyle(
-                              fontSize: screenHeight * 0.02,
-                              color: Colors.black),
-                        ),
-                      )
-                    : TextField(
-                        controller: widget.controller,
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.check),
-                            onPressed: () {
-                              setState(() {
-                                isEditing = false;
-                              });
-                              widget.onUpdate();
-                            },
-                          ),
-                        ),
-                      )
-                : Text(
+                  onPressed: () => _selectDate(context),
+                  child: Text(
                     widget.controller.text,
                     style: TextStyle(
-                        fontSize: screenHeight * 0.02, color: Colors.black),
+                        fontSize: screenHeight * 0.021,
+                        color: Colors.black),
                   ),
+                )
+                    : TextField(
+                  controller: widget.controller,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.check),
+                      onPressed: () {
+                        setState(() {
+                          isEditing = false;
+                        });
+                        widget.onUpdate();
+                      },
+                    ),
+                  ),
+                )
+                    : Text(
+                  widget.controller.text,
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.025, color: Colors.black),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.blue),
+                onPressed: () {
+                  setState(() {
+                    isEditing = true;
+                  });
+                },
+              ),
+            ],
           ),
-          IconButton(
-            icon: Icon(Icons.edit,color: Colors.blue),
-            onPressed: () {
-              setState(() {
-                isEditing = true;
-              });
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
+

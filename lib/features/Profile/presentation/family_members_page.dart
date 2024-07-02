@@ -36,21 +36,19 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
 
   Future<List<FamilyMember>> getFamilyMembers() async {
     try {
-      print("hello");
       var user = ref.watch(userProvider).user!;
       BaseClient baseClient = BaseClient();
       var response = await baseClient.get(
         '/DependMember/get/DependMembers/details/${user.userId}',
       );
       if (response != null) {
-        print(response);
         return FamilyMember.userDependFromJson(response);
       } else {
+        showPopupMessage(context,"no family members",Colors.redAccent);
         return [];
       }
     } catch (e) {
-      // Handle error
-      print("Error: $e");
+      showPopupMessage(context,"Process failed",Colors.redAccent);
       return [];
     }
   }
@@ -63,7 +61,6 @@ class _FamilyMembersState extends ConsumerState<FamilyMembers> {
       showPopupMessage(context,"deleted successfully",Colors.green);
     } catch (e) {
       showPopupMessage(context,"Process failed",Colors.redAccent);
-      print("Error: $e");
     }
   }
 
