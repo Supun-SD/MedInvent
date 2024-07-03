@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:MedInvent/components/input_field_edit.dart';
 import 'package:MedInvent/components/Savebutton.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import '../../../providers/nearbyPharmaciesAndDoctorsProvider.dart';
 
 class SecurityInfo extends ConsumerStatefulWidget {
   const SecurityInfo({super.key});
@@ -13,6 +18,88 @@ class SecurityInfo extends ConsumerStatefulWidget {
 }
 
 class SecurityInfoState extends ConsumerState<SecurityInfo> {
+  bool isLoading = false;
+  TextEditingController password = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
+
+  Future<void> resetPassword(String username, String userId) async {
+    if (password.text.isEmpty || confirmPassword.text.isEmpty) {
+      _showSnackBar("Fields cannot be empty", 'error');
+      return;
+    }
+
+    if (password.text != confirmPassword.text) {
+      _showSnackBar("Passwords don't match", 'error');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final tokenResponse = await http.post(
+        Uri.parse(
+            'https://lemur-4.cloud-iam.com/auth/realms/gl-medinvent/protocol/openid-connect/token'),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'username': 'admin',
+          'password': 'medinventadmin',
+          'client_id': "medinvent",
+          'client_secret': 'ZmWKbKEEeLU9xVSLbGw0ytclsy0iz1WJ',
+          'grant_type': 'password',
+          'scope': 'openid'
+        },
+      );
+
+      if (tokenResponse.statusCode != 200) {
+        throw Exception('Failed to refresh token');
+      }
+
+      final accessToken = jsonDecode(tokenResponse.body)['access_token'];
+
+      final payload = jsonEncode({
+        'type': 'password',
+        'value': password.text,
+        'temporary': false,
+      });
+
+      final response = await http.put(
+        Uri.parse(
+            'https://lemur-4.cloud-iam.com/auth/admin/realms/gl-medinvent/users/$userId/reset-password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: payload,
+      );
+
+      if (response.statusCode != 204) {
+        throw Exception('Failed to reset password');
+      }
+
+      _showSnackBar('Password reset successfully', 'success');
+    } catch (e) {
+      print(e.toString());
+      _showSnackBar('Failed to reset password.', 'error');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _showSnackBar(String text, String type) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: type == 'error' ? Colors.red : Colors.green,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -104,8 +191,9 @@ class SecurityInfoState extends ConsumerState<SecurityInfo> {
                       topValue: 41.8,
                     ),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.02,
+                          vertical: screenHeight * 0.04),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -118,31 +206,38 @@ class SecurityInfoState extends ConsumerState<SecurityInfo> {
                           ),
                         ],
                       ),
-                      child: const Column(
+                      child: Column(
                         children: [
-                          Inputbutton(
-                            topic: 'Old Password',
-                            tvalue: 33,
-                            bvalue: 24,
-                            wiht: 300,
-                          ),
                           Inputbutton(
                             topic: 'New Password',
                             bvalue: 24,
                             wiht: 300,
+                            controller: password,
                           ),
                           Inputbutton(
                             topic: 'Confirm Password',
-                            bvalue: 33,
                             wiht: 300,
+                            controller: confirmPassword,
                           ),
                         ],
                       ),
                     ),
-                    SaveButton(
-                      onTap: () {},
-                      save: 'Update',
-                    ),
+                    if (isLoading)
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.05),
+                        child: const SpinKitCircle(
+                          size: 25,
+                          color: Colors.blue,
+                        ),
+                      )
+                    else
+                      SaveButton(
+                        onTap: () {
+                          resetPassword(user.email, user.userId);
+                        },
+                        save: 'Update',
+                      ),
                     SizedBox(height: screenHeight * 0.07),
                   ],
                 ),

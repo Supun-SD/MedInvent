@@ -9,6 +9,7 @@ class Inputbutton extends StatelessWidget {
     this.lvalue = 0.0,
     this.rvalue = 0.0,
     this.wiht = 0.0,
+    required this.controller,
   });
 
   final String topic;
@@ -17,6 +18,7 @@ class Inputbutton extends StatelessWidget {
   final double lvalue;
   final double rvalue;
   final double wiht;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class Inputbutton extends StatelessWidget {
           top: tvalue, bottom: bvalue, left: lvalue, right: rvalue),
       width: wiht, // Adjust the margin as needed
       child: TextField(
+        controller: controller,
         decoration: InputDecoration(
           labelText: topic,
           contentPadding: const EdgeInsets.all(16.0),

@@ -445,7 +445,7 @@ class _MapPageState extends ConsumerState<MapPage> {
           GoogleMap(
             onMapCreated: (GoogleMapController controller) {
               mapController = controller;
-              mapController!.animateCamera(CameraUpdate.newCameraPosition(
+              mapController.animateCamera(CameraUpdate.newCameraPosition(
                 CameraPosition(
                   target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
                   zoom: 13.8,

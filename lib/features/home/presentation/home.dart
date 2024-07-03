@@ -83,8 +83,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     bool isAppointmentsLoading = ref.watch(appointmentsProvider).isLoading;
     bool isDailyMedsLoading = ref.watch(dailyMedicationsProvider).isLoading;
 
-    List<Appointment> upcomingAppointments =
-        ref.watch(appointmentsProvider).upcomingAppointments;
+    List<Appointment> upcomingAppointments = ref
+        .watch(appointmentsProvider)
+        .upcomingAppointments
+        .where((appointment) =>
+            !appointment.isCancelled && !appointment.session.isCancelled)
+        .toList();
     List<DailyMedication> dailyMedications =
         ref.watch(dailyMedicationsProvider).dailyMedications;
 
@@ -366,8 +370,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                               width: 15,
                             ),
                             ...upcomingAppointments
-                                .where(
-                                    (appointment) => !appointment.isCancelled && !appointment.session.isCancelled)
                                 .map((appointment) =>
                                     UpcomingWidget(appointment: appointment))
                                 .toList()
