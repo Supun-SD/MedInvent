@@ -37,8 +37,77 @@ class BasicInfoState extends ConsumerState<BasicInfo> {
     _districtController.text = user.patientAddress.district;
   }
 
+  bool _validateInputs() {
+    final nameRegex = RegExp(r'^[a-zA-Z]+$');
+
+    if (_fnameController.text.isEmpty ||
+        _lnameController.text.isEmpty ||
+        _dobController.text .isEmpty ||
+        _addressLine1Controller.text.isEmpty ||
+        _genderController.text.isEmpty||
+        _cityController.text.isEmpty||
+        _districtController.text.isEmpty) {
+      showPopupMessage(context, "All fields must be filled except address line 2", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_fnameController.text)) {
+      showPopupMessage(context, "First name can only contain letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_lnameController.text)) {
+      showPopupMessage(context, "Last name can only contain letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_genderController.text)) {
+      showPopupMessage(context, "Gender can only contain letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_cityController.text)) {
+      showPopupMessage(context, "City can only contain letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_districtController.text)) {
+      showPopupMessage(context, "Distric can only contain letters", Colors.redAccent);
+      return false;
+    }
+
+    if (!nameRegex.hasMatch(_genderController.text)) {
+      showPopupMessage(context, "Gender can only contain letters", Colors.redAccent);
+      return false;
+    }
+
+    return true;
+  }
+
+  void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
   void _updateDatabase() async {
     try {
+      if (!_validateInputs()) {
+        return;
+      }
       var user = ref.read(userProvider).user!;
       user.fname = _fnameController.text;
       user.lname = _lnameController.text;
@@ -57,12 +126,13 @@ class BasicInfoState extends ConsumerState<BasicInfo> {
           '/PatientUser/update/PatientUser/${user.userId}',
           json.encode(userOne.toJson()));
       if (response != null) {
-        baseClient = BaseClient();
-      } else {
-        print('Update not successful');
+        showPopupMessage(context,"updated successfully",Colors.green);
+      }
+      else{
+        showPopupMessage(context,"updating Process failed",Colors.redAccent);
       }
     } catch (e) {
-      print("Error: $e");
+      showPopupMessage(context,"updating Process failed",Colors.redAccent);
     }
   }
 
@@ -227,7 +297,7 @@ class EditableInfoFieldState extends State<EditableInfoField> {
     );
     if (picked != null) {
       setState(() {
-        widget.controller.text = DateFormat('dd-MM-yyyy').format(picked);
+        widget.controller.text = DateFormat('yyyy-MM-dd').format(picked);
         isEditing = false;
       });
       widget.onUpdate();

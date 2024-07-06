@@ -8,6 +8,7 @@ import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
 import 'package:MedInvent/components/Savebutton.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class CancelNotification extends ConsumerStatefulWidget {
   const CancelNotification({super.key});
@@ -271,6 +272,8 @@ class OtpCard extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
+    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+
     return Padding(
       padding: EdgeInsets.only(bottom: screenHeight * 0.02),
       child: Container(
@@ -332,7 +335,8 @@ class OtpCard extends StatelessWidget {
                   height: screenWidth * 0.02,
                 ),
                 Text(
-                  '${cancelRef.date}',
+                  dateFormat.format(cancelRef.date!),
+                 // '${cancelRef.date}',
                   style: TextStyle(
                     fontSize: screenHeight * 0.02,
                     fontWeight: FontWeight.bold,

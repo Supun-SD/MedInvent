@@ -2,7 +2,6 @@ import 'package:MedInvent/features/Profile/models/familyMember.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:MedInvent/features/Profile/services/dependent_service.dart';
 
@@ -29,8 +28,6 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
     super.dispose();
   }
 
-  File? _image;
-
   final List<String> genderOptions = ['Male', 'Female'];
   String selectedGender = 'Male';
   DateTime selectedDate = DateTime.now();
@@ -51,18 +48,6 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
       });
     }
   }
-
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
-
 
   void showPopupMessage(BuildContext context, String message, Color backgroundColor) {
     showDialog(
@@ -107,49 +92,6 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
               ),
               SizedBox(
                 height: screenHeight * 0.05,
-              ),
-              Row(
-                children: [
-                  _image == null
-                      ? CircleAvatar(
-                          radius: screenWidth * 0.1,
-                          backgroundColor: const Color(0xFF2980B9),
-                          child: Icon(
-                            Icons.add_photo_alternate_outlined,
-                            size: screenWidth * 0.1,
-                            color: Colors.white,
-                          ),
-                        )
-                      : CircleAvatar(
-                          radius: screenWidth * 0.1,
-                          backgroundImage: FileImage(_image!),
-                        ),
-                  SizedBox(
-                    width: screenWidth * 0.07,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      _pickImage();
-                    },
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(screenHeight * 0.05),
-                        side: const BorderSide(color: Color(0xFF2980B9)),
-                      ),
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                      child: Text(
-                        "Upload a photo",
-                        style: TextStyle(
-                            color: const Color(0xFF2980B9),
-                            fontSize: screenHeight * 0.015),
-                      ),
-                    ),
-                  ),
-                ],
               ),
               SizedBox(
                 height: screenHeight * 0.035,
@@ -249,7 +191,7 @@ class _CreateLocalProfileState extends ConsumerState<CreateLocalProfile> {
                         lastName.text,
                         selectedDate,
                         selectedGender,
-                        _image?.path,
+                        "not added",
                         nic.text,
                         [],
                         relationship.text,

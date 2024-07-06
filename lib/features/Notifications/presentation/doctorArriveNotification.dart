@@ -8,6 +8,7 @@ import 'package:MedInvent/components/sideNavBar.dart';
 import 'package:MedInvent/components/Savebutton.dart';
 import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class ArriveNotification extends ConsumerStatefulWidget {
   const ArriveNotification({super.key});
@@ -272,6 +273,8 @@ class OtpCard extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
+    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+
     return Padding(
       padding: EdgeInsets.only(bottom: screenHeight * 0.02),
       child: Container(
@@ -333,7 +336,8 @@ class OtpCard extends StatelessWidget {
                   height: screenHeight * 0.01,
                 ),
                 Text(
-                  '${arriveRef.date}',
+                  dateFormat.format(arriveRef.date!),
+                  //'${arriveRef.date}',
                   style: TextStyle(
                     fontSize: screenHeight * 0.02,
                     fontWeight: FontWeight.bold,

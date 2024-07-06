@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:MedInvent/features/login/models/user_model.dart';
 
-
-
 class LinkUser {
   String? relationship;
   String? receiverID;
