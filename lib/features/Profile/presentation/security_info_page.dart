@@ -1,4 +1,3 @@
-import 'package:MedInvent/features/Profile/presentation/tempBasic.dart';
 import 'package:MedInvent/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:MedInvent/components/input_field_edit.dart';
@@ -272,6 +271,55 @@ class AddText extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
+    );
+  }
+}
+
+
+class Info extends StatelessWidget {
+  const Info({required this.label, required this.data, super.key});
+
+  final String label, data;
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.all(screenWidth * 0.03),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey,
+              width: 1.0,
+            ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
+          child: Text(data, style: TextStyle(fontSize: screenWidth * 0.04)),
+        ),
+        Positioned(
+          top: 0,
+          left: 25,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+            decoration: const BoxDecoration(
+              color: Color(0xFFF2F2F2),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: screenWidth * 0.035,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
