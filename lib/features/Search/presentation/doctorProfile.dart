@@ -53,8 +53,10 @@ class _DoctorProfileState extends State<DoctorProfile> {
             if(!session['isCancelled']){
               allSessions.add(newSession);
             }
-            if (session['date'] == formattedDate &&
-                (session['activePatients'] < session['noOfPatients']) && session['isCancelled']) {
+            bool isToday = ((session['date'] == formattedDate) &&
+                (session['activePatients'] < session['noOfPatients']) && !session['isCancelled']);
+
+            if (isToday) {
               todaySessions.add(newSession);
             }
           }
