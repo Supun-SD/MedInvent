@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:MedInvent/components/medication_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'package:MedInvent/features/Profile/presentation/NotificationTopicCollection.dart';
 import '../../prescriptions/presentation/PrescriptionTemplate.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -135,7 +135,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             padding: const EdgeInsets.only(right: 15),
             child: IconButton(
               icon: const Icon(Icons.notifications),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder:(contex)=>NotificationCategory()));
+              },
             ),
           ),
         ],
