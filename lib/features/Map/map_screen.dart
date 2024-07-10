@@ -24,8 +24,7 @@ class MapPage extends ConsumerStatefulWidget {
 
 class _MapPageState extends ConsumerState<MapPage> {
   String? _selectedCategory;
-
-  late GoogleMapController mapController;
+  GoogleMapController? mapController;
 
   late BitmapDescriptor myLocationIcon;
   late BitmapDescriptor doctorIcon;
@@ -119,7 +118,7 @@ class _MapPageState extends ConsumerState<MapPage> {
         .read(pharmaciesAndDoctorsProvider.notifier)
         .checkLocationPermission();
     addMarkers();
-    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    mapController!.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
         zoom: 13.8)));
   }
@@ -445,7 +444,7 @@ class _MapPageState extends ConsumerState<MapPage> {
           GoogleMap(
             onMapCreated: (GoogleMapController controller) {
               mapController = controller;
-              mapController.animateCamera(CameraUpdate.newCameraPosition(
+              mapController!.animateCamera(CameraUpdate.newCameraPosition(
                 CameraPosition(
                   target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
                   zoom: 13.8,
