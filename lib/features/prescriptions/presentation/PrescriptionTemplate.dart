@@ -338,13 +338,14 @@ class AssignPrescriptionState extends ConsumerState<AssignPrescription> {
       selectedMember = selectedProfile;
       assignedTo = 'dependMember';
       dID = selectedMember!.dID;
-    } else {
+    } else if(selectedProfile == 'me'){
       selectedMember = null;
       assignedTo = 'user';
       dID = null;
     }
     NewPrescription newPres = NewPrescription();
     newPres.assignedTo = assignedTo;
+    newPres.dependMember = selectedMember;
     newPres.presMedicine = [];
     newPres.dID = dID;
     Navigator.pop(context);

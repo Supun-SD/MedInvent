@@ -88,38 +88,3 @@ class PresMedicine {
     );
   }
 }
-
-Prescription mapNewPrescriptionToPrescription(
-  NewPrescription newPrescription,
-  String userId,
-  String prescriptionId,
-  String createdAt,
-  String updatedAt,
-) {
-  List<PresMedicine> presMedicines = newPrescription.presMedicine.map((newMed) {
-    return PresMedicine(
-      name: newMed.name,
-      qty: newMed.qty,
-      frq: newMed.frq,
-      mealTiming: newMed.mealTiming,
-      duration: newMed.duration,
-      remainingDays: newMed.duration,
-      reminders: newMed.reminders,
-    );
-  }).toList();
-
-  return Prescription(
-    prescriptionId: prescriptionId,
-    presName: newPrescription.presName,
-    createdBy: 'user',
-    doctorName: '',
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-    userId: userId,
-    assignedTo: newPrescription.assignedTo,
-    dID: newPrescription.dID,
-    dependMember:
-        newPrescription.dID != null ? newPrescription.dependMember : null,
-    presMedicine: presMedicines,
-  );
-}

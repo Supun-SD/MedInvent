@@ -101,21 +101,46 @@ class PrescriptionsNotifier extends StateNotifier<PrescriptionsState> {
         var jsonResponse = json.decode(response.body);
         var data = jsonResponse['data'];
 
+        List<PresMedicine> newPresMedicine = [];
+
+        for (var med in newPrescription.presMedicine) {
+          PresMedicine newMed = PresMedicine(
+              name: med.name,
+              qty: med.qty,
+              frq: med.frq,
+              mealTiming: med.mealTiming,
+              duration: med.duration,
+              remainingDays: med.duration,
+              reminders: med.reminders);
+          newPresMedicine.add(newMed);
+        }
+
         state = PrescriptionsState(
           docPrescriptions: state.docPrescriptions,
           userPrescriptions: [
-            mapNewPrescriptionToPrescription(newPrescription, data['userID'],
-                data['prescription_id'], data['createdAt'], data['updatedAt']),
+            Prescription(
+                prescriptionId: data['prescription_id'],
+                assignedTo: newPrescription.assignedTo,
+                dID: newPrescription.dID,
+                dependMember: newPrescription.dependMember,
+                presName: newPrescription.presName,
+                doctorName: '',
+                createdBy: 'user',
+                createdAt: data['createdAt'],
+                updatedAt: data['updatedAt'],
+                userId: userID,
+                presMedicine: newPresMedicine),
             ...state.userPrescriptions
           ],
           isLoading: false,
         );
 
-        _showSnackBar('Prescription created successfully.', 'success');
+        _showSnackBar('Prescription created successfully', 'success');
       } else {
         throw Exception('Failed to add prescription');
       }
     } catch (e) {
+      print(e);
       _showSnackBar('Failed to add prescription.', 'error');
     } finally {
       PrescriptionsState(
