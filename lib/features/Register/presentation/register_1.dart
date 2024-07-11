@@ -42,6 +42,7 @@ class _Register1State extends State<Register1> {
   }
 
   Future<bool> checkEmailAndMobileNo() async {
+    FocusScope.of(context).unfocus();
     String apiUrl =
         '${ApiConfig.baseUrl}/patientuser/check/emailandmobileno?email=${_email.text}&mobileNo=%2B94${_mobileNo.text.substring(1)}';
 

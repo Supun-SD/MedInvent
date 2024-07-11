@@ -69,15 +69,17 @@ class _PasswordResetState extends State<PasswordReset> {
   //function to verify details
   Future<void> verification() async {
     if (_nic.text.isEmpty || _email.text.isEmpty) {
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        const SnackBar(
-          content: Text("Email or NIC cannot be empty"),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
+      errorScaffoldMessenger("Email or NIC cannot be empty");
       return;
     }
+
+    if(!isValidEmail(_email.text)){
+      errorScaffoldMessenger("Please enter a valid email address");
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+
     setState(() {
       isLoading = true;
     });
@@ -99,13 +101,7 @@ class _PasswordResetState extends State<PasswordReset> {
         isLoading = false;
       });
     } else if (isValid == null) {
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        const SnackBar(
-          content: Text("Fail to validate"),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
+      errorScaffoldMessenger("Fail to validate");
     } else {
       _showErrorDialog("Entered email and NIC does not match");
     }
@@ -159,6 +155,23 @@ class _PasswordResetState extends State<PasswordReset> {
         );
       },
     );
+  }
+
+  void errorScaffoldMessenger(String text) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  bool isValidEmail(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
+    );
+    return emailRegex.hasMatch(email);
   }
 
   @override

@@ -39,6 +39,7 @@ class _MapPageState extends ConsumerState<MapPage> {
   void initState() {
     super.initState();
     _selectedCategory = widget.selectedCategory;
+    myLocationIcon = BitmapDescriptor.defaultMarker;
     initialization();
   }
 
@@ -88,6 +89,9 @@ class _MapPageState extends ConsumerState<MapPage> {
           });
       pharmacyMarkers.add(marker);
       allMarkers.add(marker);
+      mapController!.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: ref.watch(pharmaciesAndDoctorsProvider).myLocation,
+          zoom: 13.8)));
     }
 
     for (NearByClinic clinic in nearbyClinics) {

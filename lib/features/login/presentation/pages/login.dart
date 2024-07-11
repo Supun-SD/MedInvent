@@ -7,6 +7,8 @@ import 'package:MedInvent/components/custom_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../../../../providers/nearbyPharmaciesAndDoctorsProvider.dart';
+
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -28,11 +30,38 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   //function to authenticate login
   void loginAuth(BuildContext context) async {
-    if (_email.text.isEmpty || _password.text.isEmpty) return;
+    if (_email.text.isEmpty || _password.text.isEmpty) {
+      errorScaffoldMessenger("Email or password is empty");
+      return;
+    }
+
+    if (!isValidEmail(_email.text)) {
+      errorScaffoldMessenger("Please enter a valid email address");
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
 
     await ref
         .read(userProvider.notifier)
         .loginUser(_email.text, _password.text, context);
+  }
+
+  bool isValidEmail(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
+  void errorScaffoldMessenger(String text) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
